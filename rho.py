@@ -58,7 +58,10 @@ def digit_profile(c, k):
 
 if __name__ == "__main__":
     print(f"{'k':>2} {'lambda_cert':>11} {'rho_k':>9} {'rho(lam)':>9} {'1-rho':>9} {'lam(rho_k)':>10}")
-    dirs = sorted(glob.glob("certs/k*_*"), key=lambda p: int(os.path.basename(p)[1:].split("_")[0]))
+    dirs = sorted((d for d in glob.glob("certs/k*_*")
+                   if not d.endswith("_upper")                                   # infeasibility certificates
+                   and (os.path.exists(os.path.join(d, "c_f32.npy")) or os.path.exists(os.path.join(d, "C.npy")))),
+                  key=lambda p: int(os.path.basename(p)[1:].split("_")[0]))        # skip dirs whose vector is absent
     for d in dirs:
         k, lam, c = load(d)
         rho = rho_top(c, k)

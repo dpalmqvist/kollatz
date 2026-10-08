@@ -39,3 +39,9 @@ name = "CollatzPredecessor0909"
 
 [[lean_lib]]
 name = "AxiomAudit0909"
+
+[[lean_lib]]
+name = "CollatzPredecessor0915"
+
+[[lean_lib]]
+name = "AxiomAudit0915"

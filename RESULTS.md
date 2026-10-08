@@ -26,6 +26,7 @@ exactly in integer arithmetic. Consequently
 | 19 | 387 420 489 | 1.8783 | 0.90941 | 1.8783132 |
 | 20 | 1 162 261 467 | 1.8857 | 0.91509 | 1.8857083 |
 | 21 | 3 486 784 401 | 1.8925 | 0.92029 | 1.8925462 |
+| 22 | 10 460 353 203 | 1.8988 | 0.92509 | 1.8988933 |
 
 ## The linear program
 
@@ -64,13 +65,46 @@ Formats: /1 stores the integer vector `C.npy` (int64); /2 stores the float32 vec
 | 17 | C.npy | 0aa746d0340b210c92d6ca6e614600e9fa743206703f1f84c65336bea58c03e5 | 2.6e-5 |
 | 18 | C.npy | fdbda6a1a6e5b78ae011ff5c3abfe33ca579354702f5e99aed28f901fa4b21ab | 6.5e-6 |
 | 19 | C.npy | ec8a1df9cb3abf47a60b3410a2d58a3464715feb687c3dbc04ebce03cd7f80a4 | 2.9e-6 |
-| 20 | c_f32.npy | 5bd2a7b1bc8aadd1ab3f6478ee584284205a1f6fa26ca7e1b68ff76aab8486e7 | 1.5e-6 |
-| 21 | c_f32.npy | 6121c786ebf1163df50fba87cfef4e5edb6d21d0cb9bc102e218cae29d6a4a9d | 1.1e-5 |
+| 20 | c_f32.npy | 8d7800f0be0634f5d6371782bc92bda2467e0f2d4bed83879dc873228dfd0083 | 1.4e-06 |
+| 21 | c_f32.npy | a9b12240f5780ed7d62b22ffe19540a6e99c61edb1e72d923b11b55fe83f714f | 1.1e-05 |
+| 22 | c_f32.npy | 83c9456a177c46178f8498687d80c9f9c64f894c776cf01a02b948075cadf3a8 | 2.4e-05 |
+| 19 | c_f32.npy | 1b2bc9ad953f0bd0b81b2a71f01f07ade37db81f9e3a4a12d60b98e982b1ce7b | 3.1e-06 |
+| 18 | c_f32.npy | 4602d3774a24081b4819c95e464356b27d3cb921da51942a2ec90b56db9d3f19 | 6.7e-06 |
+
+Note (2026-10-08): the vectors for k = 18–21 were regenerated on a second machine (Apple M4 Pro, 64 GB) and are not bit-identical to the originals, so their hashes above are the new ones; λ and all integer constants are unchanged and the slacks agree to within 10 %. k = 22 (N = 3^21 = 10 460 353 203, 39 GB) was computed on that machine with the vector split across three GPU buffers (`kl_split.py`): λ_22 = 1.8988933, certificate at 1.8988 (γ = 0.9251), slack 2.4e-5.
 
 Verification: `python verify_cert.py certs/k21_1.8925` (numpy + mpmath only, independent of the search code;
 `--exact` repeats the check with Python integers). The k = 21 vector is 13 GB; the check takes about two
 minutes on a laptop. Negative controls: each certificate's λ raised by 1e-4 to 5e-5 fails verification,
 and tampered certificates (modified C, q+1, L₂+1, L₁·1.001) are rejected.
+
+### Two-sided brackets: infeasibility certificates (2026-10-08)
+
+A feasibility certificate shows λ_k ≥ λ_cert. The reverse direction uses the same integer check: for the
+monotone, 1-homogeneous right-hand side F, a positive vector C with F(C) < C strictly in every row proves that
+no feasible point exists (if d ≥ 1 with d ≤ F(d), put s = max_i d_i/C_i, attained at i*; then d ≤ sC gives
+d_{i*} ≤ F(d)_{i*} ≤ sF(C)_{i*} < sC_{i*} = d_{i*}). `certify_fast.py --upper` rounds the coefficients up
+(q = ⌈Dλ^-2⌉, L_j = ⌈D · rigorous upper bound of λ^(α−j)⌉) and checks q C_{4m} + L_j C̄ < D C_m in int64;
+`verify_cert.py` checks the format independently. So λ_k lies in [λ_cert, λ_upper]:
+
+| k | λ_cert (feasible) | λ_upper (infeasible) | width | k | λ_cert | λ_upper | width |
+|---|---|---|---|---|---|---|---|
+| 2 | 1.3534 (Table 2) | 1.35342 | 2e-5 | 11 | 1.7922 | 1.79225 | 5e-5 |
+| 3 | 1.5275 | 1.5278 | 3e-4 | 12 | 1.8064 | 1.80644 | 4e-5 |
+| 4 | 1.6122 | 1.61230 | 1e-4 | 13 | 1.8188 | 1.81884 | 4e-5 |
+| 5 | 1.6627 | 1.66277 | 7e-5 | 14 | 1.8307 | 1.83079 | 9e-5 |
+| 6 | 1.6944 | 1.69447 | 7e-5 | 15 | 1.8419 | 1.84198 | 8e-5 |
+| 7 | 1.7201 | 1.72020 | 1e-4 | 16 | 1.8522 | 1.85225 | 5e-5 |
+| 8 | 1.7449 | 1.74498 | 8e-5 | 17 | 1.8616 | 1.86170 | 1e-4 |
+| 9 | 1.7615 | 1.76155 | 5e-5 | 18 | 1.8703 | 1.87034 | 4e-5 |
+| 10 | 1.7771 | 1.77714 | 4e-5 | 19 | 1.8783 | 1.87833 | 3e-5 |
+| | | | | 20 | 1.8857 | 1.88572 | 2e-5 |
+| | | | | 21 | 1.8925 | 1.89256 | 6e-5 |
+
+The upper values are λ_k (float32 estimate) rounded up to 5 decimals plus 1e-5 (k = 3: +2e-4, because at
+N = 9 the float32 ratio gap has a rounding floor of ~3e-5); all 20 upper certificates (k = 2 … 21) verify with relative slack
+2.4e-6 … 1.3e-4 (`certs/k{k}_{λ}_upper/`); k = 22 follows (queued at 1.89891). Consequence: the numerical
+λ_k are rigorously confirmed to 4–5 decimals, and the method at level k provably cannot reach γ ≥ log2 λ_upper.
 
 ## Independent checks
 

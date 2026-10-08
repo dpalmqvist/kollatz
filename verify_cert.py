@@ -28,6 +28,12 @@ Checks, all exactly (integers) or with rigorous interval arithmetic:
 Then C_m <= lam^-2 C_{4m} + lam^(alpha-j) cbar holds for all m, so C is feasible
 for L^NT_k(lambda) and by Theorem 2.2 of the paper pi_a(x) >= x^gamma for
 all gamma < log2(lambda), x >= x0(a, gamma).
+
+Format ".../2-upper" (INFEASIBILITY certificate, lambda_k < lambda): steps 2-3 check the coefficients
+in the other direction (q P^2 >= D Q^2, Lj/D >= UPPER interval endpoint of lambda^(alpha-j)), step 5
+checks the STRICT reverse inequality q C[(4i+2) mod N] + L cbar(r) < C[i] D for every i.  Then
+F(C) < C for the positive vector C, and since F is monotone and 1-homogeneous no d >= 1 with d <= F(d)
+exists (d <= s C with s = max d_i/C_i attained at i* gives d_{i*} <= s F(C)_{i*} < s C_{i*} = d_{i*}).
 """
 import hashlib
 import json
@@ -80,6 +86,17 @@ def lower_endpoint(lam, shift):
     return Fraction(int(man)) * Fraction(2) ** int(ex)
 
 
+def upper_endpoint(lam, shift):
+    """Exact rational upper bound of lam^(log2(3) - shift), interval arithmetic."""
+    iv = mpmath.iv
+    iv.prec = 256
+    x = iv.mpf(lam.numerator) / lam.denominator
+    alpha = iv.log(iv.mpf(3)) / iv.log(iv.mpf(2))
+    val = iv.exp((alpha - shift) * iv.log(x))
+    man, ex = mpmath.mpf(val.b).man_exp
+    return Fraction(int(man)) * Fraction(2) ** int(ex)
+
+
 def main(certdir, exact=False):
     with open(os.path.join(certdir, "cert.json")) as f:
         cert = json.load(f)
@@ -92,6 +109,8 @@ def main(certdir, exact=False):
     if N != 3 ** (k - 1):
         fail("N != 3^(k-1)")
     fmt = cert["format"]
+    upper = fmt.endswith("-upper")
+    fmt = fmt[:-6] if upper else fmt
     if fmt == "krasikov-lagarias-LNT-certificate/1":
         name, dtype, key, b = cert["C_file"], "<i8", "C", None
     elif fmt == "krasikov-lagarias-LNT-certificate/2":
@@ -117,13 +136,22 @@ def main(certdir, exact=False):
         fail("lambda inconsistent with P/Q, or not in (1, 2)")
     if not (D > 0 and q >= 0 and L1 >= 0 and L2 >= 0):
         fail("negative coefficient")
-    if q * P * P > D * Q * Q:
-        fail("q/D > lambda^-2")
-    if Fraction(L2, D) > lower_endpoint(lam, 2):
-        fail("L2/D not proven <= lambda^(alpha-2)")
-    if Fraction(L1, D) > lower_endpoint(lam, 1):
-        fail("L1/D not proven <= lambda^(alpha-1)")
-    print(f"lambda = {P}/{Q}: q/D <= lambda^-2, L2/D <= lambda^(alpha-2), L1/D <= lambda^(alpha-1) OK")
+    if not upper:
+        if q * P * P > D * Q * Q:
+            fail("q/D > lambda^-2")
+        if Fraction(L2, D) > lower_endpoint(lam, 2):
+            fail("L2/D not proven <= lambda^(alpha-2)")
+        if Fraction(L1, D) > lower_endpoint(lam, 1):
+            fail("L1/D not proven <= lambda^(alpha-1)")
+        print(f"lambda = {P}/{Q}: q/D <= lambda^-2, L2/D <= lambda^(alpha-2), L1/D <= lambda^(alpha-1) OK")
+    else:
+        if q * P * P < D * Q * Q:
+            fail("q/D < lambda^-2 (upper certificate needs q/D >= lambda^-2)")
+        if Fraction(L2, D) < upper_endpoint(lam, 2):
+            fail("L2/D not proven >= lambda^(alpha-2)")
+        if Fraction(L1, D) < upper_endpoint(lam, 1):
+            fail("L1/D not proven >= lambda^(alpha-1)")
+        print(f"lambda = {P}/{Q}: q/D >= lambda^-2, L2/D >= lambda^(alpha-2), L1/D >= lambda^(alpha-1) OK (upper)")
 
     # 4. range
     Cmin, Cmax = int(integers(C.min(keepdims=True), b)[0]), int(integers(C.max(keepdims=True), b)[0])
@@ -146,10 +174,12 @@ def main(certdir, exact=False):
         L = np.where(t == 0, np.int64(L2), np.where(t == 2, np.int64(L1), np.int64(0)))
         lhs = integers(C[s:e], b) * np.int64(D)
         diff = G((4 * i + 2) % N) * np.int64(q) + L * cbar - lhs
+        if upper:
+            diff = -diff - np.int64(1)        # strict reverse inequality
         if (diff < 0).any():
             fail(f"inequality violated at index {s + int(np.argmax(diff < 0))}")
         worst = min(worst, float((diff / lhs).min()))
-    print(f"all {N} inequalities hold (int64), min relative slack {worst:.3e}")
+    print(f"all {N} {'strict reverse ' if upper else ''}inequalities hold (int64), min relative slack {worst:.3e}")
 
     if exact:
         Cl = [int(x) for x in integers(C[:], b)]
@@ -159,13 +189,17 @@ def main(certdir, exact=False):
             if t != 1:
                 r = (4 * j) % n3 if t == 0 else (2 * j + 1) % n3
                 rhs += (L2 if t == 0 else L1) * min(Cl[r], Cl[r + n3], Cl[r + 2 * n3])
-            if Cl[i] * D > rhs:
+            if (Cl[i] * D > rhs) if not upper else (rhs >= Cl[i] * D):
                 fail(f"exact check: inequality violated at index {i}")
         print(f"all {N} inequalities hold (Python integers)")
 
     g = mpmath.log(mpmath.mpf(P) / Q, 2)
-    print(f"VERIFIED: L^NT_{k}({cert['lambda']}) feasible; pi_a(x) >= x^gamma for all gamma < "
-          f"log2(lambda) = {mpmath.nstr(g, 10)}")
+    if upper:
+        print(f"VERIFIED: L^NT_{k}({cert['lambda']}) INFEASIBLE (F(C) < C); lambda_k < {cert['lambda']}, "
+              f"i.e. the method at level k cannot give gamma >= log2(lambda) = {mpmath.nstr(g, 10)}")
+    else:
+        print(f"VERIFIED: L^NT_{k}({cert['lambda']}) feasible; pi_a(x) >= x^gamma for all gamma < "
+              f"log2(lambda) = {mpmath.nstr(g, 10)}")
 
 
 if __name__ == "__main__":

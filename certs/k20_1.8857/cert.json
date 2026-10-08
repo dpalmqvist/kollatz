@@ -16,18 +16,18 @@
  "check": "The integer vector is C[i] = c[i] * 2^b, c read from c_f32.npy (float32); every C[i] must be an exact integer >= 1. Index i in [0, N) is the residue m = 3i+2 mod 3^k, n3 = N/3. For every i, with j, t = divmod(i, 3), cbar(r) = min(C[r], C[r+n3], C[r+2n3]): C[i]*D <= q*C[(4i+2) mod N] + L*cbar(r), where L = L2, r = 4j mod n3 if t = 0; L = 0 if t = 1; L = L1, r = (2j+1) mod n3 if t = 2. Requires q/D <= lambda^-2, L2/D <= lambda^(alpha-2), L1/D <= lambda^(alpha-1), alpha = log2(3).",
  "c_file": "c_f32.npy",
  "c_dtype": "<f4",
- "c_sha256_data": "150c263fdac48ba4b6f2f67a3fcdb367f61512ce11074c957696d5b97a719a8a",
- "c_file_sha256": "5bd2a7b1bc8aadd1ab3f6478ee584284205a1f6fa26ca7e1b68ff76aab8486e7",
+ "c_sha256_data": "3b48bbfedd4f7d83e798fa188072455dccd12649e84746fe3154e186565e16fc",
+ "c_file_sha256": "8d7800f0be0634f5d6371782bc92bda2467e0f2d4bed83879dc873228dfd0083",
  "C_min": 8388627,
- "C_max": 35492610048,
- "min_relative_slack": 1.4643458194204197e-06,
+ "C_max": 35492622336,
+ "min_relative_slack": 1.423077698440053e-06,
  "verified_with": [
   "numpy",
   "mlx"
  ],
- "created": "2026-10-07T12:54:02+00:00",
+ "created": "2026-10-08T11:29:58+00:00",
  "software": {
-  "python": "3.14.7",
+  "python": "3.14.3",
   "numpy": "2.5.3",
   "mpmath": "1.4.1",
   "mlx": "0.32.3"

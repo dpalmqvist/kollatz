@@ -68,6 +68,12 @@ b = 23 − ⌊log2 min c⌋, vilket är ett exakt heltal för varje positiv norm
 C med bitoperationer (mantissa << shift) per chunk; verify_cert.py oberoende med float64·2^b + heltalskontroll.
 Minne ~4 byte/variabel (c som memmap för numpy, en GPU-kopia för mlx). Format /1 (`C.npy`, int64) läses också.
 OBS: macOS-filsystemet är skiftlägesokänsligt – `c.npy` skriver över `C.npy`, därav namnet `c_f32.npy`.
+ÖVRE certifikat (2026-10-08, `--upper`): koefficienterna avrundas UPPÅT (q = ⌈D·Q²/P²⌉, L_j = ⌈D·övre
+intervallgräns⌉) och varje rad måste uppfylla strikt q·C_{4m} + L_j·C̄ < D·C_m, dvs F(C) < C. För monoton
+1-homogen F följer att inget tillåtet d finns (s = max d_i/C_i i i*: d_{i*} ≤ F(d)_{i*} ≤ s·F(C)_{i*} < s·C_{i*}),
+alltså λ_k < λ. Sparas i `certs/k{k}_{λ}_upper/` (format /2-upper), verify_cert.py kontrollerar riktningen.
+Vektorn = potensitererad c vid λ_k + 1e-5 (k = 3 behövde +2e-4 p.g.a. float32-golvet). Brackets för k = 2…19 i
+RESULTS.md; k = 20–22 när GPU:n är ledig.
 Snabb- och exakt certifiering skiljer sig bara i säker riktning: k = 2, λ = 1.3534 (slack 2e-8 < float32-
 upplösning) ger fast=False, certify.py=True (den förfinar c i float64). Snabbvägen kräver slack ≳ 1e-7.
 d väljs så att max C·D < 2^63 och max C·(q + L) < 2^63
@@ -162,6 +168,9 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
 - `rF2_fit.py` – spår 1: r_k(F_2) för k = 5…21 (exakt r_k = 1/4 + (3/4)ρ'_k, ρ' = blandningskvoten för λ=2-vektorn);
   1 − r_k: kvoter stiger 0.905 → 0.922; offset-modell (r∞ = 0.9929) och sträckt exponential (r∞ = 1) passar lika
   (1.7e-4). Odeciderat; data lutar svagt mot fortsatt inbromsning. k = 21 vid λ = 2 tog 456 s (int8-vägen).
+  k = 22 (2026-10-08, `kl_split.py rate 22 2 c_k22_part0.npy`, 43 min): r_22 = 0.974971, ρ(λ=2) = 0.966628,
+  kvot för 1 − r_k = 0.9239 (fortsatt stigande ~0.0018/steg). Anpassningar k = 5…22: offset-modell r∞ = 0.9928,
+  sträckt exponential r∞ = 1, båda maxres 1.8e-4; blint från k ≤ 16 missar offset-modellen k = 22 med −4.3e-4.
 - `renorm.py`, `renorm2.py` – spår 1: renormalisering av toppsiffe-känsligheten. Injektion per nivå exakt 3/4 vid
   λ = 2, förstärkning A_k ≈ 1.21 → 1.23; A∞ < 4/3 ⇔ λ_k → 2. renorm2: uppdelning c = P (×4-term) + Q (aux-term),
   "alignment efficiency" e_k = 0.61 → 0.74 (k = 8…15), argmin-överensstämmelse 0.33 (= oberoende). Prognos:
@@ -170,6 +179,11 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
 - `cycles_d.py` – spår 3: cykelkatalog för 3x+d (d ≤ 29) med Eliahou-olikheten; 3x+13 har sju 8-cykler med k = 5.
 - `rho.py` – K–L:s blandningskvot ρ_k för alla certifikat (chunkat, klarar k = 21) och siffer-känslighets-
   profilen 1 − ρ_j per ternär siffra (k ≤ 19, kräver vektorn i RAM som float64). `python rho.py`
+- `kl_split.py` – k = 22 på 64 GB: c som tre Metal-buffertar (max_buffer_length 38.9 GiB < 39 GiB), delad int8-kärna
+  bitidentisk med make_Q8 (k ≤ 10), topp 1.26 vektorer (49 GiB vid k = 22). `test KMAX`, `lambda K SRC [lam0 lam1]`
+  (sparar c_k{K}_part{0,1,2}.npy), `certify K LAMBDA SRC` (trimmar, skriver sammanslagen c_f32.npy via memmap, int64).
+- `kl5.py`, `kl5_mlx.py`, `kl5.json` – spår 8: K–L-systemet för 5x+1 (härledning i docstring; generisk residy-LP
+  reproducerar tabell 2 för p = 3 och indexformlerna för p = 5). λ_k(5), γ_k(5), ρ_k(5) för k ≤ 13, se AVENUES §8.
 - `.venv/` – Python 3.14, numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1, mlx 0.32.3, matplotlib 3.11.2 (Apple M5, 24 GB)
 
 ## Referensvärden (regressionstest – ska reproduceras)
@@ -200,7 +214,11 @@ Extern korskontroll (2026-10-08): msharpe248 får 0.895 vid k = 17 (vi 0.8965) o
 | 19 | 387 420 489 | 1.8783132 | 1.8783 | 0.9094 | `certs/k19_1.8783` |
 | 20 | 1 162 261 467 | 1.8857083 | 1.8857 | 0.9151 | `certs/k20_1.8857` |
 | 21 | 3 486 784 401 | 1.8925462 | 1.8925 | 0.9203 | `certs/k21_1.8925` |
-Ökning i γ per steg: 0.0113, 0.0099, 0.0094, 0.0088, 0.0080, 0.0073, 0.0068, 0.0061, 0.0057, 0.0052 (avtagande).
+| 22 | 10 460 353 203 | 1.8988933 | 1.8988 | 0.9251 | `certs/k22_1.8988` (M4 Pro 64 GB, `kl_split.py`) |
+Ökning i γ per steg: 0.0113, 0.0099, 0.0094, 0.0088, 0.0080, 0.0073, 0.0068, 0.0061, 0.0057, 0.0052, 0.0048 (avtagande).
+k = 22 (2026-10-08, M4 Pro 64 GB): `kl_split.py lambda 22 c_k21_mlx.npy 1.9005 1.9025` – 3 λ-värden (51 + 40 + 19 min),
+110 min totalt, topp 49.0 GiB (1.26 vektorer), λ_22 = 1.8988933 (prognosen från den geometriska anpassningen var
+γ_22 = 0.925; utfall 0.92513), Cmax = 9851. Certifiering via `kl_split.py certify 22 1.8988 c_k22_part0.npy`: trim 39 min (int8-golvet 2.5e-6), sammanslagning 90 s, int64-kontroll 290 s, slack 2.40e-5, verify_cert PASS. OBS: "negativt test" vid 1.89888 var FEL VALT (< λ_22 = 1.8988933) och gav True – ett giltigt andra certifikat (slack 3.0e-6, raderat); negativt test/övre certifikat för k = 22 kräver λ > λ_k, t.ex. 1.89891 – återstår.
 k = 16 (2026-10-07): λ-sökning 16 s, 240 MB, värmestart från k = 15; certifiering 0.3 s, slack 1.0e-5;
 λ = 1.85224 ger VERIFIED=False.
 k = 17–21 (2026-10-07, M5 24 GB), sekant med start λ_{k−1} + 0.008 / + 0.010, värmestart från k−1:
@@ -255,12 +273,12 @@ Denna maskin (M5, 24 GB; MLX: max_recommended_working_set 17.8 GiB, max_buffer_l
 (ρ_k − ρ(λ_cert) ≈ 1–3e-5, skillnaden beror på att λ_cert < λ_k), så λ_k är i praktiken en funktion av ρ_k ensam:
   1 − λ^-2 = (1/3)(λ^(α−1) + λ^(α−2)) ρ.   Vid λ = 2 är båda sidor 3/4 ⇒ λ_k → 2 ⇔ ρ_k → 1.
 
-| k | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 |
-|---|---|---|---|---|---|---|---|---|---|---|---|
-| 1 − ρ_k | 0.0573 | 0.0524 | 0.0482 | 0.0443 | 0.0407 | 0.0375 | 0.0347 | 0.0321 | 0.0298 | 0.0277 | 0.0258 |
-| kvot till föregående | 0.913 | 0.913 | 0.920 | 0.919 | 0.920 | 0.922 | 0.924 | 0.927 | 0.928 | 0.930 | 0.931 |
+| k | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 − ρ_k | 0.0573 | 0.0524 | 0.0482 | 0.0443 | 0.0407 | 0.0375 | 0.0347 | 0.0321 | 0.0298 | 0.0277 | 0.0258 | 0.0241 |
+| kvot till föregående | 0.913 | 0.913 | 0.920 | 0.919 | 0.920 | 0.922 | 0.924 | 0.927 | 0.928 | 0.930 | 0.931 | 0.933 |
 
-Kvoten stiger monotont ⇒ ren geometrisk avklingning passar inte (max residual 5.6e-4). Tre modeller passar
+Kvoten stiger monotont (k = 22: ρ_22 = 0.975934 vid λ_cert = 1.8988, `rho.py` 2026-10-08) ⇒ ren geometrisk avklingning passar inte (max residual 5.6e-4). Tre modeller passar
 lika bra (max residual ~1e-4, k = 11…21): geometrisk + offset (B = 0.0088 ⇒ ρ∞ = 0.991 ⇒ γ∞ ≈ 0.971),
 sträckt exponential (⇒ γ∞ = 1), potenslag (⇒ γ∞ = 1). Data t.o.m. k = 21 kan alltså INTE skilja "metoden
 stannar under 1" från "metoden når 1 långsamt". Prognoser för k = 22: 0.925 (alla modeller); k = 30: 0.950–0.960.
@@ -314,7 +332,7 @@ Samma program drivs av flera AI-assisterade Lean-projekt. Alla är orefereegrans
   udda-stegsdensitet exakt log 2/log 3.
 - ProofAtlas / Lech Mazur (juli 2026): π_a(x) ≥ x^0.90 (och x^0.901) vid k = 18, Lean med `native_decide`
   (två stora nativa kontroller + Python/C++-verifierare), "accepterat" på plattformens egen granskning.
-  Samma person hävdar naturlig densitet 1 för nedstigning (starkare än Tao) – obekräftat, var skeptisk.
+  Samma person hävdar naturlig densitet 1 för nedstigning inom 436·log N steg (annat påstående än Taos log-densitetssats, inte strikt starkare) samt (sep 2026) positiv undre densitet för föregångare – obekräftat, var skeptisk. Litteraturöversikt: `reports/Collatz adjacent work and references.md` (2026-10-08).
 - R. A. Tavares, arXiv:2608.27617 (aug 2026): två av Wirschings fem förmodanden (2003) om positiv
   föregångardensitet; förmodan 2 återstår. Wirschings program är "samma fråga en nivå upp": positiv densitet
   för varje a i stället för x^γ.

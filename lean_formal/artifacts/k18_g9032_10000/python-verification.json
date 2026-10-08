@@ -19,7 +19,7 @@
   "verdict": "PASS_EXACT_FINITE_ROWS",
   "verifier": "independent-python-stdlib-v1",
   "verifier_script_sha256": "e2b5ed37497cd5c43a6d211fc97a12e854eb8abf9768f4dc1dd2c7a335483d12",
-  "weights_sha256": "2ae328a9ff8eb8f393eb2d376030ef8fcb0546ff6f38123aba9ab2d0d2446e5c",
+  "weights_sha256": "2e3e0f3d84b72fb79f9b1eb266354be61cca2947b36b74eacd19d1cb223916da",
   "worst_index": 70986832,
   "worst_residue": 212960498
 }

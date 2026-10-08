@@ -26,10 +26,17 @@ compare, and before the check we prove in Python integers that every
 intermediate is below 2^63 (max C * (q + max Lj) < 2^63 and max C * D < 2^63).
 
 Usage:
-  python certify_fast.py k LAMBDA [c0.npy] [--backend numpy|mlx|both] [--exact] [--save]
+  python certify_fast.py k LAMBDA [c0.npy] [--backend numpy|mlx|both] [--exact] [--save] [--upper]
     c0.npy   warm start for the float32 power iteration (length N or N/3)
     --exact  also re-check the same integers with Python integers (small k)
     --save   keep certs/k{k}_{LAMBDA}/ (c_f32.npy + cert.json; check with verify_cert.py)
+    --upper  INFEASIBILITY certificate instead (saved as certs/k{k}_{LAMBDA}_upper/): the coefficients are
+             rounded UP (q = ceil(D Q^2/P^2), Lj = ceil(D * rigorous upper bound of lam^(alpha-j))) and every
+             row must satisfy the STRICT reverse inequality  q C_{4m} + Lj Cbar < D C_m,  i.e. F(C) < C.
+             For the monotone, 1-homogeneous map F this proves that L^NT_k(lam) has no feasible point:
+             if d >= 1 with d <= F(d), let s = max d_i/C_i at i*; then d <= s C, so
+             d_{i*} <= F(d)_{i*} <= s F(C)_{i*} < s C_{i*} = d_{i*}.  Hence lambda_k < lam.  Together with a
+             feasibility certificate at lam_cert this brackets lambda_k rigorously.
 """
 import hashlib
 import json
@@ -49,15 +56,36 @@ INT64_LIMIT = 2 ** 63
 CHUNK = 2 ** 22
 
 
-def coefficients(lam, d):
-    """Integer coefficients (D, q, L2, L1) for lam (Fraction), D = 2^d."""
+def coefficients(lam, d, upper=False):
+    """Integer coefficients (D, q, L2, L1) for lam (Fraction), D = 2^d: rounded down (q/D <= lam^-2,
+    Lj/D <= lam^(alpha-j)) for a feasibility certificate, rounded up for an infeasibility certificate."""
     D = 2 ** d
-    q = (D * lam.denominator ** 2) // lam.numerator ** 2
-    L2 = lower_power(lam, 2)
-    L1 = lower_power(lam, 1)
-    L2n = (D * L2.numerator) // L2.denominator
-    L1n = (D * L1.numerator) // L1.denominator
+    if not upper:
+        q = (D * lam.denominator ** 2) // lam.numerator ** 2
+        L2 = lower_power(lam, 2)
+        L1 = lower_power(lam, 1)
+        L2n = (D * L2.numerator) // L2.denominator
+        L1n = (D * L1.numerator) // L1.denominator
+    else:
+        q = -((-D * lam.denominator ** 2) // lam.numerator ** 2)
+        L2 = upper_power(lam, 2)
+        L1 = upper_power(lam, 1)
+        L2n = -((-D * L2.numerator) // L2.denominator)
+        L1n = -((-D * L1.numerator) // L1.denominator)
     return D, q, L2n, L1n
+
+
+def upper_power(lam, shift):
+    """Rigorous rational UPPER bound for lam^(log2(3) - shift) (interval arithmetic, upper endpoint)."""
+    iv = mpmath.iv
+    iv.prec = 200
+    x = iv.mpf(lam.numerator) / lam.denominator
+    alpha = iv.log(iv.mpf(3)) / iv.log(iv.mpf(2))
+    val = iv.exp((alpha - shift) * iv.log(x))
+    man, ex = mpmath.mpf(val.b).man_exp
+    hi = Fraction(int(man)) * Fraction(2) ** int(ex)
+    Dd = 10 ** 40
+    return Fraction(-((-hi.numerator * Dd) // hi.denominator), Dd)      # rounded up
 
 
 def scale_bits(cmin, cmax):
@@ -86,10 +114,11 @@ def to_int64(xp, x, b):
     return C, ok
 
 
-def check(c, b, D, q, L2n, L1n, backend="numpy", chunk=CHUNK):
+def check(c, b, D, q, L2n, L1n, backend="numpy", chunk=CHUNK, upper=False):
     """Check all inequalities for C = c * 2^b.  c: float32 vector (numpy array or
     memmap for numpy, mx.array for mlx).  Returns (ok, first failing index or
-    None, min relative slack (float, for information only), reason)."""
+    None, min relative slack (float, for information only), reason).
+    upper=True: the strict reverse inequality q C_{4m} + L Cbar < D C_m (see --upper)."""
     if backend == "mlx":
         import mlx.core as mx
         xp = mx
@@ -124,6 +153,8 @@ def check(c, b, D, q, L2n, L1n, backend="numpy", chunk=CHUNK):
         L = xp.where(t == 0, L2_, xp.where(t == 2, L1_, zero))
         lhs = lhs * D_
         diff = g((4 * i + 2) % N) * q_ + L * cbar - lhs
+        if upper:
+            diff = -diff - 1          # strict: rhs < lhs  <=>  lhs - rhs - 1 >= 0
         if backend == "mlx":
             rel = (diff.astype(mx.float32) / lhs.astype(mx.float32)).min().item()
         else:
@@ -134,7 +165,7 @@ def check(c, b, D, q, L2n, L1n, backend="numpy", chunk=CHUNK):
     return first_bad is None, first_bad, worst, None if first_bad is None else "inequality violated"
 
 
-def check_exact(c, b, D, q, L2n, L1n):
+def check_exact(c, b, D, q, L2n, L1n, upper=False):
     """Same check with Python integers and Fractions (reference for the int64 code)."""
     N = c.size
     n3 = N // 3
@@ -150,12 +181,12 @@ def check_exact(c, b, D, q, L2n, L1n):
         if t != 1:
             r = (4 * j) % n3 if t == 0 else (2 * j + 1) % n3
             rhs += (L2n if t == 0 else L1n) * min(Cl[r], Cl[r + n3], Cl[r + 2 * n3])
-        if Cl[i] * D > rhs:
+        if (Cl[i] * D > rhs) if not upper else (rhs >= Cl[i] * D):
             return False, i
     return True, None
 
 
-def certify(k, lam_str, c, backend="numpy", exact=False):
+def certify(k, lam_str, c, backend="numpy", exact=False, upper=False):
     """c: float32 vector (numpy array, memmap or mx.array).  With backend
     'both', pass c as numpy/memmap (the mlx check then copies it to the GPU)."""
     lam = Fraction(lam_str)
@@ -166,10 +197,10 @@ def certify(k, lam_str, c, backend="numpy", exact=False):
     if not (np.isfinite(cmin) and np.isfinite(cmax) and cmin > 0):
         return False, {"reason": "c has non-positive or non-finite entries"}
     b, d = scale_bits(cmin, cmax)
-    D, q, L2n, L1n = coefficients(lam, d)
+    D, q, L2n, L1n = coefficients(lam, d, upper=upper)
     Cmax = int(Fraction(float(cmax)) * 2 ** b)
     assert Cmax * D < INT64_LIMIT and Cmax * (q + max(L2n, L1n)) < INT64_LIMIT, "int64 overflow possible"
-    res = {"b": b, "d": d, "Cmax/Cmin": cmax / cmin, "coefficients": (D, q, L2n, L1n)}
+    res = {"b": b, "d": d, "Cmax/Cmin": cmax / cmin, "coefficients": (D, q, L2n, L1n), "upper": upper}
     backends = ["numpy", "mlx"] if backend == "both" else [backend]
     if c.size > 2 ** 31 - 1 and "mlx" in backends:
         # MLX shapes are int32 and the mlx check uses flat take(); k >= 21 -> numpy only
@@ -178,14 +209,14 @@ def certify(k, lam_str, c, backend="numpy", exact=False):
     oks = []
     for be in backends:
         t = time.time()
-        ok, bad, worst, why = check(c, b, D, q, L2n, L1n, backend=be)
+        ok, bad, worst, why = check(c, b, D, q, L2n, L1n, backend=be, upper=upper)
         res[be] = (ok, bad, worst, time.time() - t)
         oks.append(ok)
         if why and not ok:
             res["reason"] = why
     if exact:
         t = time.time()
-        ok, bad = check_exact(np.asarray(c), b, D, q, L2n, L1n)
+        ok, bad = check_exact(np.asarray(c), b, D, q, L2n, L1n, upper=upper)
         res["exact"] = (ok, bad, None, time.time() - t)
         oks.append(ok)
     assert len(set(oks)) == 1, f"backends disagree: {res}"
@@ -225,12 +256,15 @@ def write_cert_json(k, lam_str, res, outdir):
         versions["mlx"] = mx.__version__
     except ImportError:
         pass
+    upper = res.get("upper", False)
     cert = {
-        "format": "krasikov-lagarias-LNT-certificate/2",
+        "format": "krasikov-lagarias-LNT-certificate/2" + ("-upper" if upper else ""),
         "reference": "I. Krasikov, J. C. Lagarias, Bounds for the 3x+1 problem using difference "
                      "inequalities, Acta Arith. 109 (2003) 237-258, arXiv:math/0205002, Thm 2.2",
-        "claim": f"L^NT_{k}(lambda) is feasible for lambda = {lam_str}, hence pi_a(x) >= x^gamma "
-                 f"for every gamma < log2(lambda) and x >= x0(a, gamma)",
+        "claim": (f"L^NT_{k}(lambda) is feasible for lambda = {lam_str}, hence pi_a(x) >= x^gamma "
+                  f"for every gamma < log2(lambda) and x >= x0(a, gamma)") if not upper else
+                 (f"L^NT_{k}(lambda) is INFEASIBLE for lambda = {lam_str}: F(C) < C strictly for the positive "
+                  f"vector C with coefficients rounded up, so lambda_k < lambda (no feasible point exists)"),
         "k": k,
         "N": int(c.size),
         "lambda": lam_str,
@@ -242,7 +276,10 @@ def write_cert_json(k, lam_str, res, outdir):
         "L2": L2n,
         "L1": L1n,
         "b": b,
-        "check": "The integer vector is C[i] = c[i] * 2^b, c read from c_f32.npy (float32); every C[i] "
+        "check": ("UPPER (infeasibility) certificate: same rows as below but with q = ceil(D lambda^-2), "
+                  "L2 >= D lambda^(alpha-2), L1 >= D lambda^(alpha-1) (rigorous upper bounds) and the STRICT "
+                  "reverse inequality q*C[(4i+2) mod N] + L*cbar(r) < C[i]*D for every i. " if upper else "") +
+                 "The integer vector is C[i] = c[i] * 2^b, c read from c_f32.npy (float32); every C[i] "
                  "must be an exact integer >= 1. Index i in [0, N) is the residue m = 3i+2 mod 3^k, "
                  "n3 = N/3. For every i, with j, t = divmod(i, 3), cbar(r) = min(C[r], C[r+n3], "
                  "C[r+2n3]): C[i]*D <= q*C[(4i+2) mod N] + L*cbar(r), where L = L2, r = 4j mod n3 "
@@ -272,6 +309,7 @@ if __name__ == "__main__":
         args.remove(backend)
     k, lam_str = int(args[0]), args[1]
     save = "--save" in opts
+    upper = "--upper" in opts
 
     import mlx.core as mx
     import kl_mlx
@@ -288,7 +326,7 @@ if __name__ == "__main__":
           f"lo={lo:.9f} hi={hi:.9f}")
 
     # write c once; all checks then stream from it (numpy: memmap, mlx: one GPU copy)
-    outdir = f"certs/k{k}_{lam_str}" if save else tempfile.mkdtemp(prefix=f"kl_k{k}_", dir=".")
+    outdir = f"certs/k{k}_{lam_str}{'_upper' if upper else ''}" if save else tempfile.mkdtemp(prefix=f"kl_k{k}_", dir=".")
     os.makedirs(outdir, exist_ok=True)
     cpath = os.path.join(outdir, "c_f32.npy")
     mx.save(cpath, c)
@@ -296,7 +334,7 @@ if __name__ == "__main__":
     mx.clear_cache()
 
     c = mx.load(cpath) if backend == "mlx" else np.load(cpath, mmap_mode="r").reshape(-1)
-    ok, res = certify(k, lam_str, c, backend=backend, exact="--exact" in opts)
+    ok, res = certify(k, lam_str, c, backend=backend, exact="--exact" in opts, upper=upper)
     del c
     lam = Fraction(lam_str)
     g = float(mpmath.log(mpmath.mpf(lam.numerator) / lam.denominator, 2))
@@ -309,7 +347,7 @@ if __name__ == "__main__":
             print(f"  {be:5s}: VERIFIED={okb}{'' if okb else f' (fails at index {bad})'}{extra}  {dt:.1f}s")
     if "reason" in res:
         print(f"  reason: {res['reason']}")
-    print(f"k={k} lam_cert={lam_str} log2(lam)={g:.6f} VERIFIED={ok}")
+    print(f"k={k} lam_cert={lam_str} log2(lam)={g:.6f} VERIFIED={ok}" + (" (UPPER: infeasible, lambda_k < lam)" if upper and ok else ""))
     if save and ok:
         cert = write_cert_json(k, lam_str, res, outdir)
         print(f"saved {outdir}/  c sha256 (data) {cert['c_sha256_data']}")

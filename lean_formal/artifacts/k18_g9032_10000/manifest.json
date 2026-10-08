@@ -38,8 +38,8 @@
   "source": {
     "note": "weights = our integer vector C rescaled (floor) so that min = 2^weight_scale_bits",
     "our_cert_json": {
-      "C_max": 15377596416,
-      "C_min": 8388839,
+      "C_max": 15377594368,
+      "C_min": 8388840,
       "D": 67108864,
       "L1": 96789506,
       "L2": 51752729,
@@ -47,28 +47,29 @@
       "b": 23,
       "c_dtype": "<f4",
       "c_file": "c_f32.npy",
-      "c_file_sha256": "25b23127e04c21093923a20c410413e3a302ab82388a31d8ae741d90aaaaa5a4",
-      "c_sha256_data": "e674cdcadf6fb993c6de78ecab8f711c4f019f8a3af6db9b70e5d58b358764dd",
+      "c_file_sha256": "640b72849dffef5412d226565c364db4f21dedb1150fd84d9b8833e3689adec1",
+      "c_sha256_data": "8e3a446204c9b07d92bb89f210361a828b0fd35e82b5addd34996c2cdd8af689",
       "check": "The integer vector is C[i] = c[i] * 2^b, c read from c_f32.npy (float32); every C[i] must be an exact integer >= 1. Index i in [0, N) is the residue m = 3i+2 mod 3^k, n3 = N/3. For every i, with j, t = divmod(i, 3), cbar(r) = min(C[r], C[r+n3], C[r+2n3]): C[i]*D <= q*C[(4i+2) mod N] + L*cbar(r), where L = L2, r = 4j mod n3 if t = 0; L = 0 if t = 1; L = L1, r = (2j+1) mod n3 if t = 2. Requires q/D <= lambda^-2, L2/D <= lambda^(alpha-2), L1/D <= lambda^(alpha-1), alpha = log2(3).",
       "claim": "L^NT_18(lambda) is feasible for lambda = 1.87023, hence pi_a(x) >= x^gamma for every gamma < log2(lambda) and x >= x0(a, gamma)",
-      "created": "2026-10-08T07:01:34+00:00",
+      "created": "2026-10-08T11:19:22+00:00",
       "format": "krasikov-lagarias-LNT-certificate/2",
       "k": 18,
       "lambda": "1.87023",
       "lambda_P": 187023,
       "lambda_Q": 100000,
       "log2_lambda": 0.9032157029765715,
-      "min_relative_slack": 2.7009424649339853e-05,
+      "min_relative_slack": 2.6911211240357746e-05,
       "q": 19186238,
       "reference": "I. Krasikov, J. C. Lagarias, Bounds for the 3x+1 problem using difference inequalities, Acta Arith. 109 (2003) 237-258, arXiv:math/0205002, Thm 2.2",
       "software": {
         "mlx": "0.32.3",
         "mpmath": "1.4.1",
         "numpy": "2.5.3",
-        "python": "3.14.7"
+        "python": "3.14.3"
       },
       "verified_with": [
-        "numpy"
+        "numpy",
+        "mlx"
       ]
     },
     "our_certificate": "certs/k18_1.87023"
@@ -78,8 +79,8 @@
     "count": 129140163,
     "encoding": "unsigned-32-bit-little-endian",
     "file": "weights.u32le",
-    "maximum": 1922146621,
+    "maximum": 1922146136,
     "minimum": 1048576,
-    "sha256": "2ae328a9ff8eb8f393eb2d376030ef8fcb0546ff6f38123aba9ab2d0d2446e5c"
+    "sha256": "2e3e0f3d84b72fb79f9b1eb266354be61cca2947b36b74eacd19d1cb223916da"
   }
 }

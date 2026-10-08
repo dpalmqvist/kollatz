@@ -7,7 +7,7 @@
   "failed_rows": 0,
   "first_failure": null,
   "manifest_file": "manifest.json",
-  "minimum_margin": 13340893311,
+  "minimum_margin": 13416993674,
   "parameters": {
     "gamma_den": 10000,
     "gamma_num": 9093,
@@ -19,7 +19,7 @@
   "verdict": "PASS_EXACT_FINITE_ROWS",
   "verifier": "independent-python-stdlib-v1",
   "verifier_script_sha256": "e2b5ed37497cd5c43a6d211fc97a12e854eb8abf9768f4dc1dd2c7a335483d12",
-  "weights_sha256": "bac8f1f74e750697eb01c4d7b095f7f4775cb163a4962b0ebaa4450092d73ed8",
+  "weights_sha256": "65285189be1bcdef3c3962ca230c3c8695647fdabcd9f26e87cb4eeb3a1246ac",
   "worst_index": 329267158,
   "worst_residue": 987801476
 }

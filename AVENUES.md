@@ -2,7 +2,9 @@
 
 Living document. Each entry: the question, why it matters, what exists in this repository, how to pick it up,
 and an honest estimate of the payoff. Dates are when the entry was last touched. See `CLAUDE.md` for the
-technical state of the code and `RESULTS.md` for the certified results.
+technical state of the code and `RESULTS.md` for the certified results. A referenced literature survey of
+everything adjacent (cycle bounds, predecessor density, the long shots, formal verification) is in
+`reports/Collatz adjacent work and references.md` (2026-10-08, notes in `research_notes/`).
 
 ## Status board
 
@@ -15,7 +17,16 @@ technical state of the code and `RESULTS.md` for the certified results.
 | 5 | Formalise k = 20, 21 in Lean | record becomes formal | needs 30 / 90 GiB machine or a collaborator |
 | 6 | Wirsching's positive-density program | numerical test of an open conjecture | not started |
 | 7 | Divergent orbits | new theorem, no known tool | not started, no concrete idea |
-| — | Scaling k further | +0.005 in γ per step | stopped deliberately at k = 21 |
+| 8 | 5x+1 as a calibration case for avenue 1 | tests our extrapolation where the answer is known | running: k ≤ 13 done (`kl5.py`, `kl5_mlx.py`), see §8 |
+| 9 | Dual certificates: λ_k is optimal at level k | exact λ_k, confirms K–L's optimality belief | DONE for k ≤ 19 (2026-10-08): `certify_fast.py --upper`, brackets in RESULTS.md |
+| 10 | Explicit constants in the predecessor bound | tables comparable with real counts | proposed 2026-10-08 |
+| 11 | 3x+d cycle census at scale | tests Belaga–Mignotte conjectures | proposed 2026-10-08 |
+| 12 | Terras's coefficient stopping time conjecture | compute upgrade | largely pre-empted: Rozier–Terracol 2026 reach 2.8·10^19 (lit. search 2026-10-08) |
+| 13 | m-cycle bounds with the 2^71 verified range | publishable increment on Hercher's m ≤ 91 | open in print; one unrefereed Lean repo claims m ≥ 102 (lit. search 2026-10-08) |
+| 14 | Matrix interpretations for the rewriting system | a success would be a proof; odds very low | proposed 2026-10-08 |
+| 15 | Applegate–Lagarias extremal trees to depth 45–50 | direct test of Conjectures C / C′ | proposed 2026-10-08 |
+| 16 | Spectrum, gap and traces of the K–L transfer matrix | mixing rate vs k; cycle footprints | proposed 2026-10-08, see §16 |
+| — | Scaling k further | +0.005 in γ per step | k = 22 running 2026-10-08 on a 64 GB M4 Pro (`kl_split.py`) |
 
 ## 1. Prove that the Krasikov–Lagarias exponent tends to 1
 
@@ -59,6 +70,12 @@ that it follows from ρ_k → 1, where ρ_k = (mean over auxiliary classes of th
   1.6–1.8e-4; fitted on k ≤ 16 both under-predict the slowing at k = 21 (errors −3.6e-4 and −5.9e-4), the offset
   model less so. Verdict as of 2026-10-08: the data lean slightly towards "the approach to 1 keeps slowing", but
   cannot distinguish a limit below 1 from a sub-geometric approach to 1. More k will not settle it; theory must.
+  **k = 22 added (2026-10-08 evening, `kl_split.py rate 22 2`):** r_22(F_2) = 0.974971, ρ at λ = 2 is 0.966628 and
+  the identity r = 1/4 + (3/4)ρ′ holds to 7 decimals at N = 10^10. Ratio of 1 − r_k: 0.9239 (k = 21: 0.9221, k = 20:
+  0.9202) — still rising by ≈ 0.0018 per level, no levelling yet. Fits on k = 5 … 22: geometric + offset (limit
+  1 − r∞ = 0.0072) and stretched exponential (limit 0) both at max residual 1.8e-4; blind from k ≤ 16 the offset model
+  misses k = 22 by −4.3e-4, the stretched by −7.5e-4, pure geometric by −1.5e-3. The renormalisation prediction of
+  §1 (ratios level off near 0.94) is not contradicted: at the current rate 0.94 would be reached around k = 31.
 - Exact identity (checked to 7 decimals, k = 8 … 13): r_k(F_2) = 1/4 + (3/4)·ρ'_k, where ρ'_k is the mixing ratio
   of the λ = 2 Perron vector itself. So "λ_k → 2" ⇔ "r_k(F_2) → 1" ⇔ "the λ = 2 eigenvector becomes insensitive
   to its top digit in the mean". The λ = 2 eigenvector is the natural object: a sufficient condition is that the
@@ -99,9 +116,15 @@ therefore likely ≈ 0.95–0.97, still below 1 as long as e∞ < 1. The structu
 the two argmins (agreement exactly 1/3 at every k). Caveat: a heuristic, not a proof; the offset-model fit of
 1 − r_k (limit 0.0071) remains numerically indistinguishable from this picture up to k = 21.
 
-**Related literature.** Applegate–Lagarias "Density bounds I" conjecture (Conjecture A) that all predecessor trees
-have leaf counts growing like (4/3)^k uniformly; a 2026 GitHub repo (neljaouh/ConjectureA) claims Lean proofs of
-"Conjecture A and the 3x+1 growth exponent conjecture" — unverified, but if true it would make λ_k → 2 plausible.
+**Related literature (corrected 2026-10-08, see `reports/Collatz adjacent work and references.md`).** In
+Applegate–Lagarias, "Density bounds for the 3x+1 problem I", Math. Comp. 64 (1995) 411–426, Conjecture A is
+*positive density* (π_a(x) ≥ c_a x); the (4/3)^k statements are Conjecture B (n_k(a) = (4/3)^{k(1+o(1))},
+Lagarias–Weiss), C (both extremal pruned-tree counts N^±(k) are (4/3)^{k(1+o(1))}) and C′ (bounded max/min ratio),
+and they note C′ fails for the random branching models. The 2026 GitHub repo neljaouh/ConjectureA (Lean, kernel-clean)
+derives Conjecture A and the Kontorovich–Lagarias growth-exponent conjecture entirely from Mazur's unreviewed ProofAtlas
+"positive lower density" theorem (6 Sep 2026); if that upstream is sound it supersedes every x^γ statement, so it is the
+one external claim worth a human expert's attention. No refereed or preprint progress on K–L §6 (λ_k → 2) exists;
+Lagarias's overview (arXiv:2111.02635) still lists π_1(x) > c(ε)x^{1−ε} as open.
 
 **How to pick up.**
 1. Measure convergence of the mass distribution μ_k(class) = c_m / Σc on 3-adic balls across k (total variation
@@ -210,8 +233,252 @@ Nothing known excludes a single divergent orbit; Tao leaves them as a logarithmi
 structural fact: a divergent orbit must have odd-step density exactly log 2 / log 3, so its parity sequence is
 Sturmian-like (critical). Do not start here without a specific idea; the territory is full of failed attempts.
 
+## 8. 5x+1 as a calibration case for avenue 1
+
+**Question.** Avenue 1 asks whether λ_k reaches the critical value 2 of the limit inequality. For 5x+1 the same
+construction has a critical value strictly below 2 (integrating the limit inequality with the 5-adic branching
+gives a different equation), almost all orbits are believed to diverge, and the predecessor-tree exponent is
+below 1 by the standard heuristic. So 5x+1 is a case where the analogue of "λ∞ = critical value?" has a
+predictable answer.
+
+**Why.** If the extrapolation models that disagree on 3x+1 (geometric with offset vs stretched exponential vs
+power law, CLAUDE.md "Blandningskvoten") can be told apart on 5x+1, where the true limit can be computed from
+the heuristic, that calibrates which model to trust on 3x+1. It also shows whether the universal boundary layer
+(β(d) = 0.665, 0.401, …) is specific to 3x+1 or a general feature of "append a digit, then minimise".
+
+**What exists.** `kl_d.py` (3x+d indexing, d coprime to 6) is the template; 5x+1 changes the class structure
+(residues mod 5^k instead of 3^k, lifts over five digits) so the index formulas must be re-derived and checked
+against a brute-force LP as in `lp_check.py`. Memory per k grows 5× per level, so k ≤ 13 or so on this machine.
+
+**How to pick up.** (1) Derive the 5x+1 difference inequalities (K–L §2 with 5 in place of 3) and the limit
+inequality, solve for the critical λ. (2) Independent LP (HiGHS) for k ≤ 6, then GPU iteration. (3) Fit the same
+models to λ_k(5) and compare with the critical value. Days.
+
+**Payoff.** Evidence for or against our extrapolation on 3x+1, where the question is otherwise undecidable from
+data (CLAUDE.md: "More k will not settle it; theory must"). Literature (2026-10-08): no explicit K–L-type exponent
+for 5x+1 exists. Kontorovich–Lagarias, "Stochastic models for the 3x+1 and 5x+1 problems", arXiv:0910.1944 (AMS 2010),
+Theorem 7.6 gives π_{a,5}(x) ≥ x^{c1} with c1 unspecified and Conjecture 7.2 predicts a limit exponent η5 ≈ 0.649
+(Volkov, SPA 116 (2006) ≈ 0.678, "some controversy"). An explicit certified bound would be new and could discriminate
+the two heuristics.
+
+**Results (2026-10-08, `kl5.py`, `kl5_mlx.py`, `kl5.json`).** Derivation in the docstring of `kl5.py`: principal
+classes a ≡ 3 (mod 5), four doublings to return (λ^-4 c_{16a}), odd preimage b = (2a−1)/5 with weight
+λ^(β−1−d) (d = 0, 1, 2, 3 doublings by a mod 25, or dropped), minimum over the 5 lifts. Checked by a generic
+residue-walking LP (HiGHS) that reproduces K–L Table 2 for p = 3 to 1e-6 and matches the 5x+1 index formulas to
+1e-8 (k ≤ 6); the Metal kernel matches the numpy map to 1e-7 (k ≤ 10). Note first: integrating the limit inequality
+gives 1 ≤ λ^-4 + (λ^β/5)(λ^-1 + … + λ^-4), equality at λ = 2 — the same mass-conservation identity as for 3x+1,
+so λ = 2 is formally critical for 5x+1 as well, while its predecessor exponent is believed to be η5 ≈ 0.65. Hence the
+finite-k loss 1 − ρ_k(5) must NOT vanish if the heuristic is right: 5x+1 is a case where "λ∞ < 2" is the expected
+truth.
+
+| k | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| γ_k(5) | 0.258 | 0.298 | 0.333 | 0.381 | 0.411 | 0.433 | 0.449 | 0.464 | 0.477 | 0.489 | 0.499 | 0.508 | 0.517 |
+| 1 − ρ_k(5) | 0.354 | 0.291 | 0.240 | 0.182 | 0.150 | 0.128 | 0.113 | 0.101 | 0.090 | 0.082 | 0.074 | 0.068 | 0.063 |
+| ratio | – | 0.82 | 0.83 | 0.76 | 0.83 | 0.86 | 0.88 | 0.89 | 0.90 | 0.90 | 0.91 | 0.915 | 0.919 |
+
+The summed inequality is tight at every k (λ_k is a function of ρ_k alone, as for 3x+1). What the data show so far:
+γ_13(5) = 0.508 is well below 2^η5 ⇒ λ ≈ 1.57, consistent; but the successive ratios of 1 − ρ_k rise
+monotonically (0.83 → 0.91), exactly the pattern seen on 3x+1 (0.91 → 0.93), i.e. the *finite-k data of 5x+1 do not
+visibly show the "1 − ρ bounded away from 0" behaviour that the η5 heuristic requires*. Either the approach to the
+limit is slow enough that k ≤ 13 cannot see it (geometric-with-offset fit on k ≥ 6: offset 0.047, r = 0.80, residual
+1e-3 — poor), or the K–L exponent for 5x+1 eventually exceeds the η5 heuristic (which would be a surprise about
+5x+1, not about the method). Either way the calibration point stands: a rising ratio of 1 − ρ_k is *not* evidence
+for ρ_k → 1. k = 14 (2026-10-08, `kl5_mlx.py`, 495 s, 10 GB): γ = 0.5166, 1 − ρ = 0.0626, ratio 0.919 — still rising at ≈ 0.004 per
+level, faster than 3x+1's ≈ 0.002. Next: k = 15 (N = 6.1e9, needs a split-buffer version of `kl5_mlx.py`, 48 GB);
+the question is whether the 5x+1 ratio crosses 0.93 (3x+1 at k = 21) or saturates.
+
+## 9. Dual certificates: λ_k is optimal at level k
+
+**Question.** We certify feasibility of L^NT_k at λ_cert. Is λ_k also the largest feasible λ at level k? K–L
+believe so (optimum with all inequalities tight). A dual (Farkas) certificate at λ slightly above λ_k would
+prove it, making λ_k an exact rational-bounded number rather than a numerical one.
+
+**What exists.** `lp_check.py` solves the LP with HiGHS for k ≤ 9 and already reports infeasibility at λ_k + 1e-4;
+HiGHS can return the dual ray. For large k the dual is the Perron vector of the adjoint operator (the summed
+inequality being tight suggests the dual is close to uniform), which the GPU power iteration can compute. The
+rigorous check is the same kind of int64 streaming check as `certify_fast.py`, applied to the dual inequality.
+
+**Done (2026-10-08).** No dual ray needed: for the monotone 1-homogeneous F, a positive C with F(C) < C strictly
+proves infeasibility (Collatz–Wielandt upper bound; proof in RESULTS.md). `certify_fast.py --upper` rounds the
+coefficients up and checks the strict reverse inequality in int64; `verify_cert.py` verifies the `-upper` format.
+Brackets [λ_cert, λ_upper] of width 2e-5 … 1e-4 for k = 2 … 19, all verified; k = 20–22 pending the GPU. The
+power-iterated vector at λ_k + 1e-5 serves directly as the upper certificate (float32 noise permitting; k = 3 needed
++2e-4). λ_k is thus a rigorously two-sided number at every level we have.
+
+**Payoff.** Closes the gap between "feasible at 1.8925" and "λ_21 = 1.89254…"; confirms K–L's optimality belief
+numerically at every k we have. Modest, but it makes the table in `RESULTS.md` two-sided.
+
+## 10. Explicit constants in the predecessor bound
+
+**Question.** Theorem 2.2 gives φ^m_k(y) ≥ Δ1 c_m λ^y with Δ1 = 1/(4 max c_m), so the certified bound is fully
+explicit, not only eventual. What does it say numerically, and how far is it from reality?
+
+**What exists.** Every certificate has C_max/C_min (6457 at k = 21), so Δ1 is known. Barina's verification and
+Roosendaal's tables give actual counts of n ≤ 2^y reaching 1.
+
+**How to pick up.** Tabulate the explicit lower bound for π_1(x) at x = 2^40 … 2^70 from each certificate,
+compare with actual counts, and note at which x the bound first exceeds trivial bounds. Half a day. Check the
+exact statement of Theorem 2.2 (the range of y for which the inequality holds) before claiming anything.
+
+**Payoff.** A concrete, checkable statement for `RESULTS.md`; shows how the growth of C_max/C_min with k eats
+into the constant while the exponent improves.
+
+## 11. 3x+d cycle census at scale
+
+**Question.** Lagarias, "The set of rational cycles for the 3x+1 problem", Acta Arith. 56 (1990) 33–53, relates
+primitive cycles of 3x+d to rational cycles and conjectures every d ≡ ±1 (mod 6) has one. Belaga–Mignotte,
+Experimental Math. 7 (1998) 145–151, bound the number of cycles with ≤ k odd elements by d·k^c; their Strasbourg
+preprint 2000-18 (hal-00129656, 57 pp.) lists primitive cycles for all 6667 values 1 ≤ d ≤ 19 999, with a 400-page
+table (hal-00129727, 2006). The only independent recount is Morley 2013 (OEIS A226607, A226613, A226662, A226663,
+A226670): 42 757 primitive cycles for d < 20 000 (Belaga–Mignotte's 42 765 is 8 too high), partial sweep to
+d < 158 195. Nothing beyond d < 20 000 since 2013. A GPU census to d ~ 10^6 with minimal elements up to ~10^9 is a
+new dataset; Cox, JIS 15 (2012) 12.5.2 (Poisson model for cycle counts) is the conjecture to test.
+
+**What exists.** `cycles_d.py` (brute force, d ≤ 29, minima ≤ 3·10^5) and the generalised Eliahou inequality it
+checks. The 3x+13 example (seven 8-cycles with one (n, k)) shows what structure to count.
+
+**How to pick up.** Port the cycle search to the GPU (each d independent, minima enumerated by residue class),
+store (d, n, k, min, max) per cycle, then study #cycles(d), the distribution of (n, k), and whether the
+Eliahou bounds are attained. Days to a week.
+
+**Payoff.** Publishable data; a direct test of old conjectures; a test bed for avenue 4 (any cycle method must
+reproduce this list).
+
+## 12. Terras's coefficient stopping time conjecture (1976)
+
+**Question.** Terras, Acta Arith. 30 (1976) 241–252, conjectured that the coefficient stopping time κ(n) equals
+the stopping time σ(n) for every n ≥ 2 (implies no nontrivial cycles) and proved it for κ(n) ≤ 2593; Garner, Proc.
+AMS 82 (1981) 19–22, for κ(n) < 105 000. **Status (lit. search 2026-10-08): largely pre-empted.** Rozier–Terracol,
+"Paradoxical behavior in Collatz sequences", Discrete Math. 349 (2026) 115167 (arXiv:2502.00948), find exactly 593
+paradoxical sequences with start ≤ 4614 (exhaustive to 10^9) and prove t(n) = τ(n) for all 2 ≤ n ≤ 2.8·10^19
+(Corollary 5.4) from the Oliveira e Silva / Roosendaal record tables. A new computation must start beyond that,
+with Barina's 2^71 as the natural input; the gain is ~2 orders of magnitude, not 14.
+
+**Why now.** A Barina-style sieve adapted to this statement could push the verified range from 2.8·10^19 towards
+2^71 on one GPU, since it is a per-n check with early exit.
+
+**How to pick up.** (1) Literature check: last verified bound, and whether any later work subsumes it.
+(2) Formulate the per-n test; (3) GPU sieve over residue classes mod 2^j with Barina's pruning. Days.
+
+**Payoff.** No new theorem about Collatz, but a forgotten statement with an obvious compute upgrade; the kind of
+result that gets cited in surveys.
+
+## 13. m-cycle bounds with the 2^71 verified range
+
+**Question.** Simons–de Weger, Acta Arith. 117 (2005) 51–70, exclude m-cycles (m = number of local minima) for
+m ≤ 68 (X0 ≈ 3.4·10^17); their web version v1.44 (2010) reaches m ≤ 75 with X0 = 5·2^60. Hercher, JIS 26 (2023)
+23.3.5 (arXiv:2201.00406), proves m ≥ 92 with **X0 = 695·2^60 ≈ 2^69.4** (not 2^68); 3·2^69 is only the hypothesis
+of his Corollary 29 (K > 1.375·10^11), which Barina's 2^71 (J. Supercomput. 81:810, 2025; milestone 2025-01-15)
+makes unconditional: K ≥ 137 528 045 312, T-period ≥ 217 976 794 617. A corrigendum (14 June 2026) repairs
+Theorem 21; the result stands. Nobody has published a re-run of Hercher's iteration with X0 = 2^71; the only claim
+(m ≥ 102) is an unrefereed GitHub Lean repository (justinalick, 2026) assuming 2^71 and Rhin's bound. The
+transcendence input is still Rhin 1987; Gouillon 2006 is unapplied and would move m only logarithmically.
+Barina's project page shows 2075·2^60 ≈ 2^71.02 verified (2026-10-08), no 2^72 announcement; Angeltveit
+(arXiv:2602.10466, Feb 2026) proposes a faster algorithm but reports no run.
+
+**What exists.** Hercher's paper (scratchpad, needs re-downloading), `cycles.py` for the admissible (n, k) pairs,
+`cycle_harmonic.py` / `cycle_lp.py` for our own refinements. The method is continued fractions plus bounded
+enumeration, modest compute.
+
+**How to pick up.** Re-run Simons–de Weger / Hercher with X0 = 2^71; check whether anyone has already done so
+since January 2025. Days.
+
+**Payoff.** A clean, publishable increment if it is still open.
+
+## 14. Matrix interpretations for the rewriting system
+
+**Question.** Yolcu, Aaronson, Heule, "An automated approach to the Collatz conjecture", CADE-28, LNCS 12699 (2021);
+J. Automated Reasoning 67, art. 15 (2023); arXiv:2105.14697. An 11-rule string rewriting system T is terminating iff
+Collatz holds (Theorem 3.17). They prove termination automatically (natural/arctic/tropical matrix interpretations,
+CaDiCaL) for all 11 single-rule-deleted subsystems, all residue classes mod 4 and classes 2, 3, 4, 6 mod 8; the
+classes 1, 5, 7 mod 8 carry $500 prizes each and remain open; Zantema's unary system admits no natural-matrix proof
+even with dependency pairs. Code: github.com/emreyolcu/rewriting-collatz. No termination-tool follow-up exists
+(2026-10-08). Could larger SAT or LP searches, or interpretations of a different shape (higher dimension, different
+semirings), settle one of the three open residue classes?
+
+**Why.** It is the only route on this list where success is a proof rather than a bound, and the only
+reformulation where our GPU/LP competence transfers directly (CLAUDE.md "Omvärld").
+
+**How to pick up.** Reproduce their weakened-variant results from their repository, then scale the search
+(dimension, coefficient range, solver time) and record where it fails. The expected outcome is a negative
+result with a map of what was tried. Weeks.
+
+**Payoff.** Very low odds; a negative result is still informative about where the obstruction sits.
+
+## 15. Applegate–Lagarias extremal trees to depth 45–50
+
+**Question.** Applegate–Lagarias, Math. Comp. 64 (1995) 411–426, Conjectures C and C′ (see avenue 1 for the exact
+statements; Conjecture A is positive density): the extremal pruned-tree leaf counts N^±(k) are (4/3)^{k(1+o(1))},
+and C′ asks for a bounded ratio N^+/N^−, which is false for the random branching models. Theorem 1.1 gives
+(1.302053)^k ≤ n_k(a) ≤ (1.358386)^k; extremal counts were computed for all k ≤ 30 and never extended. Exact
+extremal statistics to depth 45–50 are feasible now and bear directly on whether λ_k → 2.
+
+**What exists.** `tree_growth.py` (exact BFS per residue class, k = 9, trees ≤ 9 M nodes) and the observation
+that every class grows with exponent ≈ 1 at that depth. A 2026 repository (neljaouh/ConjectureA) claims Lean
+proofs of Conjecture A, unverified.
+
+**How to pick up.** Extend the BFS to a GPU DFS over the pruned tree (nodes ≈ (4/3)^k, so depth 50 is ~10^6
+nodes per root but all roots must be covered via residue classes mod 3^{k+1}), compute N^±(k) per depth, and
+test C′ (bounded ratio) against the branching-model prediction. Days.
+
+**Payoff.** Direct evidence on Conjectures C / C′; if the extremal ratio stays bounded, λ_k → 2 is the expected
+consequence and avenue 1 gains support from a second direction.
+
+## 16. Spectrum, spectral gap and traces of the K–L transfer matrix
+
+**Question.** The LP only uses the leading eigenvalue of the weighted backward transfer matrix M_λ on residues mod
+3^k (at the Perron vector the minimum in each row is attained by a fixed lift, so F is linear there; `jacobian.py`
+builds that sparse matrix). What do the rest of the spectrum and the traces say?
+
+**What exists.** `jacobian.py`, k ≤ 11: second eigenvalue modulus 0.754, 0.838, 0.824, 0.857, 0.865, 0.861, 0.865
+(k = 5 … 11), complex, on top of a dense cluster; it matches the per-digit sensitivity decay (0.83 → 0.875 for
+k = 12 … 19) and is rising with k. The power iteration at k = 22 needed several hundred iterations from a warm
+start (effective contraction ≈ 0.97), so the gap keeps closing. Literature: nothing on this matrix; the nearest
+objects are Tao's equidistribution of Syracuse orbits mod 3^n (a forward transfer-operator spectral bound via
+characters), Kontorovich–Sinai's 3-adic mixing (2002), and Berg–Meinardus's eigenfunction formulation (1994).
+
+**Why.** (i) The spectral gap 1 − |λ₂|(k) is the quantitative form of "how fast does top-digit sensitivity decay",
+i.e. avenue 1's open item (ii); its scaling in k (does it close like a power of k, or geometrically, or to a
+positive limit?) is a cleaner observable than ρ_k. If the limit operator on Z₃ has continuous spectrum, the gap
+→ 0 and the rate says how. (ii) Traces tr(M^j) are weighted sums over closed walks of length j in the residue
+graph; an integer cycle of length j is a closed walk mod 3^k for every k with a specific weight, so the small-j
+traces as functions of k are a cycle statistic that joins the density track to the cycle track (Artin–Mazur zeta
+function 1/det(1 − zM)). (iii) The bulk of the spectrum shows whether M behaves like a random sparse nonnegative
+matrix (eigenvalues filling a disc) or has arithmetic structure; outliers above the bulk and their k-scaling are
+the "modes" of the renormalisation picture (avenue 1).
+
+**Dynamics reading.** M_λ^j e_a is the weighted count of predecessors j (double-)steps below a; M^j → r^j v wᵀ with
+corrections decaying like (|λ₂|/r)^j, which is why counts become c_m λ^y with a transient that sets the constant
+x0 but not the exponent. Σ_j M_λ^j converges iff r(M_λ) < 1, so λ_k is the zero of the pressure function
+P(λ) = log r(M_λ) — Bowen's equation for the growth exponent of the weighted tree. The forward map on single
+integers has no interesting spectrum (M e_n = e_{T n}, a path); all information is in the aggregated backward
+operator.
+
+**Infinite-operator reading (2026-10-08).** Functions on Z/3^k are the locally constant functions of level k on
+Z₃, an invariant subspace of the (linearised, min-free) backward operator, so the finite matrices are exact
+restrictions: eigenvalues that stabilise in k are eigenvalues of the infinite operator, those that keep moving are
+the finite-k shadow of its essential spectrum. Ruelle quasi-compactness needs backward contraction; here the odd
+branch m ↦ (2m−1)/3 expands (mixes) but the doubling branch m ↦ 4m is an isometry of Z₃ (mixes nothing) with weight
+1/4 at λ = 2, so on Hölder-α functions the essential radius should be ≈ 1/4 + (3/4)·3^(−α) → 1 as α → 0; with the
+measured Hölder exponents 0.04–0.09 of the limit vector the gap is essentially zero — the spectral form of "the ×4
+term recirculates top-digit information without loss" (§1). Isolated outer eigenvalues could also be obtained from
+the dynamical determinant det(1 − zM) via the traces (Jenkinson–Pollicott style), if any exist outside the bulk.
+
+**How to pick up.** (1) Dense spectrum for k ≤ 9 (N ≤ 6561), ARPACK top-50 eigenvalues for k ≤ 15 (sparse, ≤ 2
+entries per row), at λ = λ_k and at λ = 2; plot |λ_i| vs k, fit the gap. (2) tr(M^j) for j ≤ 300 by sparse
+products at k ≤ 19 (vectors in RAM); compare with the closed-walk count of the unweighted residue graph; look for
+the footprint of the trivial cycle and test whether the weights distinguish "integer-realisable" closed walks.
+(3) Relate the second eigenvector to the digit profile of `holder.py`. Hours, CPU only.
+
+**Payoff.** A spectral-gap scaling law in k would be the most concrete input to a proof of λ_k → 2 we could offer;
+the trace statistic is a new (if long-shot) bridge to cycles.
+
 ## Not avenues
 
 - Scaling k: +0.005 in γ per level for 3× memory. Stopped at 21; 22 needs 64 GB, 23 needs 192 GB.
 - Compressing c or refining sparsely: both tested and rejected (CLAUDE.md "Gränser", `adaptive.py`).
 - Proving the conjecture through any of the above: all are density or cycle statements; none touches divergent orbits.
+- Chamberland's real extension, the Berg–Meinardus functional equations and the Bernstein–Lagarias 2-adic
+  conjugacy: compute produces data on objects no easier than Collatz itself (2026-10-08).
+- Independently re-verifying Barina's 2^71 range on one machine: uncompetitive by orders of magnitude.

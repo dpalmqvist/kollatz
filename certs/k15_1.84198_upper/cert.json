@@ -1,0 +1,35 @@
+{
+ "format": "krasikov-lagarias-LNT-certificate/2-upper",
+ "reference": "I. Krasikov, J. C. Lagarias, Bounds for the 3x+1 problem using difference inequalities, Acta Arith. 109 (2003) 237-258, arXiv:math/0205002, Thm 2.2",
+ "claim": "L^NT_15(lambda) is INFEASIBLE for lambda = 1.84198: F(C) < C strictly for the positive vector C with coefficients rounded up, so lambda_k < lambda (no feasible point exists)",
+ "k": 15,
+ "N": 4782969,
+ "lambda": "1.84198",
+ "lambda_P": 92099,
+ "lambda_Q": 50000,
+ "log2_lambda": 0.8812573969029384,
+ "D": 67108864,
+ "q": 19779262,
+ "L2": 52080687,
+ "L1": 95931584,
+ "b": 24,
+ "check": "UPPER (infeasibility) certificate: same rows as below but with q = ceil(D lambda^-2), L2 >= D lambda^(alpha-2), L1 >= D lambda^(alpha-1) (rigorous upper bounds) and the STRICT reverse inequality q*C[(4i+2) mod N] + L*cbar(r) < C[i]*D for every i. The integer vector is C[i] = c[i] * 2^b, c read from c_f32.npy (float32); every C[i] must be an exact integer >= 1. Index i in [0, N) is the residue m = 3i+2 mod 3^k, n3 = N/3. For every i, with j, t = divmod(i, 3), cbar(r) = min(C[r], C[r+n3], C[r+2n3]): C[i]*D <= q*C[(4i+2) mod N] + L*cbar(r), where L = L2, r = 4j mod n3 if t = 0; L = 0 if t = 1; L = L1, r = (2j+1) mod n3 if t = 2. Requires q/D <= lambda^-2, L2/D <= lambda^(alpha-2), L1/D <= lambda^(alpha-1), alpha = log2(3).",
+ "c_file": "c_f32.npy",
+ "c_dtype": "<f4",
+ "c_sha256_data": "285c3be16f79b9c95925bbc76901f6a75859e05d7980e1d3883dd6677cbba231",
+ "c_file_sha256": "3786ae5b52d445e4d05bf9383f5d5413bd2fa1d258635dd30b43cb27bc08abed",
+ "C_min": 16777153,
+ "C_max": 8663232512,
+ "min_relative_slack": 3.06450154069356e-06,
+ "verified_with": [
+  "numpy",
+  "mlx"
+ ],
+ "created": "2026-10-08T13:07:11+00:00",
+ "software": {
+  "python": "3.14.3",
+  "numpy": "2.5.3",
+  "mpmath": "1.4.1",
+  "mlx": "0.32.3"
+ }
+}

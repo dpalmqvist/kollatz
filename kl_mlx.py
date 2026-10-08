@@ -276,14 +276,16 @@ def params(lam):
 
 def ratio_bounds(Fc, c, chunk=1 << 26):
     """min and max of Fc/c, chunked so the temporary is at most `chunk` floats."""
-    N = c.size
+    # a vector with N > 2^31 is stored as (3, N/3) (vec_shape): chunk within each row
+    rows = [(Fc, c)] if Fc.ndim == 1 else [(Fc[j], c[j]) for j in range(Fc.shape[0])]
     los, his = [], []
-    for s in range(0, N, chunk):
-        r = Fc[s:s + chunk] / c[s:s + chunk]
-        lo, hi = r.min(), r.max()
-        mx.eval(lo, hi)
-        los.append(lo.item())
-        his.append(hi.item())
+    for Fr, cr in rows:
+        for s in range(0, Fr.size, chunk):
+            r = Fr[s:s + chunk] / cr[s:s + chunk]
+            lo, hi = r.min(), r.max()
+            mx.eval(lo, hi)
+            los.append(lo.item())
+            his.append(hi.item())
     return min(los), max(his)
 
 
@@ -304,7 +306,7 @@ def growth(lam, F, N, iters=200000, tol=2e-6, c0=None, check=100, patience=20):
     if isinstance(c0, list):
         c0 = c0.pop()
     if c0 is None:
-        c = mx.ones((N,), dtype=mx.float32)
+        c = mx.ones(vec_shape(N), dtype=mx.float32)
     else:
         c = c0 if isinstance(c0, mx.array) else mx.array(c0, dtype=mx.float32)
     del c0
@@ -427,7 +429,7 @@ if __name__ == "__main__":
         if len(sys.argv) > 3:
             src = sys.argv[3]
             n0 = np.load(src, mmap_mode="r").size
-            if 3 * n0 == 3 ** (k - 1) and needs_q8(3 ** (k - 1)):
+            if 3 * n0 == 3 ** (k - 1) and (needs_q8(3 ** (k - 1)) or 3 ** (k - 1) > INT32_MAX):   # mx.tile needs int32 shapes
                 lifted = f"c_k{k}_lift_tmp.npy"
                 lift_to_file(src, lifted)
                 src = lifted

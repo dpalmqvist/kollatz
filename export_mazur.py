@@ -58,7 +58,12 @@ if (d / "C.npy").exists():
 else:                                   # format /2: float32 c with min c in [1, 2) after normalisation
     c = np.load(d / "c_f32.npy", mmap_mode="r").reshape(-1)
     cmin = float(np.min(c))
-    W = np.floor(np.asarray(c, dtype=np.float64) / cmin * (1 << args.weight_bits)).astype(np.int64)
+    cmax = float(np.max(c))
+    assert np.floor(cmax / cmin * (1 << args.weight_bits)) < 2 ** 32, "weights would overflow u32"
+    W = np.empty(N, dtype=np.uint32)                      # chunked: ~4 bytes/variable instead of 16
+    for s0 in range(0, N, 1 << 24):
+        W[s0:s0 + (1 << 24)] = np.floor(np.asarray(c[s0:s0 + (1 << 24)], dtype=np.float64)
+                                        / cmin * (1 << args.weight_bits)).astype(np.uint32)
 wmin, wmax = int(W.min()), int(W.max())
 print(f"weights: min={wmin} (2^{args.weight_bits}={1 << args.weight_bits}) max={wmax} < 2^32: {wmax < 2 ** 32}")
 assert wmin == 1 << args.weight_bits and 0 < wmin and wmax < 2 ** 32
@@ -66,23 +71,25 @@ assert wmin == 1 << args.weight_bits and 0 < wmin and wmax < 2 ** 32
 # quick numpy row check, chunked (the independent checks are Mazur's verifiers and Lean)
 n3 = N // 3
 lift = np.minimum(np.minimum(W[:n3], W[n3:2 * n3]), W[2 * n3:])
+W64 = lambda idx: W[idx].astype(np.int64)                  # products need int64 (W may be uint32)
 CH = 1 << 24
 min_margin, worst, failed = None, -1, 0
 min_rel = np.inf
 for s0 in range(0, N, CH):
     i = np.arange(s0, min(s0 + CH, N), dtype=np.int64)
-    rhs = coef.lambda_neg2_lower * W[(4 * i + 2) % N]
+    rhs = coef.lambda_neg2_lower * W64((4 * i + 2) % N)
     j = i // 3
     t = i % 3
     m0, m2 = t == 0, t == 2
-    rhs[m0] += coef.lambda_alpha_minus2_lower * lift[(4 * j[m0]) % n3]
-    rhs[m2] += coef.lambda_alpha_minus1_lower * lift[(2 * j[m2] + 1) % n3]
-    margin = rhs - coef.scale * W[i]
+    rhs[m0] += coef.lambda_alpha_minus2_lower * lift[(4 * j[m0]) % n3].astype(np.int64)
+    rhs[m2] += coef.lambda_alpha_minus1_lower * lift[(2 * j[m2] + 1) % n3].astype(np.int64)
+    lhs = coef.scale * W64(i)
+    margin = rhs - lhs
     failed += int((margin < 0).sum())
     a = int(margin.argmin())
     if min_margin is None or int(margin[a]) < min_margin:
         min_margin, worst = int(margin[a]), int(i[a])
-    min_rel = min(min_rel, float((margin / (coef.scale * W[i])).min()))
+    min_rel = min(min_rel, float((margin / lhs).min()))
 print(f"numpy row check: failed={failed} min_margin={min_margin} min relative slack={min_rel:.3e}")
 assert failed == 0
 
