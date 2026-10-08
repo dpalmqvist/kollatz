@@ -1,7 +1,11 @@
+import Erdos1135.KrasikovLagarias.Generated.K20Gamma9150
+-- ^ first on purpose: the 9.3 GB olean must be mapped before Mathlib-heavy modules (address-range collision)
 import Erdos1135.KrasikovLagarias.AdaptiveCriticalChoice
-import Erdos1135.KrasikovLagarias.Generated.K20AdaptiveForcedPotential
+import Erdos1135.KrasikovLagarias.Generated.K20Potential10
 import Erdos1135.KrasikovLagarias.K20CoefficientBridge
 import Erdos1135.KrasikovLagarias.K20SourceBridge
+
+set_option maxRecDepth 100000  -- the 139-chunk certificate array exceeds the default simp recursion depth
 
 /-!
 # The level-20 adaptive retarded system

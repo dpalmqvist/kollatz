@@ -36,3 +36,23 @@ k = 20 (gamma = 9150/10000, λ = 1.8855691 < λ_20 = 1.8857083):
    the coefficients 268435456 / 75501396 / 206310311 / 389012342 from `kl_predecessor_common.py`.
 6. `cd $M && lake build Erdos1135.KrasikovLagarias.Generated.K20AdaptiveForcedPotential`, then
    `…Generated.K20Gamma9150`, then `lake build CollatzPredecessor0915 AxiomAudit0915` (≈ 30 GiB per native_decide).
+
+### Large oleans: two rules learned at k = 20 (2026-10-09)
+
+Lean mmaps every `.olean` at a base address derived from a hash of the module name
+(`name.hash % 0x7f0000000000`, 64 KB aligned; `lean_read_module_data_parts` in `src/library/module.cpp`). If that
+address range is already occupied, Lean falls back to reading the whole file with one `read()` call, which on macOS
+fails above 2 GiB with `failed to read file '….olean'`. Consequences for the generated certificate modules
+(k = 20: weights olean 9.3 GB, potential olean 2.3 GB):
+
+1. **Import the big module first.** `import Erdos1135.KrasikovLagarias.Generated.K20Gamma9150` is the first line of
+   every module that depends on it (K20CoefficientBridge, K20CriticalChoice, K20PredecessorBridge,
+   K20PredecessorAllTargets, CollatzPredecessor0915, AxiomAudit0915), so that its 9.3 GB range is mapped before
+   anything else can land in it. Importing it after `EliminationSourceSystem` fails deterministically.
+2. **Check the name's address range before building.** The original `Generated.K20AdaptiveForcedPotential` hashed to
+   a range containing `Mathlib.Algebra.Field.Defs`, so it could never be mapped once Mathlib was loaded. The module
+   was renamed `Generated.K20Potential10` (base 0x233c07560000, 51 GB clear on both sides). Predict a candidate's base
+   in Lean with `(n.hash % 0x7f0000000000) &&& ~~~0xffff` and compare against the base addresses at byte offset 0x50
+   of all existing oleans (`.lake/build/lib/lean/**/*.olean` and the packages').
+3. The four `simp` proofs in K20CoefficientBridge need `set_option maxRecDepth 100000` because the 139-chunk array
+   exceeds the default recursion depth (47 chunks at k = 19 did not).

@@ -1,3 +1,6 @@
+-- Module named K20Potential10 (not K20AdaptiveForcedPotential): the olean base address is a hash of the module name,
+-- and the original name's 2.2 GB range contained Mathlib.Algebra.Field.Defs, so the olean could never be mmapped once
+-- Mathlib was loaded and Lean's fallback read() fails above 2 GiB. Base of this name: 0x233c07560000 (free).
 import Erdos1135.KrasikovLagarias.AdaptiveForcedPotentialCertificate
 import Erdos1135.KrasikovLagarias.ChunkedEncoding
 import Erdos1135.KrasikovLagarias.LoopCheck

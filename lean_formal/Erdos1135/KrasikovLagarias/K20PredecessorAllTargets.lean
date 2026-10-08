@@ -1,6 +1,10 @@
+import Erdos1135.KrasikovLagarias.Generated.K20Gamma9150
+-- ^ first on purpose: the 9.3 GB olean must be mapped before Mathlib-heavy modules (address-range collision)
 import Erdos1135.KrasikovLagarias.K20PredecessorBridge
 import Erdos1135.KrasikovLagarias.K20PrincipalIndex
 import Erdos1135.KrasikovLagarias.PeriodicTargetReduction
+
+set_option maxRecDepth 100000  -- the 139-chunk certificate array exceeds the default simp recursion depth
 
 /-!
 # The level-20 predecessor bound for every eligible target
