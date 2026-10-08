@@ -25,7 +25,7 @@ everything adjacent (cycle bounds, predecessor density, the long shots, formal v
 | 13 | m-cycle bounds with the 2^71 verified range | publishable increment on Hercher's m ≤ 91 | open in print; one unrefereed Lean repo claims m ≥ 102 (lit. search 2026-10-08) |
 | 14 | Matrix interpretations for the rewriting system | a success would be a proof; odds very low | proposed 2026-10-08 |
 | 15 | Applegate–Lagarias extremal trees to depth 45–50 | direct test of Conjectures C / C′ | proposed 2026-10-08 |
-| 16 | Spectrum, gap and traces of the K–L transfer matrix | mixing rate vs k; cycle footprints | proposed 2026-10-08, see §16 |
+| 16 | Spectrum, gap and traces of the K–L transfer matrix | mixing rate vs k; cycle footprints | first results 2026-10-08 (`spectrum.py`, k ≤ 15): gap does NOT close, see §16 |
 | — | Scaling k further | +0.005 in γ per step | k = 22 running 2026-10-08 on a 64 GB M4 Pro (`kl_split.py`) |
 
 ## 1. Prove that the Krasikov–Lagarias exponent tends to 1
@@ -61,7 +61,9 @@ that it follows from ρ_k → 1, where ρ_k = (mean over auxiliary classes of th
   the second eigenvalue modulus of that sparse matrix is 0.754, 0.838, 0.824, 0.857, 0.865, 0.861, 0.865 for
   k = 5 … 11, complex (rotational), with a dense cluster just below. This matches the per-digit decay factor
   (0.83 at k = 12 rising to 0.875 at k = 19), not the ~0.92 per-level rate, suggesting: digit influence decays at
-  the mixing rate of the linearised dynamics. Spectral radius of F at λ = 2: 0.861, 0.880, 0.895, 0.910, 0.919,
+  the mixing rate of the linearised dynamics. **Revised 2026-10-08 (§16):** the second eigenvalue stays at ≈ 0.865 for
+  k = 8 … 14 while the per-digit factor drifts upward, and v₂ is delocalised across digits; the linear mixing rate is
+  therefore not what sets the k-dependence of 1 − ρ_k — the argmin/alignment mechanism below is. Spectral radius of F at λ = 2: 0.861, 0.880, 0.895, 0.910, 0.919,
   0.927, 0.933 (k = 5 … 11); 1 − r(F_2) shrinks by ~0.86–0.91 per level. Since lifting preserves feasibility,
   r_k(F_2) is monotone with limit r∞ ≤ 1, and λ_k → 2 ⇔ r∞ = 1. This is a cleaner sequence to extrapolate than
   λ_k; values for k = 12 … 21: 0.93984, 0.94505, 0.94998, 0.95450, 0.95852, 0.96209, 0.96524, 0.96807, 0.97062,
@@ -464,6 +466,46 @@ branch m ↦ (2m−1)/3 expands (mixes) but the doubling branch m ↦ 4m is an i
 measured Hölder exponents 0.04–0.09 of the limit vector the gap is essentially zero — the spectral form of "the ×4
 term recirculates top-digit information without loss" (§1). Isolated outer eigenvalues could also be obtained from
 the dynamical determinant det(1 − zM) via the traces (Jenkinson–Pollicott style), if any exist outside the bulk.
+
+**Results (2026-10-08 evening, `spectrum.py`, `spectrum.json`; dense spectra k ≤ 9, ARPACK top-40 for k = 10 … 15,
+at λ = λ_k and λ = 2).**
+
+| k | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| \|λ₂\| at λ_k | 0.754 | 0.838 | 0.824 | 0.857 | 0.865 | 0.861 | 0.865 | 0.861 | 0.865 | 0.867 | 0.865 |
+| # eigenvalues within 1 % of \|λ₂\| (of top 40) | 4 | 1 | 2 | 4 | 4 | 6 | 6 | 20 | 27 | 25 | 39 |
+| \|λ₂\|/λ₁ at λ = 2 | 0.903 | 0.849 | 0.835 | 0.884 | 0.884 | 0.887 | 0.880 | 0.892 | 0.880 | 0.874 | 0.876 |
+| top-digit energy of v₂ (λ_k) | 0.64 | 0.82 | 0.69 | 0.65 | 0.71 | 0.67 | 0.72 | 0.62 | 0.57 | 0.71 | 0.67 |
+| top-digit energy of Perron vector | 0.017 | 0.014 | 0.011 | 0.010 | 0.008 | 0.007 | 0.006 | 0.006 | 0.005 | 0.004 | 0.004 |
+
+1. **The spectral gap of the linearisation does not close.** \|λ₂\| at λ_k is flat at 0.86–0.87 from k = 8 to 14
+   (and 0.87–0.89 relative to λ₁ at λ = 2). What changes with k is the *density* at that radius: the number of
+   eigenvalues within 1 % of \|λ₂\| grows from 4 (k = 9) to 25–27 (k = 13, 14), i.e. a ring at radius ≈ 0.865 is
+   filling in — the finite-k shadow of the essential spectrum's edge, exactly the "discrete levels merging into a
+   band" picture, but with the band edge fixed, not drifting towards 1.
+2. **The slow modes are delocalised, not top-digit modes.** The digit-energy profile of v₂ at k = 14 is 0.667 at every
+   digit position (a vector with no digit structure has exactly 1 − 1/3 = 0.667) and 0.71 at the top digit; the
+   Perron vector's profile decays geometrically from 0.38 to 0.004. λ₂ is complex with an argument that jumps
+   between levels (rotational modes). So the second eigenvector is "white noise" across the 3-adic digits with a mild
+   top-digit excess — not the top-digit perturbation that §1 imagined relaxing at rate \|λ₂\|.
+3. **Consequence for avenue 1.** The per-digit sensitivity factor of the Perron vector (0.83 → 0.875 for k = 12 … 19)
+   is numerically close to \|λ₂\| ≈ 0.865 but *drifts* while \|λ₂\| does not; and the power iteration's slowdown
+   (effective contraction ≈ 0.97 at k = 22, vs 0.865 here) cannot come from the linear spectrum. Both must come from
+   the nonlinearity (argmin switching of the min over lifts as the iterate moves) and/or non-normal transients. This
+   favours the renormalisation / alignment-efficiency mechanism of §1 (the fraction e_k of ×4-term variation that
+   survives the min) over a linear mixing-rate explanation: the question λ_k → 2 is a question about the min, not
+   about the spectrum of the linearisation at the fixed point.
+4. **Bulk.** For k ≤ 9 the radii containing 50 / 90 / 99 % of the eigenvalues are ≈ 0.37–0.41 / 0.64–0.71 / 0.80,
+   slowly shrinking in k, while the 40th eigenvalue rises (0.41 → 0.82): the spectrum is a filled disc of radius
+   ≈ 0.8 with a thin outer ring at 0.865 and the isolated Perron root at 1.
+5. **Traces.** tr(J) = 0 at every k (the trivial cycle's self-loop at residue 2 is never the argmin lift, so the min
+   masks it); the unweighted closed-walk counts (tr B^j = 0, 2, 3, 10, … at k = 5) are dominated by accidental
+   congruences that disappear at larger k (tr B² = 2 for k ≤ 8, 0 at k = 9), and the weighted traces stay O(1)
+   (Σ λ_i^j → 1). No usable cycle statistic at these k; an integer cycle would have to show as a closed walk present
+   at *every* k with the right weight, and the only one there is (the trivial cycle) is removed by the min. Dropped
+   as a cycle tool unless done on the min-free operator G_k.
+
+Full run k = 5 … 15: 26 min on the CPU (k = 15 Perron vectors dominate).
 
 **How to pick up.** (1) Dense spectrum for k ≤ 9 (N ≤ 6561), ARPACK top-50 eigenvalues for k ≤ 15 (sparse, ≤ 2
 entries per row), at λ = λ_k and at λ = 2; plot |λ_i| vs k, fit the gap. (2) tr(M^j) for j ≤ 300 by sparse

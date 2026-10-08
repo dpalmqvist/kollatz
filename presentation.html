@@ -86,12 +86,12 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 
 <section class="slide" id="s1">
   <p class="eyebrow">Working notes, 8 October 2026</p>
-  <h1>Collatz predecessor bounds: the Krasikov–Lagarias program taken to k = 21</h1>
+  <h1>Collatz predecessor bounds: the Krasikov–Lagarias program taken to k = 22</h1>
   <p class="lede">What fraction of integers up to x eventually reach a given number under the 3x+1 map? The published lower bound was x<sup>0.84</sup> since 2003. These notes cover how far it now goes, how we know the result is right, and what the method can and cannot deliver.</p>
   <div class="stats">
-    <div><div class="big">0.9203</div><div class="label">certified exponent, k = 21</div></div>
+    <div><div class="big">0.9251</div><div class="label">certified exponent, k = 22</div></div>
     <div><div class="big">0.84</div><div class="label">published record, k = 11</div></div>
-    <div><div class="big">3.5 × 10<sup>9</sup></div><div class="label">LP variables at k = 21</div></div>
+    <div><div class="big">1.05 × 10<sup>10</sup></div><div class="label">LP variables at k = 22</div></div>
   </div>
   <p class="muted">Navigate with <span class="kbd">→</span> <span class="kbd">←</span>, jump with <span class="kbd">Home</span> <span class="kbd">End</span>, toggle theme with <span class="kbd">T</span>.</p>
 </section>
@@ -102,11 +102,13 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
   <ol class="toc">
     <li><a href="#s3">The question and the theorem</a></li>
     <li><a href="#s4">The linear program</a></li>
-    <li><a href="#s5">Results k = 12 … 21</a></li>
+    <li><a href="#s5">Results k = 12 … 22</a></li>
     <li><a href="#s6">Trend in γ and the limit question</a></li>
-    <li><a href="#s7">Engineering: fitting 3<sup>20</sup> variables into 24 GB</a></li>
+    <li><a href="#s7">Engineering: 3<sup>21</sup> variables on a 64 GB machine</a></li>
     <li><a href="#s8">Verification layers</a></li>
+    <li><a href="#b1">Two-sided brackets for λ<sub>k</sub></a></li>
     <li><a href="#s9">The 2026 landscape</a></li>
+    <li><a href="#l1">Literature survey: what the primary sources say</a></li>
     <li><a href="#s10">What limits the method: the mixing ratio</a></li>
     <li><a href="#s11">Dead ends we tested</a></li>
     <li><a href="#s12">Formalisation in Lean</a></li>
@@ -116,8 +118,10 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
     <li><a href="#c2">Bits of verification range</a></li>
     <li><a href="#c3">Weighted refinement by LP</a></li>
     <li><a href="#c4">Hercher's extra bit and what it would take</a></li>
-    <li><a href="#a1">Seven avenues, and one closed</a></li>
+    <li><a href="#a1">Sixteen avenues, and the ones closed</a></li>
     <li><a href="#a2">Does the exponent reach 1? A mechanism</a></li>
+    <li><a href="#sp1">The spectrum: the gap does not close</a></li>
+    <li><a href="#f1">5x+1 as a calibration case</a></li>
     <li><a href="#a3">The 3x+d family</a></li>
     <li><a href="#s15">Next steps</a></li>
     <li><a href="#s16">Files and how to verify</a></li>
@@ -154,7 +158,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 
 <section class="slide" id="s5">
   <p class="eyebrow">3 · Results</p>
-  <h2>Ten new levels, all certified in integer arithmetic</h2>
+  <h2>Eleven new levels, all certified in integer arithmetic</h2>
   <div class="tablewrap">
   <table>
     <thead><tr><th class="num">k</th><th class="num">N = 3<sup>k−1</sup></th><th class="num">λ<sub>k</sub> (numeric)</th><th class="num">λ certified</th><th class="num">γ = log<sub>2</sub> λ</th><th class="num">Δγ</th></tr></thead>
@@ -170,30 +174,32 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
       <tr><td class="num">19</td><td class="num">387 420 489</td><td class="num">1.8783132</td><td class="num">1.8783</td><td class="num">0.9094</td><td class="num">0.0061</td></tr>
       <tr><td class="num">20</td><td class="num">1 162 261 467</td><td class="num">1.8857083</td><td class="num">1.8857</td><td class="num">0.9151</td><td class="num">0.0057</td></tr>
       <tr><td class="num">21</td><td class="num">3 486 784 401</td><td class="num">1.8925462</td><td class="num">1.8925</td><td class="num">0.9203</td><td class="num">0.0052</td></tr>
+      <tr><td class="num">22</td><td class="num">10 460 353 203</td><td class="num">1.8988933</td><td class="num">1.8988</td><td class="num">0.9251</td><td class="num">0.0048</td></tr>
     </tbody>
   </table>
   </div>
-  <p class="muted">k = 2 … 11 reproduce the paper's Table 2 to six or seven decimals. Each certificate was also checked with λ raised by about 5 × 10<sup>−5</sup>, which fails as it should.</p>
+  <p class="muted">k = 2 … 11 reproduce the paper's Table 2 to six or seven decimals. Every level also has an <em>infeasibility</em> certificate slightly above λ<sub>k</sub> (next slides), so the numerical λ<sub>k</sub> are rigorously bracketed. k = 22 was computed on a second machine (M4 Pro, 64 GB); all vectors for k = 18 … 21 were regenerated there with identical λ to seven decimals.</p>
 </section>
 
 <section class="slide" id="s6">
   <p class="eyebrow">4 · Trend</p>
   <h2>γ<sub>k</sub> against k, and why the fitted limit is not to be trusted</h2>
   <figure>
-    <img src="gamma_trend.png" alt="Computed exponents gamma_k for k = 2 to 21 with a geometric fit to k ≥ 11 extrapolated to gamma_inf about 0.98, and a residual panel below.">
-    <figcaption>A geometric fit to k ≥ 11 extrapolates to about 0.98 and predicted γ<sub>21</sub> blind to within 10<sup>−4</sup>. But the successive ratios drift upward, and a geometric model with an offset, a stretched exponential and a power law fit the same data equally well while disagreeing on the limit: 0.971, 1 and 1. The data to k = 21 cannot decide whether the method reaches exponent 1.</figcaption>
+    <img src="gamma_trend.png" alt="Computed exponents gamma_k for k = 2 to 22 with a geometric fit to k ≥ 11 extrapolated to gamma_inf about 0.98, and a residual panel below.">
+    <figcaption>A geometric fit to k ≥ 11 extrapolates to about 0.98 and predicted γ<sub>21</sub> and γ<sub>22</sub> blind to within 10<sup>−4</sup> (predicted 0.925, obtained 0.9251). But the successive ratios drift upward, and a geometric model with an offset, a stretched exponential and a power law fit the same data equally well while disagreeing on the limit: 0.971, 1 and 1. The data to k = 22 cannot decide whether the method reaches exponent 1.</figcaption>
   </figure>
 </section>
 
 <section class="slide" id="s7">
   <p class="eyebrow">5 · Engineering</p>
-  <h2>Fitting 3<sup>20</sup> variables into 24 GB</h2>
+  <h2>Fitting 3<sup>21</sup> variables into 64 GB</h2>
   <div class="cols">
     <ul>
       <li>Apple M5 GPU through MLX, float32. The map F is a single Metal kernel computing indices in 64-bit integers, so no index arrays are stored. Two vectors of memory.</li>
       <li>Warm start from the lifted solution of level k−1 (tile three times). A secant method on log r(λ) needs three to five λ values.</li>
       <li>At k = 21 two float32 vectors do not fit. The update is quantised to int8 relative to the previous ratio range: 1.26 vectors, 16.3 GiB peak, 1.8 s per iteration.</li>
       <li>Vectors above 2<sup>31</sup> entries are stored as (3, N/3) because MLX shapes are 32-bit.</li>
+      <li>At k = 22 the 39 GB vector exceeds Metal's single-buffer limit (38.9 GiB on the M4 Pro). <code>kl_split.py</code> holds it as three buffers indexed by the top ternary digit; the int8 kernel reads all three and the lift minimum becomes min(c<sub>0</sub>[r], c<sub>1</sub>[r], c<sub>2</sub>[r]). The warm start from k = 21 is three copies of that vector, no lift through disk.</li>
     </ul>
     <div class="tablewrap">
     <table>
@@ -204,9 +210,10 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
         <tr><td class="num">19</td><td class="num">52 s</td><td class="num">4.7 GB</td><td class="num">6.0 s</td></tr>
         <tr><td class="num">20</td><td class="num">161 s</td><td class="num">10.6 GiB</td><td class="num">34 s</td></tr>
         <tr><td class="num">21</td><td class="num">948 s</td><td class="num">16.3 GiB</td><td class="num">124 s</td></tr>
+        <tr><td class="num">22</td><td class="num">110 min</td><td class="num">49.0 GiB</td><td class="num">39 min + 290 s</td></tr>
       </tbody>
     </table>
-    <p class="muted" style="margin-top:0.6em">k = 22 needs about 50 GiB, k = 23 about 147 GiB. Memory grows threefold per step while γ grows by about 0.005.</p>
+    <p class="muted" style="margin-top:0.6em">k ≤ 21 timings are from the M5 24 GB machine, k = 22 from the M4 Pro 64 GB (where k = 19 takes 40 s and k = 21 six minutes). k = 23 needs about 147 GiB. Memory grows threefold per step while γ grows by about 0.005.</p>
     </div>
   </div>
 </section>
@@ -215,16 +222,44 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
   <p class="eyebrow">6 · Verification</p>
   <h2>Floating point finds candidates. Only integers prove.</h2>
   <ul>
-    <li><strong>Integer certificate.</strong> λ = P/Q, D = 2<sup>d</sup>, q = ⌊D Q²/P²⌋, L<sub>j</sub> = ⌊D · rigorous lower bound of λ<sup>α−j</sup>⌋. The float32 vector times 2<sup>b</sup> is an exact integer C. Check C<sub>i</sub>·D ≤ q·C<sub>4i</sub> + L<sub>j</sub>·C̄ in int64, with overflow excluded before the check. <span class="pill ok">all k = 12…21</span></li>
+    <li><strong>Integer certificate.</strong> λ = P/Q, D = 2<sup>d</sup>, q = ⌊D Q²/P²⌋, L<sub>j</sub> = ⌊D · rigorous lower bound of λ<sup>α−j</sup>⌋. The float32 vector times 2<sup>b</sup> is an exact integer C. Check C<sub>i</sub>·D ≤ q·C<sub>4i</sub> + L<sub>j</sub>·C̄ in int64, with overflow excluded before the check. <span class="pill ok">all k = 12…22</span></li>
     <li><strong>Independent verifier.</strong> <code>verify_cert.py</code> shares no code with the search; rejects tampered certificates (altered C, q+1, L+1, raised λ). <span class="pill ok">all k</span></li>
     <li><strong>Independent implementation.</strong> <code>lp_check.py</code> solves the LP with HiGHS from residues written out with Python integers. λ<sub>k</sub> agrees with the paper to 10<sup>−6</sup> for k ≤ 9, exact rational re-verification passes. <span class="pill ok">k ≤ 9</span></li>
-    <li><strong>Third-party verifier.</strong> Lech Mazur's Python verifier accepts our k = 18 and k = 19 certificates in his format: 129 million and 387 million rows, no failures. <span class="pill ok">k = 18, 19</span></li>
-    <li><strong>Proof assistant.</strong> Lean 4 via Mazur's development, <code>native_decide</code> on the certificate plus his formal proof of the asymptotic step. <span class="pill ok">k = 18: x^0.903 proved</span> <span class="pill ok">k = 19: x^0.909 proved</span></li>
+    <li><strong>Third-party verifier.</strong> Lech Mazur's Python verifier accepts our k = 18, 19 and 20 certificates in his format: 129 million, 387 million and 1.16 billion rows, no failures. <span class="pill ok">k = 18, 19, 20</span></li>
+    <li><strong>Proof assistant.</strong> Lean 4 via Mazur's development, <code>native_decide</code> on the certificate plus his formal proof of the asymptotic step. <span class="pill ok">k = 18: x^0.903 proved</span> <span class="pill ok">k = 19: x^0.909 proved</span> <span class="pill">k = 20: x^0.915 building</span></li>
   </ul>
 </section>
 
+<section class="slide" id="b1">
+  <p class="eyebrow">7 · Verification</p>
+  <h2>Two-sided brackets: a certificate that the LP is infeasible</h2>
+  <div class="cols">
+    <div>
+      <p>A feasibility certificate shows λ<sub>k</sub> ≥ λ. The other direction needs no dual LP: for the monotone, 1-homogeneous right-hand side F, a positive vector C with <strong>F(C) &lt; C strictly in every row</strong> proves that no feasible point exists.</p>
+      <p class="muted">If d ≥ 1 with d ≤ F(d), put s = max d<sub>i</sub>/C<sub>i</sub>, attained at i*. Then d ≤ sC, so d<sub>i*</sub> ≤ F(d)<sub>i*</sub> ≤ s F(C)<sub>i*</sub> &lt; s C<sub>i*</sub> = d<sub>i*</sub>. Contradiction.</p>
+      <p><code>certify_fast.py --upper</code> rounds the coefficients <em>up</em> (q = ⌈Dλ<sup>−2</sup>⌉, L<sub>j</sub> = ⌈D · upper bound⌉) and checks the strict reverse inequality in int64; <code>verify_cert.py</code> checks the direction independently. The power-iterated vector at λ<sub>k</sub> + 10<sup>−5</sup> serves directly.</p>
+    </div>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th class="num">k</th><th class="num">feasible at</th><th class="num">infeasible at</th><th class="num">width</th></tr></thead>
+      <tbody>
+        <tr><td class="num">4</td><td class="num">1.6122</td><td class="num">1.61230</td><td class="num">1e-4</td></tr>
+        <tr><td class="num">11</td><td class="num">1.7922</td><td class="num">1.79225</td><td class="num">5e-5</td></tr>
+        <tr><td class="num">15</td><td class="num">1.8419</td><td class="num">1.84198</td><td class="num">8e-5</td></tr>
+        <tr><td class="num">18</td><td class="num">1.8703</td><td class="num">1.87034</td><td class="num">4e-5</td></tr>
+        <tr><td class="num">19</td><td class="num">1.8783</td><td class="num">1.87833</td><td class="num">3e-5</td></tr>
+        <tr><td class="num">20</td><td class="num">1.8857</td><td class="num">1.88572</td><td class="num">2e-5</td></tr>
+        <tr><td class="num">21</td><td class="num">1.8925</td><td class="num">1.89256</td><td class="num">6e-5</td></tr>
+        <tr><td class="num">22</td><td class="num">1.8988</td><td class="num muted">1.89891 queued</td><td class="num muted">—</td></tr>
+      </tbody>
+    </table>
+    <p class="muted" style="margin-top:0.6em">All k = 2 … 21 bracketed (full table in <code>RESULTS.md</code>). The Krasikov–Lagarias constants are now two-sided numbers: at level k the method provably cannot reach γ ≥ log<sub>2</sub> λ<sub>upper</sub>.</p>
+    </div>
+  </div>
+</section>
+
 <section class="slide" id="s9">
-  <p class="eyebrow">7 · Context</p>
+  <p class="eyebrow">8 · Context</p>
   <h2>The 2026 landscape</h2>
   <p>Several AI-assisted Lean projects work on exactly this program. All are unrefereed. Their values agree with ours at equal k, so three implementations corroborate each other.</p>
   <div class="tablewrap">
@@ -234,15 +269,28 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
       <tr><td>Krasikov–Lagarias, Acta Arith. 2003</td><td class="num">0.84</td><td class="num">11</td><td>refereed, the published record</td></tr>
       <tr><td>msharpe248/collatz (GitHub)</td><td class="num">0.8676</td><td class="num">14</td><td>Lean kernel-checked, 29 h; 0.895 at k = 17 informal</td></tr>
       <tr><td>L. Mazur, ProofAtlas, July 2026</td><td class="num">0.90, 0.901</td><td class="num">18</td><td>Lean with native_decide, accepted on their platform</td></tr>
-      <tr><td>This project</td><td class="num">0.9203</td><td class="num">21</td><td>int64 certificates and independent verifiers; Lean for k = 18, 19 in progress</td></tr>
+      <tr><td>This project</td><td class="num">0.9251</td><td class="num">22</td><td>int64 certificates, independent verifiers, two-sided brackets; Lean for k = 18, 19 done, k = 20 building</td></tr>
     </tbody>
   </table>
   </div>
-  <div class="callout">A record now means formally checked. Our k = 18 and k = 19 certificates are being pushed through Mazur's Lean pipeline, at γ = 0.903 and 0.909. The k = 21 certificate is 13 GB and out of reach of a proof assistant on this machine.</div>
+  <div class="callout">A record now means formally checked. Our k = 18 and k = 19 certificates are Lean theorems (x^0.903, x^0.909) through Mazur's pipeline, rebuilt on the 64 GB machine with the regenerated vectors; k = 20 (x^0.915, about 30 GiB per check) is building. k = 21 and 22 (90 and 270 GiB) need a streamed verified checker. Every post-2003 exponent, ours included, still lives in the unrefereed tier.</div>
+</section>
+
+<section class="slide" id="l1">
+  <p class="eyebrow">9 · Context</p>
+  <h2>Literature survey: what the primary sources actually say</h2>
+  <p>Four researchers read the primary sources (86 cited URLs, every number tagged primary / secondary / unverified; <code>reports/Collatz adjacent work and references.md</code>). Corrections to things we and others had been repeating:</p>
+  <ul>
+    <li><strong>Applegate–Lagarias Conjecture A is positive density</strong> (π<sub>a</sub>(x) ≥ c<sub>a</sub>x), not (4/3)<sup>k</sup> tree growth; those are Conjectures B, C, C′, and C′ fails for the random branching models. Their extremal tree counts stop at depth 30 and were never extended.</li>
+    <li><strong>Hercher's m ≤ 91 used X<sub>0</sub> = 695·2<sup>60</sup></strong>, not 2<sup>68</sup>; 3·2<sup>69</sup> is only the hypothesis of his Corollary 29, which Barina's 2<sup>71</sup> (2025) makes unconditional: every nontrivial cycle has ≥ 1.4 × 10<sup>11</sup> odd terms. A corrigendum (June 2026) leaves the result standing. Nobody has re-run the m-cycle iteration with 2<sup>71</sup> in print.</li>
+    <li><strong>Terras's coefficient stopping time conjecture</strong> is open, but Rozier–Terracol (Discrete Math. 2026) already carry the equality check to 2.8 × 10<sup>19</sup>; a "new" computation must start past that.</li>
+    <li><strong>No predecessor exponent for 5x+1 exists</strong> in the literature: Kontorovich–Lagarias leave the constant unspecified and predict a limit near 0.65. Our 5x+1 run (later slide) is the first explicit bound.</li>
+    <li><strong>Mazur's September 2026 "positive lower density" theorem</strong> (Codex-generated, method undisclosed, no human review) is the upstream of the neljaouh Conjecture A repository; if sound it supersedes every x<sup>γ</sup> statement. A July 2026 Lean kernel bug, exposed by an AI-assisted Collatz "disproof", argues for independent checkers and pinned toolchains with any native_decide claim.</li>
+  </ul>
 </section>
 
 <section class="slide" id="s10">
-  <p class="eyebrow">8 · Limits of the method</p>
+  <p class="eyebrow">10 · Limits of the method</p>
   <h2>λ<sub>k</sub> is a function of one number</h2>
   <p>Summing all inequalities (Krasikov–Lagarias §6) gives (1 − λ<sup>−2</sup>) c̄<sub>k,k</sub> ≤ ⅓(λ<sup>α−1</sup> + λ<sup>α−2</sup>) c̄<sub>k−1,k</sub>, tight on all our solutions. So λ<sub>k</sub> is determined by the mixing ratio ρ<sub>k</sub> = mean of the lift minima / mean of c. Exponent 1 is reachable if and only if ρ<sub>k</sub> → 1.</p>
   <div class="cols">
@@ -268,7 +316,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 </section>
 
 <section class="slide" id="s11">
-  <p class="eyebrow">9 · Dead ends</p>
+  <p class="eyebrow">11 · Dead ends</p>
   <h2>Two ways around the memory wall, both rejected on evidence</h2>
   <div class="cols">
     <div>
@@ -294,7 +342,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 </section>
 
 <section class="slide" id="s12">
-  <p class="eyebrow">10 · Formalisation</p>
+  <p class="eyebrow">12 · Formalisation</p>
   <h2>Reusing Mazur's Lean development instead of building our own</h2>
   <div class="cols">
     <ul>
@@ -319,7 +367,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 </section>
 
 <section class="slide" id="s13">
-  <p class="eyebrow">11 · Lessons</p>
+  <p class="eyebrow">13 · Lessons</p>
   <h2>Two things the formalisation taught us</h2>
   <div class="cols">
     <div class="callout warn">
@@ -333,7 +381,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 </section>
 
 <section class="slide" id="s14">
-  <p class="eyebrow">12 · Scope</p>
+  <p class="eyebrow">14 · Scope</p>
   <h2>What this avenue can and cannot do</h2>
   <ul>
     <li>Every method in this family counts predecessors. Its best possible outcome is a strong "almost all integers reach 1" statement: exponent 1 − ε, or positive density for every target in Wirsching's program.</li>
@@ -344,7 +392,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 </section>
 
 <section class="slide" id="c1">
-  <p class="eyebrow">13 · The cycle track</p>
+  <p class="eyebrow">15 · The cycle track</p>
   <h2>A second avenue: how long must a nontrivial cycle be?</h2>
   <p>Daniel's old CUDA idea: start from the smallest element m of a hypothetical cycle and see what minimality forces. It forces a lot: m is odd, m ≡ 3 (mod 4), no multiple of 3 lies on any cycle, the predecessor of m is 2m and its successor (3m+1)/2 is odd. The sharp tool is the product identity over the cycle:</p>
   <p class="math">2<sup>n</sup> = Π<sub>odd x</sub> (3 + 1/x)  ⇒  0 &lt; n/k − log<sub>2</sub>3 ≤ log<sub>2</sub>(1 + 1/(3m)) ≈ 1/(3 m ln 2)</p>
@@ -357,7 +405,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 </section>
 
 <section class="slide" id="c2">
-  <p class="eyebrow">14 · Units</p>
+  <p class="eyebrow">16 · Units</p>
   <h2>Bits of verification range</h2>
   <div class="cols">
     <ul>
@@ -382,7 +430,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 </section>
 
 <section class="slide" id="c3">
-  <p class="eyebrow">15 · Refinement</p>
+  <p class="eyebrow">17 · Refinement</p>
   <h2>The weighted version: a flow LP over heights and residues</h2>
   <div class="cols">
     <ul>
@@ -408,7 +456,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 </section>
 
 <section class="slide" id="c4">
-  <p class="eyebrow">16 · The gap</p>
+  <p class="eyebrow">18 · The gap</p>
   <h2>Hercher's extra bit, and what it would take to go further</h2>
   <ul>
     <li>His analytic theorem is 3/4 per odd step, 0.42 bits, slightly below our exact height bound. His remaining 0.9 bits come from a five-week case analysis on eight cores over blocks of odd and even steps, with exact linear forms like ours.</li>
@@ -419,8 +467,8 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 </section>
 
 <section class="slide" id="a1">
-  <p class="eyebrow">17 · Avenues</p>
-  <h2>Seven avenues, catalogued; one already closed</h2>
+  <p class="eyebrow">19 · Avenues</p>
+  <h2>Sixteen avenues, catalogued; several closed on evidence</h2>
   <div class="cols">
     <div class="tablewrap">
     <table>
@@ -444,11 +492,11 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 </section>
 
 <section class="slide" id="a2">
-  <p class="eyebrow">18 · Avenue 1</p>
+  <p class="eyebrow">20 · Avenue 1</p>
   <h2>Does the exponent reach 1? A mechanism, not a curve fit</h2>
   <div class="cols">
     <ul>
-      <li><strong>Exact identity.</strong> The spectral radius of the map at λ = 2 is r<sub>k</sub> = 1/4 + (3/4)·ρ′<sub>k</sub>, with ρ′ the mixing ratio of its own eigenvector. "Exponent 1" is literally "the λ = 2 eigenvector stops caring about its top digit". The sequence 1 − r<sub>k</sub> for k = 5 … 21 shrinks by ratios rising from 0.905 to 0.922.</li>
+      <li><strong>Exact identity.</strong> The spectral radius of the map at λ = 2 is r<sub>k</sub> = 1/4 + (3/4)·ρ′<sub>k</sub>, with ρ′ the mixing ratio of its own eigenvector. "Exponent 1" is literally "the λ = 2 eigenvector stops caring about its top digit". The sequence 1 − r<sub>k</sub> for k = 5 … 22 shrinks by ratios rising from 0.905 to 0.924.</li>
       <li><strong>Injection is exactly 3/4.</strong> Tile a level-k solution to level k+1 and apply the map once: the new top digit enters only through the auxiliary term, whose mass fraction is 3/4 at λ = 2.</li>
       <li><strong>Amplification A<sub>k</sub> ≈ 1.21 → 1.22.</strong> Iterating to the fixed point recirculates the variation through the ×4 term (weight 1/4). The decay ratio is (3/4)·A<sub>k</sub>, so λ<sub>k</sub> → 2 iff A<sub>∞</sub> &lt; 4/3.</li>
       <li><strong>Why A stays below 4/3.</strong> The ×4 term and the auxiliary term disagree about which lift is smallest: their argmins agree on exactly one third of the classes at every k, as if independent. The surviving fraction of recirculated variation rises 0.61 → 0.75 (k = 8 … 17) with shrinking increments, extrapolating to 0.75–0.81.</li>
@@ -464,16 +512,77 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
           <tr><td class="num">17</td><td class="num">0.0379</td><td class="num">0.914</td><td class="num">0.746</td></tr>
           <tr><td class="num">19</td><td class="num">0.0319</td><td class="num">0.919</td><td class="num muted">—</td></tr>
           <tr><td class="num">21</td><td class="num">0.0271</td><td class="num">0.922</td><td class="num muted">—</td></tr>
+          <tr><td class="num">22</td><td class="num">0.0250</td><td class="num">0.924</td><td class="num muted">—</td></tr>
         </tbody>
       </table>
       </div>
-      <div class="callout" style="margin-top:0.8em"><strong>Prediction.</strong> The decay ratios level off near 0.95–0.97, well short of 1, so the gap decays geometrically and the exponent reaches 1. Falsifiable at k = 22–23 on a 64 GB machine. The competing offset fit (limit below 1) is still numerically indistinguishable up to k = 21. Not a proof: what a proof needs is independence of the two argmins and comparable variations in the limit measure.</div>
+      <div class="callout" style="margin-top:0.8em"><strong>Prediction, and the k = 22 test.</strong> The decay ratios level off near 0.94–0.97, well short of 1, so the gap decays geometrically and the exponent reaches 1. k = 22 gives ratio 0.924, still rising by about 0.002 per level: consistent, not decisive; at this rate 0.94 would be reached near k = 31. The competing offset fit (limit below 1) remains numerically indistinguishable up to k = 22. Not a proof: what a proof needs is independence of the two argmins and comparable variations in the limit measure.</div>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="sp1">
+  <p class="eyebrow">21 · Avenue 16</p>
+  <h2>The spectrum of the linearisation: the gap does not close</h2>
+  <div class="cols">
+    <div>
+      <p>At the Perron vector the minimum in every row is attained by a fixed lift, so F is a sparse matrix J there. <code>spectrum.py</code>: dense spectra to k = 9, Arnoldi top-40 to k = 15, at λ = λ<sub>k</sub> and λ = 2.</p>
+      <ul>
+        <li><strong>|λ<sub>2</sub>| is flat at 0.86–0.87 for k = 8 … 15.</strong> What grows is the density at that radius: eigenvalues within 1 % of |λ<sub>2</sub>| go from 4 to 27. A ring is filling in at a fixed radius, the finite-k shadow of the essential spectrum's edge; the band edge does not drift towards 1.</li>
+        <li><strong>The slow modes are delocalised.</strong> The second eigenvector carries energy 0.667 on every ternary digit (the value for a vector with no digit structure) and 0.71 on the top digit; the Perron vector's profile decays geometrically from 0.38 to 0.004. λ<sub>2</sub> is complex with a rotating argument.</li>
+        <li><strong>Consequence.</strong> The k-dependence of the loss 1 − ρ<sub>k</sub> and the slow convergence at large k are not set by the linear mixing rate. They come from the minimum: argmin switching and non-normal transients. The question λ<sub>k</sub> → 2 is a question about the min, which is what the alignment mechanism on the previous slide addresses.</li>
+        <li><strong>Traces</strong> show no usable cycle statistic: the trivial cycle's self-loop is never the argmin lift, and small closed walks in the residue graph are accidental congruences that vanish at larger k.</li>
+      </ul>
+    </div>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th class="num">k</th><th class="num">|λ<sub>2</sub>| at λ<sub>k</sub></th><th class="num">within 1 %</th><th class="num">|λ<sub>2</sub>|/λ<sub>1</sub> at λ = 2</th></tr></thead>
+      <tbody>
+        <tr><td class="num">8</td><td class="num">0.857</td><td class="num">4</td><td class="num">0.884</td></tr>
+        <tr><td class="num">9</td><td class="num">0.865</td><td class="num">4</td><td class="num">0.884</td></tr>
+        <tr><td class="num">11</td><td class="num">0.865</td><td class="num">6</td><td class="num">0.880</td></tr>
+        <tr><td class="num">12</td><td class="num">0.861</td><td class="num">20</td><td class="num">0.892</td></tr>
+        <tr><td class="num">13</td><td class="num">0.865</td><td class="num">27</td><td class="num">0.880</td></tr>
+        <tr><td class="num">14</td><td class="num">0.867</td><td class="num">25</td><td class="num">0.874</td></tr>
+        <tr><td class="num">15</td><td class="num">0.865</td><td class="num">39</td><td class="num">0.876</td></tr>
+      </tbody>
+    </table>
+    <p class="muted" style="margin-top:0.6em">In the band picture: the top level stays isolated above a band whose edge is pinned at 0.865, so the system is not approaching a critical point through its linear spectrum.</p>
+    </div>
+  </div>
+</section>
+
+<section class="slide" id="f1">
+  <p class="eyebrow">22 · Avenue 8</p>
+  <h2>5x+1 as a calibration case for "does ρ<sub>k</sub> → 1?"</h2>
+  <div class="cols">
+    <div>
+      <p>Same construction for T(n) = n/2, (5n+1)/2: principal classes a ≡ 3 (mod 5), four doublings return to a principal class, the odd predecessor (2a−1)/5 falls into one of five cases by a mod 25, minimum over five lifts. Validated by a generic residue-walking LP that reproduces Table 2 for 3x+1 to 10<sup>−6</sup>; a Metal kernel matches to 10<sup>−7</sup>.</p>
+      <ul>
+        <li>Integrating the limit inequality gives the <em>same</em> mass-conservation identity, critical at λ = 2, although the predecessor exponent of 5x+1 is believed to be about 0.65. So for 5x+1 the loss 1 − ρ<sub>k</sub> must <em>not</em> vanish if that belief is right: it is a case where "λ<sub>∞</sub> &lt; 2" is the expected truth.</li>
+        <li>Through k = 14 it does not show it. γ<sub>k</sub>(5) rises to 0.517, well below 0.65, but the ratios of 1 − ρ<sub>k</sub> rise 0.83 → 0.92, <em>faster</em> than for 3x+1 (0.91 → 0.93).</li>
+        <li><strong>Lesson.</strong> A rising ratio is not evidence for ρ<sub>k</sub> → 1. Either the saturation sets in later than k = 14, or the K–L exponent for 5x+1 passes the heuristic ceiling, which would be a surprise about 5x+1, not about the method. k = 15 needs a split-buffer kernel.</li>
+      </ul>
+    </div>
+    <div class="tablewrap">
+    <table>
+      <thead><tr><th class="num">k</th><th class="num">γ<sub>k</sub>(5)</th><th class="num">1 − ρ<sub>k</sub></th><th class="num">ratio</th></tr></thead>
+      <tbody>
+        <tr><td class="num">6</td><td class="num">0.411</td><td class="num">0.150</td><td class="num">0.83</td></tr>
+        <tr><td class="num">8</td><td class="num">0.449</td><td class="num">0.113</td><td class="num">0.88</td></tr>
+        <tr><td class="num">10</td><td class="num">0.477</td><td class="num">0.090</td><td class="num">0.90</td></tr>
+        <tr><td class="num">12</td><td class="num">0.499</td><td class="num">0.074</td><td class="num">0.91</td></tr>
+        <tr><td class="num">13</td><td class="num">0.508</td><td class="num">0.068</td><td class="num">0.915</td></tr>
+        <tr><td class="num">14</td><td class="num">0.517</td><td class="num">0.063</td><td class="num">0.919</td></tr>
+      </tbody>
+    </table>
+    <p class="muted" style="margin-top:0.6em">First explicit predecessor bound for 5x+1 of this kind: π<sub>a</sub>(x) ≥ x<sup>0.516</sup> numerically at k = 14 (not yet certified).</p>
     </div>
   </div>
 </section>
 
 <section class="slide" id="a3">
-  <p class="eyebrow">19 · Avenue 3</p>
+  <p class="eyebrow">23 · Avenue 3</p>
   <h2>The 3x+d family: the exponent is blind to d</h2>
   <div class="cols">
     <ul>
@@ -498,42 +607,43 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 </section>
 
 <section class="slide" id="s15">
-  <p class="eyebrow">20 · Next</p>
+  <p class="eyebrow">24 · Next</p>
   <h2>What happens next</h2>
   <ol>
-    <li><strong>Lean is done</strong> for k = 18 (x^0.903) and k = 19 (x^0.909), both with clean axiom audits: Lean's three standard axioms plus two named native_decide checks each. Both exceed the previously formalised 0.90. Offer the k = 20 and 21 vectors to Mazur or msharpe248 for a large-memory machine.</li>
-    <li><strong>Write-up.</strong> <code>RESULTS.md</code> already holds the statement, certificate format, all hashes and verification steps. Add the formal status and send the vectors and note to Mazur and msharpe248; consider contacting Lagarias.</li>
-    <li><strong>Theory.</strong> Explain the universal boundary layer (a fixed point of "append a digit, then minimise"), decide whether the per-digit decay factor stays below 1, and write the transfer operator at λ = 2 on L¹ of the 3-adic integers with Haar measure, where the summed inequality balances exactly.</li>
-    <li><strong>Stop scaling k</strong> unless the theory needs trend data that k = 22 would decisively provide. It currently would not, and k = 22 needs a 64 GB machine for about 0.005 in γ.</li>
-    <li><strong>Avenue 1 is now the main line.</strong> Turn the alignment mechanism into a statement about the limit measure: show the two argmins stay independent and the two variations comparable, which bounds the amplification below 4/3 and gives λ<sub>k</sub> → 2. Test the prediction with k = 22–23 on a larger machine.</li>
-    <li><strong>Cycle track, optional.</strong> The block search with residue dismissal is designed but not started; it is a days-to-weeks compute project whose payoff is measured in bits of verification range, not theorems.</li>
+    <li><strong>Lean.</strong> k = 18 and 19 rebuilt on the 64 GB machine with the regenerated vectors (k = 18: potential 643 s, weights 871 s, 14 GB; clean axiom audits). k = 20 (x^0.915) is building at about 30 GiB per check; if it goes through it is the first formal record from this project. k = 21, 22 need a streamed verified checker, weeks of work.</li>
+    <li><strong>Write-up.</strong> A preprint draft exists (<code>paper/draft.md</code>): computation, certificates, brackets, formalisation, and the limit measurements with their honest verdict. Registering the certificate at ccchallenge.org and contacting Lagarias and Mazur are the owner's call.</li>
+    <li><strong>Theory, sharpened by the spectrum.</strong> The linear gap is fixed, so λ<sub>k</sub> → 2 is decided by the minimum, not by mixing: prove that the two argmins stay independent and the two variations comparable in the limit measure, which bounds the amplification below 4/3.</li>
+    <li><strong>Calibration.</strong> 5x+1 to k = 15 with a split-buffer kernel; if its ratio keeps rising past 0.93 the "rising ratio" signature is uninformative and only the mechanism counts.</li>
+    <li><strong>Scaling stops at k = 22</strong> on this hardware (k = 23 needs 147 GiB). Each level now buys 0.005 in γ; the remaining value is trend data, which k = 22 has supplied.</li>
+    <li><strong>Cycle track, optional.</strong> The m-cycle update with Barina's 2<sup>71</sup> is open in print and modest in compute; the block search with residue dismissal is designed but not started.</li>
   </ol>
 </section>
 
 <section class="slide" id="s16">
-  <p class="eyebrow">21 · Reference</p>
+  <p class="eyebrow">25 · Reference</p>
   <h2>Files and how to verify</h2>
   <div class="cols">
     <div>
       <ul>
-        <li><code>kl.py</code>, <code>kl_mlx.py</code>: the map F, power iteration, secant search (NumPy and MLX).</li>
-        <li><code>certify_fast.py</code>, <code>verify_cert.py</code>, <code>certify.py</code>: int64 certification, independent verifier, exact rational reference.</li>
+        <li><code>kl.py</code>, <code>kl_mlx.py</code>, <code>kl_split.py</code>: the map F, power iteration, secant search (NumPy, MLX, and the three-buffer version for k = 22).</li>
+        <li><code>certify_fast.py</code> (with <code>--upper</code>), <code>verify_cert.py</code>, <code>certify.py</code>: int64 certification in both directions, independent verifier, exact rational reference.</li>
         <li><code>lp_check.py</code>, <code>rho.py</code>, <code>holder.py</code>, <code>adaptive.py</code>: independent LP, mixing ratio, limit-object measurements, adaptive-tree experiment.</li>
         <li><code>export_mazur.py</code>, <code>potential.py</code>, <code>lean_formal/</code>: the formalisation pipeline and generated Lean modules, with a README.</li>
         <li><code>cycles.py</code>, <code>cycle_harmonic.py</code>, <code>cycle_dip.py</code>, <code>cycle_lp.py</code>: the cycle track, from Eliahou's bound to the weighted LP.</li>
-        <li><code>tree_growth.py</code>, <code>limit_measure.py</code>, <code>jacobian.py</code>, <code>rF2_fit.py</code>, <code>renorm.py</code>, <code>renorm2.py</code>: avenue 1 measurements. <code>kl_d.py</code>, <code>cycles_d.py</code>: avenue 3. <code>AVENUES.md</code>: the catalogue.</li>
+        <li><code>tree_growth.py</code>, <code>limit_measure.py</code>, <code>jacobian.py</code>, <code>rF2_fit.py</code>, <code>renorm.py</code>, <code>renorm2.py</code>, <code>spectrum.py</code>: avenue 1 and 16 measurements. <code>kl5.py</code>, <code>kl5_mlx.py</code>: the 5x+1 system. <code>kl_d.py</code>, <code>cycles_d.py</code>: avenue 3. <code>AVENUES.md</code>: the catalogue (16 avenues). <code>reports/</code>, <code>research_notes/</code>: the literature survey. <code>paper/draft.md</code>: the preprint draft.</li>
         <li><code>certs/k{k}_{λ}/</code>: certificates with <code>cert.json</code> (λ = P/Q, D, q, L<sub>1</sub>, L<sub>2</sub>, b, sha256, slack).</li>
         <li><code>RESULTS.md</code>, <code>CLAUDE.md</code>: the write-up and the working notes.</li>
       </ul>
     </div>
     <div>
-      <pre>python verify_cert.py certs/k21_1.8925 --exact
+      <pre>python verify_cert.py certs/k22_1.8988
+python verify_cert.py certs/k21_1.89256_upper
 python lp_check.py 9
 python rho.py
 python adaptive.py 14
 python export_mazur.py certs/k18_1.87023 9032 10000 OUT \
     --scripts MAZUR/scripts</pre>
-      <p class="muted" style="margin-top:0.8em">Certificate for k = 21: <code>c_f32.npy</code>, 13 GB, sha256 6121c786… ; verification takes about two minutes on a laptop.</p>
+      <p class="muted" style="margin-top:0.8em">Certificate for k = 22: <code>c_f32.npy</code>, 39 GB, data sha256 bd4f98d7…; verification takes four minutes. Upper certificates live in <code>certs/k{k}_{λ}_upper/</code>.</p>
     </div>
   </div>
 </section>
