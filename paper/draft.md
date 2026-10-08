@@ -1,197 +1,447 @@
-# Certified Krasikov–Lagarias predecessor bounds for the 3x+1 problem up to k = 22, with two-sided brackets and machine-checked instances
+# Certified Krasikov–Lagarias predecessor bounds for the 3x+1 problem to k = 22: two-sided brackets, machine-checked instances, and the finite-level loss
 
-*Draft 0.1, 2026-10-08. Numbers marked [TBD] are being produced by runs in progress; everything else is from
-`RESULTS.md`, `certs/*/cert.json`, `AVENUES.md` and `reports/Collatz adjacent work and references.md`.*
+*Draft 0.2, 2026-10-08. Entries marked [TBD] are being produced by runs in progress (Lean k = 19, 20; the k = 22
+infeasibility certificate). All other numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
+`spectrum.json`, `kl5.json` and the literature survey `reports/Collatz adjacent work and references.md`.*
 
 ## Abstract
 
-For a ≢ 0 (mod 3) let π_a(x) be the number of n ≤ x whose 3x+1 orbit reaches a. Krasikov and Lagarias (2003)
-proved π_a(x) ≥ x^{0.84} for large x from a feasible point of a linear program L^NT_k(λ) on the residue classes
-modulo 3^k, at k = 11. We extend the computation to k = 22 (3^{21} ≈ 1.05·10^{10} principal variables) and obtain
-π_a(x) ≥ x^γ for every γ < 0.92509. Each level k = 12 … 22 comes with an integer certificate (the float32 solution
-vector read as an exact integer vector) checked in int64 arithmetic by two independent programs, and, for
-k = 2 … 21, with a second certificate proving that the LP at level k is infeasible slightly above the
-certified λ, so that the Krasikov–Lagarias constants λ_k are bracketed to 2·10^{-5} … 10^{-4}. The instances
-k = 18, 19 [and 20, TBD] are checked in Lean 4 inside Mazur's formalisation of the Krasikov–Lagarias theorem,
-giving machine-checked statements x^{0.903}, x^{0.909} [and x^{0.915}] with a trust base of Lean's three standard
-axioms plus two `native_decide` checks per level. We report measurements of the finite-k loss that separates
-λ_k from 2, including the first spectrum of the linearised transfer matrix and a calibration run on 5x+1, and
-state what they do and do not say about the question λ_k → 2, which is equivalent to π_a(x) ≥ x^{1−ε}.
+For a positive integer a ≢ 0 (mod 3), let π_a(x) be the number of n ≤ x whose 3x+1 orbit passes through a.
+Krasikov and Lagarias (Acta Arith. 109, 2003) proved π_a(x) ≥ x^{0.84} for x ≥ x₀(a) from a feasible point of a
+linear program L^NT_k(λ) on the residue classes modulo 3^k, at k = 11. We carry the computation to k = 22, where
+the program has 3^{21} ≈ 1.05·10^{10} principal variables, and obtain
+
+  π_a(x) ≥ x^γ for every γ < 0.92509 and x ≥ x₀(a, γ).
+
+Every level k = 12, …, 22 comes with an integer certificate, the float32 solution vector read as an exact integer
+vector, verified in int64 arithmetic by two programs that share no code; the verification of the k = 22
+certificate (39 GB) takes four minutes. For k = 2, …, 21 [22: TBD] we also give infeasibility certificates, positive
+vectors C with F(C) < C strictly for the right-hand side map F, which prove that the program at level k is
+infeasible slightly above the certified λ; the Krasikov–Lagarias constants λ_k are thereby bracketed to widths
+between 2·10^{−5} and 10^{−4}, confirming their numerical values to four or five decimals. The levels k = 18 and
+19 [and 20: TBD] are machine-checked in Lean 4 inside L. Mazur's formalisation of the Krasikov–Lagarias argument,
+giving theorems x^{0.903} ≤ π_a(x), x^{0.909} ≤ π_a(x) [and x^{0.915} ≤ π_a(x)] for large x, each resting on
+Lean's three standard axioms and two compiled finite checks. The question whether λ_k → 2, equivalent to
+π_a(x) ≥ x^{1−ε} for every ε, reduces to whether a single number, the mean loss ρ_k from the minimum over three
+lifts, tends to 1. We report its values to k = 22, the spectral radius at λ = 2, a renormalisation argument that
+predicts geometric convergence, the first spectrum of the linearised transfer matrix (its gap does not close with
+k), and a calibration run of the same construction on 5x+1. The data to k = 22 are consistent with λ_k → 2 but do
+not establish it; we state what a proof would need.
 
 ## 1. Introduction
 
-The 3x+1 map is T(n) = n/2 for even n and (3n+1)/2 for odd n. The predecessor set of a is the set of n whose
-orbit passes through a; its counting function π_a(x) is what the "density" line of attack on the Collatz
-conjecture measures. The refereed chain of lower bounds runs Crandall (1978, some positive exponent), Sander
-(1990, 3/10), Krasikov (1989, 3/7), Wirsching (1993, 0.48), Applegate–Lagarias (1995, 0.65 by tree search and
-0.809 by nonlinear programming) and Krasikov–Lagarias (2003, 0.84). Lagarias's 2010 survey still lists 0.84 as
-the record and states the open problem π_1(x) > c(ε) x^{1−ε}. Krasikov and Lagarias observe in their §6 that
-their constants λ_k are non-decreasing in k and that λ_k → 2 would give exactly that; nothing has been published
-on that question since.
+The 3x+1 map is T(n) = n/2 for even n and (3n+1)/2 for odd n. The Collatz conjecture asserts that every orbit
+reaches 1. The predecessor set of a is {n : T^j(n) = a for some j ≥ 0}; its counting function π_a(x) measures how
+much of [1, x] lies in the tree below a, and the conjecture is equivalent to π_1(x) = ⌊x⌋.
 
-Three things changed between 2003 and now. Memory: the LP at level k has 3^{k−1} principal variables, and
-3^{21} float32 values are 39 GB, which a single workstation now holds. Verification: a solution found in floating
-point can be turned into an integer certificate checked exactly, so the computational part of the proof reduces
-to a check anyone can re-run. Formalisation: Mazur's 2026 Lean development replaces the analytic Theorem 2.2 of
-Krasikov–Lagarias by a second finite certificate (an "adaptive forced potential" on the same residue classes) and
-checks both certificates by compiled evaluation, so that the whole statement for a given k is a Lean theorem.
-This paper does all three for k ≤ 22, k ≤ 21 and k ≤ 20 respectively.
+Lower bounds of the form π_a(x) ≥ x^γ have a forty-year history. Crandall (1978) showed some γ > 0 exists; Sander
+(1990) reached 3/10; Krasikov (1989) introduced difference inequalities on residue classes modulo 3^k and obtained
+3/7; Wirsching (1993) 0.48; Applegate and Lagarias (1995) 0.65 by exhaustive tree search to depth 30 and 0.809 by
+a nonlinear program on about 20 000 variables; and Krasikov and Lagarias (2003) 0.84, from a linear program
+with 3^{10} principal variables. Lagarias's 2010 overview lists 0.84 as the record and states as open that
+π_1(x) > c(ε) x^{1−ε} for every ε > 0. Krasikov and Lagarias observe in their §6 that their constants λ_k satisfy
+λ_k ≤ λ_{k+1} and that λ_k → 2 would give the x^{1−ε} bound; no progress on that has appeared.
 
-Related 2024–2026 work, all of it unrefereed and AI-assisted (see the survey in the repository for provenance):
-msharpe248 obtains 0.8676 at k = 14 with a kernel-checked certificate and 0.895 at k = 17 informally; Mazur obtains
-0.90 at k = 18 via `native_decide`; Menta2357 reproduces the 0.8418 of k = 11 kernel-clean. The three
-implementations agree with ours at equal k to the precision of their respective roundings.
+Three things changed between 2003 and 2026, and this paper uses all three.
+
+*Memory.* The level-k program has N = 3^{k−1} principal variables and a right-hand side map that needs no stored
+index arrays: all index maps are affine in the residue. A float32 vector at k = 22 is 39 GB, which a single
+workstation with unified memory holds, and the map evaluates in seconds on its GPU.
+
+*Certification.* A solution found in floating point is turned into an integer certificate and checked in exact
+integer arithmetic; the mathematics of the bound is the Krasikov–Lagarias theorem, and the computation reduces to a
+check that anyone can re-run in minutes. We add the reverse certificate: because the right-hand side map is
+monotone and 1-homogeneous, a vector with F(C) < C strictly proves infeasibility, so λ_k becomes a two-sided
+number.
+
+*Formalisation.* Mazur's 2026 Lean 4 development replaces the analytic step of Krasikov–Lagarias (their Theorem 2.2)
+by a second finite certificate, an "adaptive forced potential" on the same residue classes, and checks both
+certificates by compiled evaluation (`native_decide`), so that the statement for a given k is a Lean theorem.
+We feed our certificates through that development for k = 18, 19 [and 20].
+
+Related work, 2024–2026. Several AI-assisted Lean projects pursue the same program; none is refereed. msharpe248
+obtains π_1(x) = Ω(x^{0.8676}) at k = 14 with a kernel-checked certificate (29 h, 37 GB) and 0.895 at k = 17
+informally; Mazur obtains 0.90 and 0.901 at k = 18 via `native_decide`; Menta2357 reproduces the k = 11 value
+0.8418 kernel-clean. At equal k these agree with ours to the precision of their respective roundings
+(msharpe248's values are lower at equal k because of an integer-grid weakening of the weights). On the cycle side,
+Barina's verification of convergence for all n < 2^{71} (2025) makes Hercher's conditional result unconditional:
+a nontrivial cycle has at least 1.375·10^{11} odd terms. Our survey of the primary sources, with provenance for
+every number, is in the repository.
 
 ## 2. The Krasikov–Lagarias system
 
-Principal classes are the residues m mod 3^k with m ≡ 2 (mod 3), the classes whose members have an odd
-predecessor (2m − 1)/3 besides the even predecessor 2m. Eliminating the classes ≡ 1 and ≡ 0 (mod 3) gives, with
-α = log₂ 3 and an unknown c_m ≥ 1 per principal class, the inequalities
+### 2.1 Difference inequalities
 
-- m ≡ 2 (mod 9): c_m ≤ λ^{−2} c_{4m} + λ^{α−2} c̄_{(4m−2)/3}
-- m ≡ 5 (mod 9): c_m ≤ λ^{−2} c_{4m}
-- m ≡ 8 (mod 9): c_m ≤ λ^{−2} c_{4m} + λ^{α−1} c̄_{(2m−1)/3}
+Fix k ≥ 2. A residue class m mod 3^k with m ≡ 2 (mod 3) is *principal*: its members have two predecessors under
+T, the even predecessor 2m and the odd predecessor (2m − 1)/3. Classes ≡ 1 (mod 3) have only the even predecessor,
+and classes ≡ 0 (mod 3) have only the chain {2^j m}, which contributes O(log x) to any count and is dropped.
+Writing φ_m(y) for the infimum over a in class m of the number of predecessors of a not exceeding 2^y a, the tree
+structure gives φ_m(y) ≥ φ_{2m}(y − 1) + φ_{(2m−1)/3}(y − 1 + α) with α = log₂ 3, and eliminating the
+non-principal classes yields, for each principal m,
 
-where c̄_r = min(c_r, c_{r+3^{k−1}}, c_{r+2·3^{k−1}}) because the odd predecessor is known only modulo 3^{k−1}.
-(The paper's equations (2.13)–(2.14) print 3^k where 3^{k−1} is meant; the reproduction of their Table 2
-confirms the correction.) A feasible point for λ gives π_a(x) ≥ x^γ for every γ < log₂ λ and x ≥ x₀(a, γ)
-(Theorem 2.2 and §6 of the paper), and the constant is explicit, Δ₁ = 1/(4 max c_m).
+- m ≡ 2 (mod 9): φ_m(y) ≥ φ_{4m}(y − 2) + φ̄_{(4m−2)/3}(y + α − 2),
+- m ≡ 5 (mod 9): φ_m(y) ≥ φ_{4m}(y − 2),
+- m ≡ 8 (mod 9): φ_m(y) ≥ φ_{4m}(y − 2) + φ̄_{(2m−1)/3}(y + α − 1),
 
-With index i for m = 3i + 2 the maps are affine: 4m ↦ (4i + 2) mod N, and the auxiliary index is 4j mod N/3 or
-(2j + 1) mod N/3 for i = 3j or 3j + 2. The right-hand side F is monotone and 1-homogeneous, feasibility is
-equivalent to r(F_λ) ≥ 1 for the cone spectral radius, and λ_k is the root of log r(F_λ) = 0.
+where φ̄_r is the infimum over the three classes mod 3^k lying above the class r mod 3^{k−1}, because the odd
+predecessor is known only modulo 3^{k−1}. (The paper's equations (2.13)–(2.14) print 3^k where 3^{k−1} is meant;
+the reproduction of their Table 2 to seven decimals, §3.3, confirms the correction.)
+
+### 2.2 The linear program and its map
+
+The ansatz φ_m(y) ≥ c_m λ^y turns the inequalities into the linear system L^NT_k(λ): for principal m,
+
+- m ≡ 2 (mod 9): c_m ≤ λ^{−2} c_{4m} + λ^{α−2} c̄_{(4m−2)/3},
+- m ≡ 5 (mod 9): c_m ≤ λ^{−2} c_{4m},
+- m ≡ 8 (mod 9): c_m ≤ λ^{−2} c_{4m} + λ^{α−1} c̄_{(2m−1)/3},
+- c_m ≥ 1, with c̄_r = min(c_r, c_{r+3^{k−1}}, c_{r+2·3^{k−1}}).
+
+**Theorem (Krasikov–Lagarias, Thm 2.2 and §6).** If L^NT_k(λ) is feasible then for every a ≢ 0 (mod 3) and every
+γ < log₂ λ there is x₀(a, γ) with π_a(x) ≥ x^γ for x ≥ x₀. The constant is explicit: φ_m(y) ≥ Δ₁ c_m λ^y with
+Δ₁ = 1/(4 max_m c_m).
+
+Let F_λ be the right-hand side map, F(c)_m = λ^{−2} c_{4m} + λ^{α−j} c̄_{r(m)}. F is monotone and positively
+1-homogeneous on the positive cone, so it has a cone spectral radius r(F_λ) (Collatz–Wielandt), and L^NT_k(λ) is
+feasible iff r(F_λ) ≥ 1: a feasible c satisfies c ≤ F(c), which forces r ≥ 1, and conversely an eigenvector with
+F(c) = rc, r ≥ 1, is feasible after scaling. Since r is decreasing in λ, λ_k := sup{λ : L^NT_k(λ) feasible} is the
+unique root of log r(F_λ) = 0.
+
+### 2.3 Indexing
+
+With N = 3^{k−1} and index i ∈ [0, N) for m = 3i + 2, every map is affine: 4m ↦ (4i + 2) mod N; the class of m
+mod 9 is i mod 3 (0 ↔ 2, 1 ↔ 5, 2 ↔ 8); the auxiliary index is 4j mod N/3 for i = 3j and (2j + 1) mod N/3 for
+i = 3j + 2; and c̄[r] = min(c[r], c[r + N/3], c[r + 2N/3]). The ternary digits of i are the digits of m above the
+lowest, and the top digit is the one the minimum ranges over. Lifting a level-(k−1) vector to level k is
+c_k[i + j N_{k−1}] = c_{k−1}[i], which preserves feasibility (this is the monotonicity λ_k ≤ λ_{k+1}).
 
 ## 3. Computation
 
-Power iteration c ← F(c)/min F(c) with the Collatz–Wielandt bounds min F(c)/c ≤ r ≤ max F(c)/c, a secant method
-on λ ↦ log r(F_λ) (3 to 5 evaluations per level), and warm starts by lifting the solution of level k − 1
-(c_k[i + j·N_{k−1}] = c_{k−1}[i]). F is one Metal kernel computing all indices per thread in 64-bit integers;
-the normalisation is folded into the coefficients so that the iteration needs two vectors. For k = 21 on a
-24 GB machine and k = 22 on a 64 GB machine the update is compressed to int8 (c ← (c/m)(ρ₀ + S·d) with
-d = round((F(c)/c − ρ₀)/S)), which needs 1.26 vectors; at k = 22 the vector exceeds Metal's single-buffer limit
-and is held as three buffers indexed by the top ternary digit. Timings on an Apple M4 Pro (64 GB): k = 19, 40 s;
-k = 20, 151 s; k = 21, 382 s; k = 22, 110 min at 49 GiB peak.
+### 3.1 Power iteration and secant search
 
-| k | N = 3^{k−1} | λ_k (numerical) | λ_cert | γ = log₂ λ_cert | λ_upper (infeasible) |
-|---|---|---|---|---|---|
-| 11 (K–L 2003) | 59 049 | 1.7922310 | – | 0.84 | 1.79225 |
-| 12 | 177 147 | 1.8064236 | 1.8064 | 0.8531 | 1.80644 |
-| 13 | 531 441 | 1.8188237 | 1.8188 | 0.8630 | 1.81884 |
-| 14 | 1 594 323 | 1.8307723 | 1.8307 | 0.8724 | 1.83079 |
-| 15 | 4 782 969 | 1.8419687 | 1.8419 | 0.8812 | 1.84198 |
-| 16 | 14 348 907 | 1.8522346 | 1.8522 | 0.8892 | 1.85225 |
-| 17 | 43 046 721 | 1.8616888 | 1.8616 | 0.8965 | 1.86170 |
-| 18 | 129 140 163 | 1.8703250 | 1.8703 | 0.9033 | 1.87034 |
-| 19 | 387 420 489 | 1.8783132 | 1.8783 | 0.9094 | 1.87833 |
-| 20 | 1 162 261 467 | 1.8857083 | 1.8857 | 0.9151 | 1.88572 |
-| 21 | 3 486 784 401 | 1.8925462 | 1.8925 | 0.9203 | 1.89256 |
-| 22 | 10 460 353 203 | 1.8988933 | 1.8988 | 0.9251 | [TBD: 1.89891] |
+We compute λ_k by a secant method on λ ↦ log r(F_λ), with r estimated as the midpoint of the Collatz–Wielandt
+bounds min_i F(c)_i/c_i ≤ r ≤ max_i F(c)_i/c_i after power iteration c ← F(c)/min F(c). Each λ evaluation is
+warm-started from the previous iterate, and each level from the lifted solution of the level below; three to five
+λ values suffice. The secant stops when its step falls below the noise level (hi − lo)/(2|slope|), which is where
+float32 stops determining λ_k; the slope d log r/dλ ≈ −0.27 means a gap of 10^{−6} in r leaves λ undetermined
+to about 4·10^{−6}. Certified λ values are rounded down to four decimals, well inside the noise.
 
-The increments of γ per level fall from 0.0113 (k = 12) to 0.0048 (k = 22); the geometric fit of
-γ_k = γ∞ − A r^k on k = 11 … 22 gives r = 0.919 and predicted γ_22 = 0.925 before the run. We do not read a limit
-off such fits (§6).
+### 3.2 Memory
+
+F is one Metal kernel (Apple MLX): each thread computes its indices in 64-bit integers, reads three lifts and one
+quadruple index, and writes one output; no index arrays exist. The normalisation 1/min c is folded into the
+coefficients (F is 1-homogeneous), so the iteration holds two vectors. The Collatz–Wielandt bounds are computed in
+chunks. For k ≥ 21 the vector exceeds 2^{31} entries and is stored with shape (3, N/3) because MLX shapes are
+32-bit.
+
+When two vectors do not fit (k = 21 on 24 GB, k = 22 on 64 GB) the update is compressed: a kernel computes
+ρ_i = F(c)_i/c_i exactly in float32 together with per-threadgroup minima and maxima, stores
+d_i = round((ρ_i − ρ₀)/S) as int8 with ρ₀ and S from the previous iteration's bounds (S = 1.25(hi − lo)/254), and
+the update c ← (c/m)(ρ₀ + S d) reuses c's buffer. The quantisation perturbs the iterate by at most S/2, which is
+irrelevant because certification checks the final vector exactly; it raises the floor of hi − lo to about
+2·10^{−6}. Peak memory is 1.26 vectors.
+
+At k = 22 the vector (39.0 GB) exceeds Metal's single-buffer limit (38.9 GiB on the M4 Pro). We hold it as three
+buffers indexed by the top ternary digit, c[i] = c_j[i − j N/3]; the lift minimum becomes min(c₀[r], c₁[r], c₂[r])
+and the warm start from level 21 is three copies of that vector. The split kernel agrees with the single-buffer
+kernel bit for bit at k ≤ 10.
+
+### 3.3 Results
+
+| k | N = 3^{k−1} | λ_k (numerical) | λ_cert | γ_cert = log₂ λ_cert | Δγ | λ_upper (infeasible) |
+|---|---|---|---|---|---|---|
+| 2–11 | 3 … 59 049 | Table 2 of K–L reproduced to 10^{−6} … 10^{−7} | – | 0.8418 at k = 11 | – | 1.35342 … 1.79225 |
+| 12 | 177 147 | 1.8064236 | 1.8064 | 0.8531 | 0.0113 | 1.80644 |
+| 13 | 531 441 | 1.8188237 | 1.8188 | 0.8630 | 0.0099 | 1.81884 |
+| 14 | 1 594 323 | 1.8307723 | 1.8307 | 0.8724 | 0.0094 | 1.83079 |
+| 15 | 4 782 969 | 1.8419687 | 1.8419 | 0.8812 | 0.0088 | 1.84198 |
+| 16 | 14 348 907 | 1.8522346 | 1.8522 | 0.8892 | 0.0080 | 1.85225 |
+| 17 | 43 046 721 | 1.8616888 | 1.8616 | 0.8965 | 0.0073 | 1.86170 |
+| 18 | 129 140 163 | 1.8703250 | 1.8703 | 0.9033 | 0.0068 | 1.87034 |
+| 19 | 387 420 489 | 1.8783132 | 1.8783 | 0.9094 | 0.0061 | 1.87833 |
+| 20 | 1 162 261 467 | 1.8857083 | 1.8857 | 0.9151 | 0.0057 | 1.88572 |
+| 21 | 3 486 784 401 | 1.8925462 | 1.8925 | 0.9203 | 0.0052 | 1.89256 |
+| 22 | 10 460 353 203 | 1.8988933 | 1.8988 | 0.9251 | 0.0048 | [TBD: 1.89891] |
+
+An independent implementation (HiGHS on the explicit LP, constraints written out from residues in exact integers,
+no code shared with the search) reproduces λ_k to 10^{−6} for k ≤ 9, and its LP solutions at λ_k − 2·10^{−6}
+verify exactly in rational arithmetic. Timings on an Apple M4 Pro (64 GB): k = 19, 40 s; k = 20, 151 s; k = 21,
+382 s; k = 22, 110 min for three λ evaluations at 49.0 GiB peak, plus 39 min to re-tune at λ_cert. All vectors were
+produced on two machines (M5 24 GB, M4 Pro 64 GB) with λ_k agreeing to seven decimals.
+
+The increments Δγ fall from 0.0113 to 0.0048 with successive ratios near 0.92. A geometric fit γ_k ≈ γ∞ − A r^k on
+k = 11 … 22 gives r = 0.919 and γ∞ ≈ 0.980 with maximal residual 2·10^{−4}, and predicted both γ_21 and γ_22 blind
+to within 10^{−4}. We do not read a limit off it: the ratios drift upward, and models with limits 0.97 and 1 fit
+the same data equally well (§6).
 
 ## 4. Certificates
 
-A feasibility certificate is the float32 vector c itself. With b = 23 − ⌊log₂ min c⌋ every C_i = c_i 2^b is an
-exact integer; with λ = P/Q and D = 2^d we take q = ⌊D Q²/P²⌋ and L_j = ⌊D · ℓ_j⌋ where ℓ_j is a rigorous rational
-lower bound for λ^{α−j} from interval arithmetic, and check C_m D ≤ q C_{4m} + L_j C̄ in int64 for every m, having
-proved beforehand in exact integers that no intermediate can overflow. Since q/D ≤ λ^{−2} and L_j/D ≤ λ^{α−j},
-C is feasible. Two programs do this check: `certify_fast.py` (bit operations, NumPy or Metal) and
-`verify_cert.py` (float64 scaling, NumPy and mpmath only, no code shared with the search). The check takes
-0.3 s at k = 16 and 4 min at k = 22; the certificates carry sha256 hashes of the vectors.
+### 4.1 Feasibility certificates
 
-An infeasibility certificate is a positive vector C with F(C) < C strictly, with the coefficients rounded up
-instead of down. For a monotone 1-homogeneous F this excludes any feasible d: with s = max d_i/C_i attained at
-i*, d ≤ sC gives d_{i*} ≤ F(d)_{i*} ≤ sF(C)_{i*} < sC_{i*} = d_{i*}. The power-iterated vector at λ_k + 10^{−5}
-serves directly; the resulting brackets are in the table. Negative controls (certificates with a modified entry,
-a raised coefficient, or λ raised by 10^{−4}) are rejected by both verifiers.
+Let c be the float32 vector after power iteration at λ = P/Q. With b = 23 − ⌊log₂ min c⌋, every C_i = c_i 2^b is
+an exact integer for every positive normal float32 c_i ≥ min c. Choose D = 2^d with d such that max C · D < 2^{63}
+and max C · (q + max L_j) < 2^{63}, proved in Python integers before the check; set q = ⌊D Q²/P²⌋ and
+L_j = ⌊D ℓ_j⌋ where ℓ_j is a rigorous rational lower bound for λ^{α−j} from mpmath interval arithmetic at 200
+bits. Then check, for every i, in int64,
+
+  C_i D ≤ q C_{(4i+2) mod N} + L_j C̄_{r(i)}.
+
+Since q/D ≤ λ^{−2}, L_j/D ≤ λ^{α−j} and all quantities are nonnegative, the inequality implies
+C_i ≤ λ^{−2} C_{4m} + λ^{α−j} C̄, so C is feasible for L^NT_k(λ) (C ≥ 1 by homogeneity). No rounding occurs
+anywhere; the only floating-point object is the input vector, whose bits define C.
+
+Two programs perform this check. `certify_fast.py` forms C by bit operations (mantissa shifted by the exponent)
+and streams over chunks in NumPy or on the GPU in int64 (MLX int64 was verified bitwise against NumPy).
+`verify_cert.py` uses only NumPy and mpmath, forms C as float64(c)·2^b followed by an exact integrality check,
+recomputes the interval bounds, re-derives the overflow conditions, and checks the sha256 of the vector against
+the certificate's metadata. A `--exact` mode re-checks the same integers with Python integers for small k. The
+certificates are rejected when tampered with (an altered entry, q + 1, L + 1, λ raised by 10^{−4}). The check at
+k = 22 takes 290 s and 4 min respectively.
+
+### 4.2 Infeasibility certificates
+
+**Lemma.** Let F be monotone and positively 1-homogeneous on the positive cone of R^N and let C > 0 satisfy
+F(C)_i < C_i for every i. Then no d ≥ 1 satisfies d ≤ F(d).
+
+*Proof.* Suppose d ≥ 1 with d ≤ F(d). Let s = max_i d_i/C_i, attained at i*. Then d ≤ sC, so by monotonicity and
+homogeneity d_{i*} ≤ F(d)_{i*} ≤ s F(C)_{i*} < s C_{i*} = d_{i*}, a contradiction. ∎
+
+An infeasibility certificate is therefore a vector C with the coefficients rounded the other way:
+q = ⌈D Q²/P²⌉, L_j = ⌈D u_j⌉ with u_j a rigorous rational upper bound for λ^{α−j}, and the strict reverse
+inequality q C_{4m} + L_j C̄ < D C_i checked in int64 for every i. The power-iterated vector at λ_k + 10^{−5}
+serves directly (its maximal ratio is about 1 − 3·10^{−6}); at k = 3 the float32 rounding floor of the ratio gap
+(≈ 3·10^{−5} at N = 9) required λ_k + 2·10^{−4}. The two certificates bracket λ_k:
+
+| k | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| width of [λ_cert, λ_upper] | 2e-5 | 3e-4 | 1e-4 | 7e-5 | 7e-5 | 1e-4 | 8e-5 | 5e-5 | 4e-5 | 5e-5 |
+
+| k | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| width | 4e-5 | 4e-5 | 9e-5 | 8e-5 | 5e-5 | 1e-4 | 4e-5 | 3e-5 | 2e-5 | 6e-5 | [TBD] |
+
+The brackets confirm the published Table 2 of Krasikov–Lagarias at k = 2 … 11 and show that at level k the method
+provably cannot give γ ≥ log₂ λ_upper. The same reverse check verifies in `verify_cert.py` (format `/2-upper`).
+
+### 4.3 Certificate metadata
+
+Each `cert.json` records k, N, λ = P/Q, D, q, L₂, L₁, b, the sha256 of the vector data and of the file, the minimum
+relative slack, the software versions and the claim; the vectors (1 GB at k = 18 to 39 GB at k = 22) are
+regenerated by the scripts or available on request. Minimal relative slacks are 6.7·10^{−6} (k = 18), 3.1·10^{−6}
+(19), 1.4·10^{−6} (20), 1.1·10^{−5} (21), 2.4·10^{−5} (22); slack of order 10^{−7} is the float32 limit, so k ≥ 23
+would need float64 polishing or a λ_cert further below λ_k.
 
 ## 5. Formal verification
 
-Mazur's development (`collatz_predecessor_090`, ProofAtlas, July 2026) states and proves, for a weights
-certificate W and a forced-potential certificate P on the level-k residue classes, that
-x^{γ} ≤ π_a(x) eventually for all a ≢ 0 (mod 3). W is our vector rescaled to u32 with minimum 2^{20} (2^{19} at
-k = 20) and the coefficients as dyadic lower bounds computed by exact integer root extraction in his
-`kl_predecessor_common.py`; P depends only on k and we compute it as the least fixed point of his constraint
-system (23–26 iterations), reproducing his k = 18 payload bit for bit. Both are embedded as hex chunks and
-checked by `native_decide`; our `LoopCheck.lean` replaces his list-based checker by a tail-recursive loop
-proved equivalent, which halves the memory.
+### 5.1 Mazur's development
 
-| k | γ (p/q) | theorem | potential check | weights check | peak RSS | axioms |
+The Lean development `collatz_predecessor_090` (ProofAtlas, July 2026; Lean v4.30.0-rc2, Mathlib pinned) proves,
+for a weights certificate W: [N) → u32 and a forced-potential certificate P: [N) → u8 on the level-k principal
+classes, the statement
+
+  ∀ a > 0, a ≢ 0 (mod 3): x^{γ} ≤ π_a(x) for all sufficiently large real x,
+
+with γ = p/q given and λ = 2^{p/q}. W must satisfy scale · W_i ≤ A · W_{4i} + B_j · min(lifts) for all i, with
+scale = 2^{28} and A, B_j dyadic lower bounds for λ^{−2}, λ^{α−2}, λ^{α−1} computed by exact integer root extraction
+(his `kl_predecessor_common.py`); this is our row check with the same index formulas. P must satisfy
+P[4i + 2] ≤ P[i] + 6, min over lifts of P at the D1 auxiliary index ≤ P[3q] + 1, and min over lifts at the D3
+auxiliary index ≤ P[3q + 2] − 2; this replaces the Kőnig-type elimination in Krasikov–Lagarias's Theorem 2.2 by a
+finite object (his `AdaptiveCriticalChoice.exponential_lower_bound`). P depends on k only. Both certificates are
+embedded as hexadecimal chunks of 32 MiB (`include_str`) and checked by `native_decide`.
+
+### 5.2 Our additions
+
+- The weights are our vector rescaled to u32 with minimum 2^{20} (2^{19} at k = 20, where C_max/C_min = 4231
+  would overflow 32 bits at 2^{20}; the row check is scale-invariant). Before export the vector is re-tuned at the
+  target λ = 2^{p/q} by power iteration, because a vector feasible at λ₁ is not automatically feasible at
+  λ₂ < λ₁: λ^{α−1} decreases with λ and the m ≡ 8 (mod 9) rows can fail (our k = 18 vector at 1.8703 failed 34.8
+  million rows at 2^{0.903}).
+- The potential is computed as the least fixed point of the constraint system by chunked NumPy (23–26 iterations,
+  15 s at k = 18 to 4 min at k = 20); it reproduces Mazur's k = 18 payload bit for bit (sha256 778584ce…).
+- `LoopCheck.lean` replaces his list-based checker by a tail-recursive loop, proved equivalent to his `Valid`,
+  which removes a `List.range N` (16 B per class) from the peak and makes k = 19 and 20 feasible on 64 GB.
+- The level-specific modules K18, K19, K20 (principal index, power-of-two targets, source bridge, coefficient
+  bridge, critical choice, predecessor bridge, all-targets) are generated from his K18 files by textual
+  substitution; the generated certificate modules embed no hashes, only the chunk list, so a regenerated vector
+  needs no Lean changes.
+
+### 5.3 Results
+
+| k | γ = p/q | Lean theorem | potential check | weights check | peak RSS | axioms |
 |---|---|---|---|---|---|---|
-| 18 | 9032/10000 | x^{903/1000} ≤ π_a(x) | 643 s | 871 s | 14 GB | 3 standard + 2 native_decide |
-| 19 | 9093/10000 | x^{909/1000} ≤ π_a(x) | [TBD] | [TBD] | [TBD] | [TBD] |
-| 20 | 9150/10000 | x^{915/1000} ≤ π_a(x) | [TBD] | [TBD] | [TBD] | [TBD] |
+| 18 | 9032/10000 | x^{903/1000} ≤ π_a(x) (`CollatzPredecessor0903`) | 643 s | 871 s | 14.0 GB | 3 standard + 2 `native_decide` |
+| 19 | 9093/10000 | x^{909/1000} ≤ π_a(x) (`CollatzPredecessor0909`) | 2113 s | [TBD] | 11.6 GB (potential) | [TBD] |
+| 20 | 9150/10000 | x^{915/1000} ≤ π_a(x) (`CollatzPredecessor0915`) | [TBD] | [TBD] | [TBD] | [TBD] |
 
-The vector must be re-tuned at the target λ = 2^{p/q} before export: a vector feasible at λ₁ is not
-automatically feasible at λ₂ < λ₁ because λ^{α−1} decreases with λ. Mazur's own Python verifier passes on all
-three exports (129 140 163, 387 420 489 and 1 162 261 467 rows). Two caveats on trust. `native_decide` puts the
-Lean compiler in the trust base, and a July 2026 kernel soundness bug (fixed in Lean 4.32.2) was exposed by an
-AI-assisted Collatz "disproof"; we therefore report `#print axioms` for every theorem and keep the two external
-verifiers in the loop. And k = 21, 22 cannot be checked this way on 64 GB (estimated 90 and 270 GiB); a streamed
-verified checker in the style of cake_lpr would remove that wall.
+Each level also yields the constant-free forms `_nat` (natural cutoffs) and `_0903x` (c · x^{p/q} with the full
+certificate exponent). `#print axioms` lists propext, Classical.choice, Quot.sound and the two named `native_decide`
+axioms per level, the same trust base as Mazur's 0.90. Mazur's own Python verifier passes on the three exports
+(129 140 163, 387 420 489 and 1 162 261 467 rows, zero failures), and his potential verifier passes on the k = 19
+and k = 20 potentials (645 700 815 and 1 937 102 445 inequalities).
 
-## 6. Towards exponent 1: what the data say
+### 5.4 Trust
 
-Summing the inequalities gives (1 − λ^{−2}) c̄_{k,k} ≤ (1/3)(λ^{α−1} + λ^{α−2}) c̄_{k−1,k}, with c̄_{k−1,k}/c̄_{k,k}
-=: ρ_k the mean loss from the minimum over lifts; the inequality is tight on all our solutions (to 10^{−5}), so
-λ_k is a function of ρ_k alone and λ_k → 2 ⇔ ρ_k → 1. We measure:
+`native_decide` places the Lean compiler in the trust base. A kernel soundness bug (Lean issue #14576, July 2026,
+fixed in 4.32.2) was exposed by an AI-assisted "disproof" of the Collatz conjecture; we therefore report the axiom
+audit of every theorem, keep both external verifiers in the loop, and recommend re-running the builds on a
+toolchain at or above 4.32.2. The memory of `native_decide` scales linearly with N (about 8–24 bytes per class),
+so k = 21 and 22 (estimated 90 and 270 GiB) are out of reach of this route on 64 GB; a streamed verified checker
+in the style of cake_lpr or lrat-catcher, proved once and run natively in constant memory, is the natural next
+step and would also move the compiled code out of the trust base of each individual certificate.
 
-- 1 − ρ_k = 0.0573 (k = 11) … 0.0241 (k = 22), with successive ratios rising monotonically 0.913 → 0.933.
-- At λ = 2 the exact identity r_k(F_2) = 1/4 + (3/4)ρ′_k holds (ρ′ the mixing ratio of the λ = 2 vector); 1 − r_k
-  has ratios 0.905 (k = 12) → 0.924 (k = 22). Geometric-with-offset (limit 1 − r∞ = 0.0072, i.e. λ∞ < 2) and
-  stretched-exponential (limit 0) fits both reach max residual 1.8·10^{−4} on k = 5 … 22; neither is excluded.
-- A renormalisation argument (lift c_k to level k + 1, apply F, measure the injected top-digit sensitivity 3/4 s_k
-  and its amplification A_k = 1.21 → 1.23) predicts that the ratios keep rising but level off near 0.94 because
-  the argmins of the ×4 term and the auxiliary term over the top digit agree on exactly 1/3 of the classes at every k
-  (as if independent); if so, 1 − ρ_k eventually decays geometrically and λ_k → 2. k = 22 is consistent (0.933,
-  still rising ≈ 0.002 per level).
-- The limit object is singular: C_max/C_min grows like 1.52^k, the mass in the top 1 % of classes rises, and the
-  Hölder exponent of the digit profile is 0.04–0.09; the boundary layer at distance d from the top digit is
-  universal, β(d) = 0.665, 0.401, 0.293, 0.232, 0.194 for every k.
-- The spectrum of the linearisation at the Perron vector (dense to k = 9, Arnoldi to k = 15) has a second
-  eigenvalue fixed at |λ₂| ≈ 0.865 for k = 8 … 15 with a ring of eigenvalues filling in at that radius
-  (4 → 39 within 1 % of |λ₂| among the top 40), and the second eigenvector is delocalised across the 3-adic digits. The gap does not close;
-  the k-dependence of the loss is therefore driven by the minimum (argmin switching), not by linear mixing.
-- Calibration on 5x+1: the same construction (principal classes a ≡ 3 mod 5, four doublings, five lift cases) is
-  validated by a residue-walking LP; λ_k(5) rises from 1.196 (k = 2) to 1.431 (k = 14), i.e. γ = 0.517 against a
-  conjectured predecessor exponent η₅ ≈ 0.65 (Kontorovich–Lagarias), and its ratios of 1 − ρ_k rise 0.83 → 0.92,
-  faster than for 3x+1. So a rising ratio is not by itself evidence for ρ_k → 1: 5x+1, where the exponent is
-  believed to stay below 1, shows the same signature through k = 14.
+## 6. The finite-level loss and the question λ_k → 2
 
-Our reading: the data to k = 22 cannot decide between a limit exponent below 1 and a slow approach to 1; the
-mechanism that would decide it is the alignment of the two argmins, which is a question about the minimum
-structure of the limit inequality on Z₃ and is open.
+### 6.1 One number
 
-## 7. What this does and does not establish
+Summing the inequalities over all principal classes, and using that m ↦ 4m is a bijection of the principal classes
+and that each auxiliary map is a bijection from a third of them onto the auxiliary classes, gives
 
-All of this is density. Even γ → 1 would exclude neither a non-trivial cycle (which by Hercher's work and Barina's
-2^{71} verification must have at least 1.4·10^{11} odd terms) nor a divergent orbit, about which no tool says
-anything. Conway's undecidability result for the general class of maps linear on residue classes means any proof
-must use the specific arithmetic of 2 and 3; the Krasikov–Lagarias system does, but only through the branching
-rule mod 3 and the size factors 2 and 3/2, which is why it yields density statements only.
+  (1 − λ^{−2}) c̄_{k,k} ≤ (1/3)(λ^{α−1} + λ^{α−2}) c̄_{k−1,k},
 
-## Data and code
+with c̄_{k,k} the mean of c and c̄_{k−1,k} the mean of c̄. Write ρ_k = c̄_{k−1,k}/c̄_{k,k} ≤ 1 for the mean loss from the
+minimum over lifts. At λ = 2 both sides equal 3/4 when ρ = 1, so λ_k → 2 ⇔ ρ_k → 1. On all our solutions the
+summed inequality is tight to 10^{−5} (the difference is λ_cert < λ_k), so λ_k is, to that precision, a function of
+ρ_k alone: 1 − λ^{−2} = (1/3)(λ^{α−1} + λ^{α−2}) ρ.
 
-Repository: github.com/dpalmqvist/kollatz (MIT). Certificates `certs/k{k}_{λ}/cert.json` with sha256 of the
-vectors (the vectors themselves, 1 GB to 39 GB, are regenerated by the scripts in the README or available on
-request); independent verifier `verify_cert.py`; Lean modules and manifests in `lean_formal/`; measurements in
-`rho.py`, `holder.py`, `rF2_fit.py`, `renorm2.py`, `spectrum.py`, `kl5.py`. All vectors were produced twice (Apple
-M5 24 GB and M4 Pro 64 GB) with identical λ to 7 decimals and certificates differing only in the float32 bits.
+| k | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 |
+|---|---|---|---|---|---|---|---|---|---|---|---|---|
+| 1 − ρ_k | 0.0573 | 0.0524 | 0.0482 | 0.0443 | 0.0407 | 0.0375 | 0.0347 | 0.0321 | 0.0298 | 0.0277 | 0.0258 | 0.0241 |
+| ratio | 0.913 | 0.913 | 0.920 | 0.919 | 0.920 | 0.922 | 0.924 | 0.927 | 0.928 | 0.930 | 0.931 | 0.933 |
+
+The ratio rises monotonically, so 1 − ρ_k is not geometric. Geometric-with-offset (limit ρ∞ = 0.991, γ∞ ≈ 0.971),
+stretched-exponential (ρ∞ = 1) and power-law (ρ∞ = 1) models fit k = 11 … 22 with the same maximal residual
+≈ 10^{−4}. The data cannot decide.
+
+### 6.2 The λ = 2 operator
+
+At λ = 2 the same map F₂ has spectral radius r_k < 1, non-decreasing in k with limit r∞ ≤ 1, and λ_k → 2 ⇔ r∞ = 1.
+The exact identity r_k = 1/4 + (3/4)ρ′_k holds, where ρ′_k is the mixing ratio of the λ = 2 Perron vector itself
+(checked to 7 decimals at every k up to 22). The sequence 1 − r_k for k = 5 … 22 shrinks by ratios rising from 0.86
+to 0.924; at k = 22, r_22 = 0.974971 and ρ′_22 = 0.966628. Geometric-with-offset (limit 1 − r∞ = 0.0072) and
+stretched-exponential (limit 0) fits reach maximal residual 1.8·10^{−4} on k = 5 … 22; fitted on k ≤ 16 the offset
+model misses k = 22 by −4.3·10^{−4} and the stretched model by −7.5·10^{−4}, pure geometric by −1.5·10^{−3}.
+
+### 6.3 A renormalisation reading and a prediction
+
+Lift the level-k solution to level k + 1 (its top-digit sensitivity is then 0) and apply F once: the injected
+top-digit sensitivity is exactly (3/4)s_k at λ = 2, because the mean is preserved and only the auxiliary term,
+whose mass fraction is 3/4, selects lifts by the new digit. Iterating to the fixed point amplifies it by
+A_k = s_{k+1}/((3/4)s_k) = 1.20 → 1.23 for k = 8 … 21, and the per-level ratio of 1 − r_k is (3/4)A_k. Hence
+λ_k → 2 iff A∞ < 4/3. The amplification comes from the ×4 term recirculating top-digit variation with weight 1/4;
+if a fraction e of that variation survives the minimum, A = 1/(1 − e/4). Writing the fixed point as c = P + Q with
+P the ×4 term (mass fraction 0.275 → 0.262, tending to 1/4) and Q the auxiliary term, the surviving fraction is
+e_k = 0.614, 0.666, 0.692, 0.705, 0.715, 0.724, 0.731, 0.737, 0.742, 0.746 for k = 8 … 17, with shrinking
+increments; and the argmins of P and Q over the top digit agree on 0.332–0.333 of the classes at every k, exactly
+as if independent. If e∞ ≈ 0.78–0.80 the per-level ratio saturates near (3/4)/(1 − e∞/4) ≈ 0.935–0.94, and
+1 − r_k eventually decays geometrically: λ_k → 2.
+
+The prediction is therefore that the ratios keep rising but level off near 0.94 rather than approaching 1. k = 22
+gives 0.924, still rising by about 0.002 per level, consistent and not decisive; at the current rate 0.94 would be
+reached near k = 31. What a proof would need is that the two argmins stay independent and the two variations stay
+comparable in the limit measure.
+
+### 6.4 The limit object
+
+The total variation between the level-j marginals of the normalised solutions at consecutive k decays
+geometrically (ratio ≈ 0.92), so a limit measure on Z₃ exists. It is singular: C_max/C_min grows like 1.52^k
+(147 at k = 12, 9851 at k = 22), the mass in the top 1 % of classes rises from 6.5 % to over 9 %, and the Hölder
+exponent of the digit profile on coarse scales falls from 0.14 (k = 12) to 0.085 (k = 19), extrapolating to
+0.04–0.09, possibly 0. The boundary layer is universal: the Hölder exponent at distance d from the top digit is
+0.665, 0.401, 0.293, 0.232, 0.194 for d = 1 … 5, identical for every k to three decimals, which looks like a fixed
+point of "append a digit, then minimise". Integrating the limit inequality on X = {m ∈ Z₃ : m ≡ 2 (mod 3)} with
+Haar measure gives 1 ≤ λ^{−2} + (1/3)(λ^{α−2} + λ^{α−1}) with equality exactly at λ = 2, so λ = 2 is the critical
+value of the limit problem and the finite-k deficit is precisely 1 − ρ_k.
+
+### 6.5 The spectrum of the linearisation
+
+At the Perron vector the minimum in every row is attained by a fixed lift, so F is a sparse matrix J there, with
+J[i, 4i] = λ^{−2} and J[i, argmin lift] = λ^{α−j}. We computed its spectrum (dense to k = 9, Arnoldi top-40 to
+k = 15) at λ = λ_k and λ = 2.
+
+| k | 8 | 9 | 10 | 11 | 12 | 13 | 14 | 15 |
+|---|---|---|---|---|---|---|---|---|
+| \|λ₂\| at λ_k | 0.857 | 0.865 | 0.861 | 0.865 | 0.861 | 0.865 | 0.867 | 0.865 |
+| eigenvalues within 1 % of \|λ₂\| (of top 40) | 4 | 4 | 6 | 6 | 20 | 27 | 25 | 39 |
+| \|λ₂\|/λ₁ at λ = 2 | 0.884 | 0.884 | 0.887 | 0.880 | 0.892 | 0.880 | 0.874 | 0.876 |
+
+The gap does not close: |λ₂| is pinned at 0.86–0.87 while a ring of eigenvalues fills in at that radius, the
+finite-k shadow of the edge of the essential spectrum. The second eigenvector is delocalised: its energy is 0.667
+on every ternary digit (the value for a vector with no digit structure) and 0.71 on the top digit, while the Perron
+vector's digit profile decays geometrically from 0.38 to 0.004; λ₂ is complex with a rotating argument. For k ≤ 9
+the full spectrum is a disc of radius ≈ 0.8 containing 99 % of the eigenvalues, a thin ring at 0.865, and the
+isolated Perron root. Consequently the k-dependence of 1 − ρ_k, and the slowing of the power iteration at large k
+(effective contraction ≈ 0.97 at k = 22), are not set by the linear mixing rate; they come from the minimum, that
+is, from argmin switching as the iterate moves and from non-normal transients. The question λ_k → 2 is a question
+about the minimum structure, which is what §6.3 addresses, not about the spectrum of the linearisation. The
+structural reason is that the doubling branch m ↦ 4m is an isometry of Z₃ and mixes nothing: on Hölder-α
+functions the essential radius should be near 1/4 + (3/4)3^{−α}, which approaches 1 as α → 0, and the limit
+vector's Hölder exponent is at most 0.09.
+
+### 6.6 Calibration on 5x+1
+
+The same construction applies to T(n) = n/2, (5n+1)/2: principal classes a ≡ 3 (mod 5) (odd predecessor
+(2a − 1)/5), four doublings return to a principal class (λ^{−4} c_{16a}), and the odd predecessor falls into one
+of five cases by a mod 25 (weight λ^{β−1−d} with β = log₂ 5 and d = 0, 1, 2, 3 further doublings, or dropped when
+it is ≡ 0 mod 5), with the minimum over five lifts. A residue-walking LP (HiGHS, constraints generated by
+following the map on residues, no index formulas) reproduces Table 2 for 3x+1 to 10^{−6} and matches the 5x+1
+index formulas to 10^{−8} for k ≤ 6; a Metal kernel matches the NumPy map to 10^{−7}.
+
+Integrating the 5x+1 limit inequality gives 1 ≤ λ^{−4} + (λ^β/5)(λ^{−1} + λ^{−2} + λ^{−3} + λ^{−4}), with equality
+again exactly at λ = 2: the same mass-conservation identity, although the predecessor exponent of 5x+1 is believed
+to be η₅ ≈ 0.65 (Kontorovich–Lagarias; Volkov 0.678). For 5x+1, then, the loss 1 − ρ_k(5) must not vanish if that
+belief is right; it is a case where λ∞ < 2 is the expected truth.
+
+| k | 6 | 8 | 10 | 11 | 12 | 13 | 14 |
+|---|---|---|---|---|---|---|---|
+| γ_k(5) | 0.411 | 0.449 | 0.477 | 0.489 | 0.499 | 0.508 | 0.517 |
+| 1 − ρ_k(5) | 0.150 | 0.113 | 0.090 | 0.082 | 0.074 | 0.068 | 0.063 |
+| ratio | 0.83 | 0.88 | 0.90 | 0.90 | 0.91 | 0.915 | 0.919 |
+
+Through k = 14 the 5x+1 data do not show the expected saturation: γ_k(5) is well below the heuristic ceiling, but
+the ratios of 1 − ρ_k rise, by about 0.004 per level, faster than for 3x+1. Either saturation sets in later than
+k = 14, or the Krasikov–Lagarias exponent for 5x+1 eventually passes the heuristic. In both cases the lesson for
+3x+1 is that a rising ratio is not by itself evidence for ρ_k → 1; only the mechanism can decide. (No explicit
+predecessor-count exponent for 5x+1 exists in the literature; π_a(x) ≥ x^{0.516} numerically at k = 14 appears to
+be the first, pending the same certification.)
+
+## 7. What is and is not established
+
+All results here are density statements, and even the limit γ → 1 would exclude neither a nontrivial cycle nor a
+divergent orbit. Cycles are the province of Diophantine approximation: with Barina's verification to 2^{71} and
+Hercher's analysis, a nontrivial cycle has at least 1.375·10^{11} odd terms and period at least 2.18·10^{11}.
+Divergent orbits have no tool at all; Tao's theorem leaves them as a set of logarithmic density zero. Conway's
+undecidability result for maps linear on residue classes implies that any proof must use the arithmetic of 2 and
+3 specifically; the Krasikov–Lagarias system does, but only through the branching rule mod 3 and the size factors
+2 and 3/2, which is why it yields exponents and not individual orbits.
+
+Within the method, the open mathematical problem is λ_k → 2 ⇔ ρ_k → 1, which §6 reduces to the alignment of two
+argmins in the limit measure on Z₃. We regard the data to k = 22 as consistent with that limit and not as
+evidence for it.
+
+## Data and code availability
+
+Repository: github.com/dpalmqvist/kollatz (MIT). Certificates `certs/k{k}_{λ}/cert.json` and `certs/k{k}_{λ}_upper/`
+with sha256 of the vectors; independent verifier `verify_cert.py`; the search (`kl.py`, `kl_mlx.py`, `kl_split.py`);
+Lean modules, manifests and verifier reports in `lean_formal/`; measurements in `rho.py`, `holder.py`,
+`rF2_fit.py`, `renorm.py`, `renorm2.py`, `spectrum.py`, `kl5.py`, `kl5_mlx.py`; the literature survey in `reports/`.
 
 ## References
 
-- D. Applegate, J. C. Lagarias, Density bounds for the 3x+1 problem I, II, Math. Comp. 64 (1995) 411–426, 427–438.
+- D. Applegate, J. C. Lagarias, Density bounds for the 3x+1 problem I. Tree-search method; II. Krasikov inequalities, Math. Comp. 64 (1995) 411–426, 427–438.
 - D. Barina, Improved verification limit for the convergence of the Collatz conjecture, J. Supercomput. 81:810 (2025).
 - J. H. Conway, Unpredictable iterations, Proc. 1972 Number Theory Conf., Boulder, 49–52.
+- R. E. Crandall, On the "3x+1" problem, Math. Comp. 32 (1978) 1281–1292.
+- S. Eliahou, The 3x+1 problem: new lower bounds on nontrivial cycle lengths, Discrete Math. 118 (1993) 45–56.
 - C. Hercher, There are no Collatz m-cycles with m ≤ 91, J. Integer Seq. 26 (2023) 23.3.5; corrigendum 14 June 2026.
-- A. V. Kontorovich, J. C. Lagarias, Stochastic models for the 3x+1 and 5x+1 problems, in The Ultimate Challenge, AMS 2010; arXiv:0910.1944.
+- A. V. Kontorovich, J. C. Lagarias, Stochastic models for the 3x+1 and 5x+1 problems, in The Ultimate Challenge: the 3x+1 problem, AMS 2010; arXiv:0910.1944.
 - I. Krasikov, How many numbers satisfy the 3x+1 conjecture?, Internat. J. Math. Math. Sci. 12 (1989) 791–796.
 - I. Krasikov, J. C. Lagarias, Bounds for the 3x+1 problem using difference inequalities, Acta Arith. 109 (2003) 237–258; arXiv:math/0205002.
+- S. Kurtz, J. Simon, The undecidability of the generalized Collatz problem, TAMC 2007, LNCS 4484, 542–553.
 - J. C. Lagarias, The 3x+1 problem: an overview, in The Ultimate Challenge, AMS 2010; arXiv:2111.02635.
 - J. C. Lagarias, D. Weiss, The 3x+1 problem: two stochastic models, Ann. Appl. Probab. 2 (1992) 229–261.
-- L. Mazur, Collatz predecessor 0.90 (Lean development), ProofAtlas, July 2026, commit 5f76a17.
+- L. Mazur, Collatz predecessor 0.90 (Lean 4 development), ProofAtlas, July 2026, commit 5f76a170.
+- J. W. Sander, On the (3N+1)-conjecture, Acta Arith. 55 (1990) 241–248.
+- J. Simons, B. de Weger, Theoretical and computational bounds for m-cycles of the 3n+1 problem, Acta Arith. 117 (2005) 51–70.
 - T. Tao, Almost all orbits of the Collatz map attain almost bounded values, Forum Math. Pi 10 (2022) e12; arXiv:1909.03562.
-- G. J. Wirsching, The Dynamical System Generated by the 3n+1 Function, LNM 1681, Springer 1998.
+- R. Terras, A stopping time problem on the positive integers, Acta Arith. 30 (1976) 241–252.
+- G. J. Wirsching, An improved estimate concerning 3n+1 predecessor sets, Acta Arith. 63 (1993) 205–210; The Dynamical System Generated by the 3n+1 Function, LNM 1681, Springer 1998.
 - E. Yolcu, S. Aaronson, M. J. H. Heule, An automated approach to the Collatz conjecture, J. Automated Reasoning 67 (2023) 15; arXiv:2105.14697.
