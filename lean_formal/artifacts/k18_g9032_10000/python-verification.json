@@ -1,0 +1,25 @@
+{
+  "class_counts": {
+    "L1": 43046721,
+    "L2": 43046721,
+    "L3": 43046721
+  },
+  "failed_rows": 0,
+  "first_failure": null,
+  "manifest_file": "manifest.json",
+  "minimum_margin": 13842240112,
+  "parameters": {
+    "gamma_den": 10000,
+    "gamma_num": 9032,
+    "k": 18
+  },
+  "proof_status": "finite certificate only; asymptotic implication not checked here",
+  "rows_checked": 129140163,
+  "schema": "kl-predecessor-verification-report-v1",
+  "verdict": "PASS_EXACT_FINITE_ROWS",
+  "verifier": "independent-python-stdlib-v1",
+  "verifier_script_sha256": "e2b5ed37497cd5c43a6d211fc97a12e854eb8abf9768f4dc1dd2c7a335483d12",
+  "weights_sha256": "2ae328a9ff8eb8f393eb2d376030ef8fcb0546ff6f38123aba9ab2d0d2446e5c",
+  "worst_index": 70986832,
+  "worst_residue": 212960498
+}

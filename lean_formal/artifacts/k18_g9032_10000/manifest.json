@@ -1,0 +1,85 @@
+{
+  "algorithm": "float32-power-iteration-mlx (Palmqvist), rescaled to integers",
+  "artifact_status": "CANDIDATE_DATA_ONLY_UNTIL_INDEPENDENTLY_VERIFIED",
+  "coefficients": {
+    "lambda_alpha_minus1_lower": 387155562,
+    "lambda_alpha_minus2_lower": 207011852,
+    "lambda_neg2_lower": 76746626,
+    "power_checks": {
+      "lambda_alpha_minus1_lower": true,
+      "lambda_alpha_minus1_maximal": true,
+      "lambda_alpha_minus2_lower": true,
+      "lambda_alpha_minus2_maximal": true,
+      "lambda_neg2_lower": true,
+      "lambda_neg2_maximal": true
+    },
+    "scale": 268435456
+  },
+  "dimensions": {
+    "auxiliary_count": 43046721,
+    "modulus": 387420489,
+    "principal_count": 129140163
+  },
+  "generator_row_check": {
+    "failed_rows": 0,
+    "minimum_margin": 13842240112,
+    "worst_index": 70986832,
+    "worst_residue": 212960498
+  },
+  "parameters": {
+    "coefficient_scale_bits": 28,
+    "gamma_den": 10000,
+    "gamma_num": 9032,
+    "k": 18,
+    "weight_scale_bits": 20
+  },
+  "proof_status": "Exact finite rows self-checked; independent verification required.",
+  "schema": "kl-predecessor-certificate-v1",
+  "source": {
+    "note": "weights = our integer vector C rescaled (floor) so that min = 2^weight_scale_bits",
+    "our_cert_json": {
+      "C_max": 15377596416,
+      "C_min": 8388839,
+      "D": 67108864,
+      "L1": 96789506,
+      "L2": 51752729,
+      "N": 129140163,
+      "b": 23,
+      "c_dtype": "<f4",
+      "c_file": "c_f32.npy",
+      "c_file_sha256": "25b23127e04c21093923a20c410413e3a302ab82388a31d8ae741d90aaaaa5a4",
+      "c_sha256_data": "e674cdcadf6fb993c6de78ecab8f711c4f019f8a3af6db9b70e5d58b358764dd",
+      "check": "The integer vector is C[i] = c[i] * 2^b, c read from c_f32.npy (float32); every C[i] must be an exact integer >= 1. Index i in [0, N) is the residue m = 3i+2 mod 3^k, n3 = N/3. For every i, with j, t = divmod(i, 3), cbar(r) = min(C[r], C[r+n3], C[r+2n3]): C[i]*D <= q*C[(4i+2) mod N] + L*cbar(r), where L = L2, r = 4j mod n3 if t = 0; L = 0 if t = 1; L = L1, r = (2j+1) mod n3 if t = 2. Requires q/D <= lambda^-2, L2/D <= lambda^(alpha-2), L1/D <= lambda^(alpha-1), alpha = log2(3).",
+      "claim": "L^NT_18(lambda) is feasible for lambda = 1.87023, hence pi_a(x) >= x^gamma for every gamma < log2(lambda) and x >= x0(a, gamma)",
+      "created": "2026-10-08T07:01:34+00:00",
+      "format": "krasikov-lagarias-LNT-certificate/2",
+      "k": 18,
+      "lambda": "1.87023",
+      "lambda_P": 187023,
+      "lambda_Q": 100000,
+      "log2_lambda": 0.9032157029765715,
+      "min_relative_slack": 2.7009424649339853e-05,
+      "q": 19186238,
+      "reference": "I. Krasikov, J. C. Lagarias, Bounds for the 3x+1 problem using difference inequalities, Acta Arith. 109 (2003) 237-258, arXiv:math/0205002, Thm 2.2",
+      "software": {
+        "mlx": "0.32.3",
+        "mpmath": "1.4.1",
+        "numpy": "2.5.3",
+        "python": "3.14.7"
+      },
+      "verified_with": [
+        "numpy"
+      ]
+    },
+    "our_certificate": "certs/k18_1.87023"
+  },
+  "weights": {
+    "bytes": 516560652,
+    "count": 129140163,
+    "encoding": "unsigned-32-bit-little-endian",
+    "file": "weights.u32le",
+    "maximum": 1922146621,
+    "minimum": 1048576,
+    "sha256": "2ae328a9ff8eb8f393eb2d376030ef8fcb0546ff6f38123aba9ab2d0d2446e5c"
+  }
+}

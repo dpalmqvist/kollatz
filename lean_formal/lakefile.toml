@@ -1,0 +1,41 @@
+name = "collatz_predecessor_090"
+version = "1.0.0"
+keywords = ["math", "number-theory", "collatz", "lean"]
+defaultTargets = ["CollatzPredecessor090"]
+
+[leanOptions]
+pp.unicode.fun = true
+autoImplicit = false
+relaxedAutoImplicit = false
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.30.0-rc2"
+
+[[lean_lib]]
+name = "CollatzPredecessor090"
+
+[[lean_lib]]
+name = "Erdos1135"
+
+[[lean_lib]]
+name = "Challenge"
+
+[[lean_lib]]
+name = "ComparatorChallenge"
+
+[[lean_lib]]
+name = "Solution"
+
+[[lean_lib]]
+name = "CollatzPredecessor0903"
+
+[[lean_lib]]
+name = "AxiomAudit0903"
+
+[[lean_lib]]
+name = "CollatzPredecessor0909"
+
+[[lean_lib]]
+name = "AxiomAudit0909"

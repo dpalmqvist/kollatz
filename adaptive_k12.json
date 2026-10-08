@@ -1,0 +1,96 @@
+{
+ "k": 12,
+ "N": 177147,
+ "lambda_prev": 1.792231,
+ "lambda_full": 1.8064236,
+ "results": [
+  {
+   "name": "uniform depth 10 (= k-1)",
+   "leaves": 59049,
+   "leaf_frac": 0.3333333333333333,
+   "lam": 1.7922310123662308,
+   "gamma": 0.8417566077721232,
+   "gain_captured": 8.747608073719442e-07
+  },
+  {
+   "name": "uniform depth 11 (= k)",
+   "leaves": 177147,
+   "leaf_frac": 1.0,
+   "lam": 1.8064236287904223,
+   "gamma": 0.8531362624125535,
+   "gain_captured": 1.000002020572264
+  },
+  {
+   "name": "refine top 5% by spread",
+   "leaves": 64953,
+   "leaf_frac": 0.3666615861403241,
+   "lam": 1.7931650119808307,
+   "gamma": 0.8425082550844456,
+   "gain_captured": 0.06605280667954626
+  },
+  {
+   "name": "refine top 10% by spread",
+   "leaves": 70857,
+   "leaf_frac": 0.39998983894731494,
+   "lam": 1.7938899973117115,
+   "gamma": 0.8430914258209473,
+   "gain_captured": 0.11729965231170668
+  },
+  {
+   "name": "refine top 25% by spread",
+   "leaves": 88573,
+   "leaf_frac": 0.49999717748536526,
+   "lam": 1.7963561821187841,
+   "gamma": 0.8450734365092779,
+   "gain_captured": 0.2914712789531118
+  },
+  {
+   "name": "refine top 50% by spread",
+   "leaves": 118097,
+   "leaf_frac": 0.6666610216373972,
+   "lam": 1.8004157752267653,
+   "gamma": 0.8483301107724032,
+   "gain_captured": 0.5776555347643072
+  },
+  {
+   "name": "refine top 75% by spread",
+   "leaves": 147621,
+   "leaf_frac": 0.8333248657894291,
+   "lam": 1.8039786946201983,
+   "gamma": 0.851182300152446,
+   "gain_captured": 0.8282951840538986
+  },
+  {
+   "name": "refine random 25%",
+   "leaves": 88573,
+   "leaf_frac": 0.49999717748536526,
+   "lam": 1.7939872449912804,
+   "gamma": 0.8431696329253778,
+   "gain_captured": 0.12417219778977895
+  },
+  {
+   "name": "refine random 50%",
+   "leaves": 118097,
+   "leaf_frac": 0.6666610216373972,
+   "lam": 1.7976003585405944,
+   "gamma": 0.8460723173833984,
+   "gain_captured": 0.37924916415366505
+  },
+  {
+   "name": "base depth 9, refine top 25% two levels",
+   "leaves": 59043,
+   "leaf_frac": 0.33329946315771647,
+   "lam": 1.7808734485991167,
+   "gamma": 0.8325850001198571,
+   "gain_captured": -0.8059654265901866
+  },
+  {
+   "name": "base depth 9, refine top 50% two levels",
+   "leaves": 98411,
+   "leaf_frac": 0.5555329754384777,
+   "lam": 1.7862970084580518,
+   "gamma": 0.8369719779981737,
+   "gain_captured": -0.4204543505879538
+  }
+ ]
+}

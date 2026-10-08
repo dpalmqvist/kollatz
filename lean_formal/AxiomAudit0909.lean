@@ -1,0 +1,5 @@
+import CollatzPredecessor0909
+
+#print axioms CollatzPredecessor0909.predecessor_count_lower_bound_0909
+#print axioms CollatzPredecessor0909.predecessor_count_lower_bound_0909_nat
+#print axioms CollatzPredecessor0909.predecessor_count_lower_bound_09093

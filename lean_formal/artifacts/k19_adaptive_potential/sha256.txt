@@ -1,0 +1,1 @@
+728ed6fbe2def7f37e41b5568feefe3553a3d7c43553aee6ee5495f7ae241e39  /private/tmp/claude-501/-Users-danielpalmqvist-devel-kollatz/c0af8abb-df2c-41eb-a30a-160b9307f900/scratchpad/mazur_dl/collatz_predecessor_090-1.0.0/artifacts/kl_predecessor/k19_adaptive_potential/k19_adaptive.u8

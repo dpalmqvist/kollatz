@@ -1,0 +1,17 @@
+# Python environment and caches
+.venv/
+__pycache__/
+*.pyc
+
+# Large binary vectors: regenerate (see README) or copy by disk. cert.json files ARE tracked.
+*.npy
+certs/*/c_f32.npy
+certs/*/C.npy
+
+# Lean build products (the Mazur archive itself is not part of this repo)
+lean_formal/**/.lake/
+.lake/
+
+# scratch
+*.tmp
+.DS_Store

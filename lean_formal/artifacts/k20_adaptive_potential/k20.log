@@ -1,0 +1,6 @@
+k=20: least potential, max=38, failures=0, min slack=0, histogram=[571455351, 77151277, 220571978, 61164607, 88214399, 37928715, 38545005, 18176269, 18095948, 9494561, 7054404, 5058664, 3320344, 1830440, 1681278, 892451, 520626, 469315, 244038, 122200, 127244, 57176, 26725, 30324, 12163, 4836, 6455, 2170, 723, 1160, 314, 80, 167, 34, 5, 18, 2, 0, 1]
+wrote /private/tmp/claude-501/-Users-danielpalmqvist-devel-kollatz/c0af8abb-df2c-41eb-a30a-160b9307f900/scratchpad/potential/k20_adaptive.u8 sha256 9eb9f69dc830f19e4af9ce2d42e2f093f7df5f46e751b8cde260bd69c01372d8
+    "maximum": 38,
+  "rows_checked": 1937102445,
+  "verdict": "PASS_EXACT_ADAPTIVE_POTENTIAL",
+exit 0

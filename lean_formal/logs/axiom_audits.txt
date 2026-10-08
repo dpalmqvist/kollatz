@@ -1,0 +1,43 @@
+# k = 18 (gamma = 9032/10000) build
+/private/tmp/claude-501/-Users-danielpalmqvist-devel-kollatz/c0af8abb-df2c-41eb-a30a-160b9307f900/scratchpad/mazur_dl/lake_build_0903b.log:✔ [8370/8373] Built CollatzPredecessor0903 (94s)
+/private/tmp/claude-501/-Users-danielpalmqvist-devel-kollatz/c0af8abb-df2c-41eb-a30a-160b9307f900/scratchpad/mazur_dl/lake_build_0903b.log:ℹ [8372/8373] Built AxiomAudit0903 (88s)
+/private/tmp/claude-501/-Users-danielpalmqvist-devel-kollatz/c0af8abb-df2c-41eb-a30a-160b9307f900/scratchpad/mazur_dl/lake_build_0903.log:✔ [8327/8327] Built Erdos1135.KrasikovLagarias.Generated.K18AdaptiveForcedPotential (568s)
+/private/tmp/claude-501/-Users-danielpalmqvist-devel-kollatz/c0af8abb-df2c-41eb-a30a-160b9307f900/scratchpad/mazur_dl/lake_build_0903.log:✔ [8325/8325] Built Erdos1135.KrasikovLagarias.Generated.K18Gamma9032 (818s)
+info: AxiomAudit0903.lean:3:0: 'CollatzPredecessor0903.predecessor_count_lower_bound_0903' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k18AdaptiveForcedPotentialCertificate_check._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k18Gamma9032EncodedCertificate_check._native.native_decide.ax_1_1]
+info: AxiomAudit0903.lean:4:0: 'CollatzPredecessor0903.predecessor_count_lower_bound_0903_nat' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k18AdaptiveForcedPotentialCertificate_check._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k18Gamma9032EncodedCertificate_check._native.native_decide.ax_1_1]
+info: AxiomAudit0903.lean:5:0: 'CollatzPredecessor0903.predecessor_count_lower_bound_09032' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k18AdaptiveForcedPotentialCertificate_check._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k18Gamma9032EncodedCertificate_check._native.native_decide.ax_1_1]
+Build completed successfully (8373 jobs).
+
+# k = 19 (gamma = 9093/10000) build
+/private/tmp/claude-501/-Users-danielpalmqvist-devel-kollatz/c0af8abb-df2c-41eb-a30a-160b9307f900/scratchpad/mazur_dl/lake_build_0909b.log:✔ [8371/8374] Built CollatzPredecessor0909 (90s)
+/private/tmp/claude-501/-Users-danielpalmqvist-devel-kollatz/c0af8abb-df2c-41eb-a30a-160b9307f900/scratchpad/mazur_dl/lake_build_0909b.log:ℹ [8373/8374] Built AxiomAudit0909 (77s)
+/private/tmp/claude-501/-Users-danielpalmqvist-devel-kollatz/c0af8abb-df2c-41eb-a30a-160b9307f900/scratchpad/mazur_dl/lake_build_0909.log:✔ [8328/8328] Built Erdos1135.KrasikovLagarias.Generated.K19AdaptiveForcedPotential (1819s)
+/private/tmp/claude-501/-Users-danielpalmqvist-devel-kollatz/c0af8abb-df2c-41eb-a30a-160b9307f900/scratchpad/mazur_dl/lake_build_0909.log:✔ [8328/8328] Built Erdos1135.KrasikovLagarias.Generated.K19Gamma9093 (2335s)
+info: AxiomAudit0909.lean:3:0: 'CollatzPredecessor0909.predecessor_count_lower_bound_0909' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k19AdaptiveForcedPotentialCertificate_checkLoop._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k19Gamma9093EncodedCertificate_checkLoop._native.native_decide.ax_1_1]
+info: AxiomAudit0909.lean:4:0: 'CollatzPredecessor0909.predecessor_count_lower_bound_0909_nat' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k19AdaptiveForcedPotentialCertificate_checkLoop._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k19Gamma9093EncodedCertificate_checkLoop._native.native_decide.ax_1_1]
+info: AxiomAudit0909.lean:5:0: 'CollatzPredecessor0909.predecessor_count_lower_bound_09093' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k19AdaptiveForcedPotentialCertificate_checkLoop._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k19Gamma9093EncodedCertificate_checkLoop._native.native_decide.ax_1_1]
+Build completed successfully (8374 jobs).
