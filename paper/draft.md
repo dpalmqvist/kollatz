@@ -269,7 +269,7 @@ embedded as hexadecimal chunks of 32 MiB (`include_str`) and checked by `native_
 | k | γ = p/q | Lean theorem | potential check | weights check | peak RSS | axioms |
 |---|---|---|---|---|---|---|
 | 18 | 9032/10000 | x^{903/1000} ≤ π_a(x) (`CollatzPredecessor0903`) | 643 s | 871 s | 14.0 GB | 3 standard + 2 `native_decide` |
-| 19 | 9093/10000 | x^{909/1000} ≤ π_a(x) (`CollatzPredecessor0909`) | 2113 s | [TBD] | 11.6 GB (potential) | [TBD] |
+| 19 | 9093/10000 | x^{909/1000} ≤ π_a(x) (`CollatzPredecessor0909`) | 2113 s | 2554 s | 24.4 GB | 3 standard + 2 `native_decide` |
 | 20 | 9150/10000 | x^{915/1000} ≤ π_a(x) (`CollatzPredecessor0915`) | [TBD] | [TBD] | [TBD] | [TBD] |
 
 Each level also yields the constant-free forms `_nat` (natural cutoffs) and `_0903x` (c · x^{p/q} with the full

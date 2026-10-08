@@ -56,3 +56,18 @@ Build completed successfully (8374 jobs).
  Quot.sound,
  Erdos1135.KrasikovLagarias.k18AdaptiveForcedPotentialCertificate_check._native.native_decide.ax_1_1,
  Erdos1135.KrasikovLagarias.k18Gamma9032EncodedCertificate_check._native.native_decide.ax_1_1]
+'CollatzPredecessor0909.predecessor_count_lower_bound_0909' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k19AdaptiveForcedPotentialCertificate_checkLoop._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k19Gamma9093EncodedCertificate_checkLoop._native.native_decide.ax_1_1]
+'CollatzPredecessor0909.predecessor_count_lower_bound_0909_nat' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k19AdaptiveForcedPotentialCertificate_checkLoop._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k19Gamma9093EncodedCertificate_checkLoop._native.native_decide.ax_1_1]
+'CollatzPredecessor0909.predecessor_count_lower_bound_09093' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k19AdaptiveForcedPotentialCertificate_checkLoop._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k19Gamma9093EncodedCertificate_checkLoop._native.native_decide.ax_1_1]

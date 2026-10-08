@@ -124,7 +124,9 @@ de två native_decide-axiomen (k18AdaptiveForcedPotentialCertificate_check, k18G
 samma förtroendebas som Mazurs 0.90. Fallgrop: `open K18G9032` saknades i PredecessorBridge9032 (textersättningen
 träffade inte efter namnbytet) – rättad; K19-filerna hade rätt open-rader från början.
 RESULTAT k = 19 (2026-10-08): `CollatzPredecessor0909` byggt med LoopCheck-kontrollerna. native_decide: potential
-1819 s (topp ~7.7 GB), LP 2335 s (~2.7 GB RSS, mer i swap). `predecessor_count_lower_bound_0909`: x^(909/1000) ≤ π_a(x),
+1819 s (topp ~7.7 GB), LP 2335 s (~2.7 GB RSS, mer i swap). Ombyggt på M4 Pro 64 GB (kväll 2026-10-08) med de
+regenererade vikterna: potential 2113 s (11.6 GB), LP 2554 s (24.4 GB RSS – ingen swap), samma axiom. k = 18 ombyggt:
+643 s / 871 s (14.0 GB). k = 20 (CollatzPredecessor0915) pågår; LP-kontrollen väntas behöva ~70 GB (> RAM). `predecessor_count_lower_bound_0909`: x^(909/1000) ≤ π_a(x),
 samt `_0909_nat` och `_09093` (konstant·x^(9093/10000)); axiom: de tre standard + k19AdaptiveForcedPotentialCertificate_
 checkLoop och k19Gamma9093EncodedCertificate_checkLoop (native_decide). Fallgrop 2: `Generated.K19Gamma901` blev kvar i
 K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rättad med sed. Axiomrevisionerna sparade i
