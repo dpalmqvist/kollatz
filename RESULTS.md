@@ -100,10 +100,11 @@ d_{i*} ≤ F(d)_{i*} ≤ sF(C)_{i*} < sC_{i*} = d_{i*}). `certify_fast.py --uppe
 | 10 | 1.7771 | 1.77714 | 4e-5 | 19 | 1.8783 | 1.87833 | 3e-5 |
 | | | | | 20 | 1.8857 | 1.88572 | 2e-5 |
 | | | | | 21 | 1.8925 | 1.89256 | 6e-5 |
+| | | | | 22 | 1.8988 | 1.89891 | 1e-4 |
 
 The upper values are λ_k (float32 estimate) rounded up to 5 decimals plus 1e-5 (k = 3: +2e-4, because at
-N = 9 the float32 ratio gap has a rounding floor of ~3e-5); all 20 upper certificates (k = 2 … 21) verify with relative slack
-2.4e-6 … 1.3e-4 (`certs/k{k}_{λ}_upper/`); k = 22 follows (queued at 1.89891). Consequence: the numerical
+N = 9 the float32 ratio gap has a rounding floor of ~3e-5); all 21 upper certificates (k = 2 … 22) verify with relative slack
+1.6e-6 … 1.3e-4 (`certs/k{k}_{λ}_upper/`; k = 22: 39 GB, data sha256 e86951cb…). Consequence: the numerical
 λ_k are rigorously confirmed to 4–5 decimals, and the method at level k provably cannot reach γ ≥ log2 λ_upper.
 
 ## Independent checks

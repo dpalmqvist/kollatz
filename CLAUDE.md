@@ -73,7 +73,7 @@ intervallgräns⌉) och varje rad måste uppfylla strikt q·C_{4m} + L_j·C̄ < 
 1-homogen F följer att inget tillåtet d finns (s = max d_i/C_i i i*: d_{i*} ≤ F(d)_{i*} ≤ s·F(C)_{i*} < s·C_{i*}),
 alltså λ_k < λ. Sparas i `certs/k{k}_{λ}_upper/` (format /2-upper), verify_cert.py kontrollerar riktningen.
 Vektorn = potensitererad c vid λ_k + 1e-5 (k = 3 behövde +2e-4 p.g.a. float32-golvet). Brackets för k = 2…19 i
-RESULTS.md; k = 20–22 när GPU:n är ledig.
+RESULTS.md; k = 20–22 klara (00:19 2026-10-09), alla 21 nivåer tvåsidiga.
 Snabb- och exakt certifiering skiljer sig bara i säker riktning: k = 2, λ = 1.3534 (slack 2e-8 < float32-
 upplösning) ger fast=False, certify.py=True (den förfinar c i float64). Snabbvägen kräver slack ≳ 1e-7.
 d väljs så att max C·D < 2^63 och max C·(q + L) < 2^63
@@ -220,7 +220,7 @@ Extern korskontroll (2026-10-08): msharpe248 får 0.895 vid k = 17 (vi 0.8965) o
 Ökning i γ per steg: 0.0113, 0.0099, 0.0094, 0.0088, 0.0080, 0.0073, 0.0068, 0.0061, 0.0057, 0.0052, 0.0048 (avtagande).
 k = 22 (2026-10-08, M4 Pro 64 GB): `kl_split.py lambda 22 c_k21_mlx.npy 1.9005 1.9025` – 3 λ-värden (51 + 40 + 19 min),
 110 min totalt, topp 49.0 GiB (1.26 vektorer), λ_22 = 1.8988933 (prognosen från den geometriska anpassningen var
-γ_22 = 0.925; utfall 0.92513), Cmax = 9851. Certifiering via `kl_split.py certify 22 1.8988 c_k22_part0.npy`: trim 39 min (int8-golvet 2.5e-6), sammanslagning 90 s, int64-kontroll 290 s, slack 2.40e-5, verify_cert PASS. OBS: "negativt test" vid 1.89888 var FEL VALT (< λ_22 = 1.8988933) och gav True – ett giltigt andra certifikat (slack 3.0e-6, raderat); negativt test/övre certifikat för k = 22 kräver λ > λ_k, t.ex. 1.89891 – återstår.
+γ_22 = 0.925; utfall 0.92513), Cmax = 9851. Certifiering via `kl_split.py certify 22 1.8988 c_k22_part0.npy`: trim 39 min (int8-golvet 2.5e-6), sammanslagning 90 s, int64-kontroll 290 s, slack 2.40e-5, verify_cert PASS. OBS: "negativt test" vid 1.89888 var FEL VALT (< λ_22 = 1.8988933) och gav True – ett giltigt andra certifikat (slack 3.0e-6, raderat); övre certifikat för k = 22 vid 1.89891 (2026-10-09 00:19): `kl_split.py certify 22 1.89891 … --upper`, trim 2252 s, slack 1.6e-6, verify_cert PASS ⇒ λ_22 ∈ [1.8988, 1.89891].
 k = 16 (2026-10-07): λ-sökning 16 s, 240 MB, värmestart från k = 15; certifiering 0.3 s, slack 1.0e-5;
 λ = 1.85224 ger VERIFIED=False.
 k = 17–21 (2026-10-07, M5 24 GB), sekant med start λ_{k−1} + 0.008 / + 0.010, värmestart från k−1:

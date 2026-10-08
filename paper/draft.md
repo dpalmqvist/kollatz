@@ -15,7 +15,7 @@ the program has 3^{21} ≈ 1.05·10^{10} principal variables, and obtain
 
 Every level k = 12, …, 22 comes with an integer certificate, the float32 solution vector read as an exact integer
 vector, verified in int64 arithmetic by two programs that share no code; the verification of the k = 22
-certificate (39 GB) takes four minutes. For k = 2, …, 21 [22: TBD] we also give infeasibility certificates, positive
+certificate (39 GB) takes four minutes. For k = 2, …, 22 we also give infeasibility certificates, positive
 vectors C with F(C) < C strictly for the right-hand side map F, which prove that the program at level k is
 infeasible slightly above the certified λ; the Krasikov–Lagarias constants λ_k are thereby bracketed to widths
 between 2·10^{−5} and 10^{−4}, confirming their numerical values to four or five decimals. The levels k = 18 and
@@ -160,7 +160,7 @@ kernel bit for bit at k ≤ 10.
 | 19 | 387 420 489 | 1.8783132 | 1.8783 | 0.9094 | 0.0061 | 1.87833 |
 | 20 | 1 162 261 467 | 1.8857083 | 1.8857 | 0.9151 | 0.0057 | 1.88572 |
 | 21 | 3 486 784 401 | 1.8925462 | 1.8925 | 0.9203 | 0.0052 | 1.89256 |
-| 22 | 10 460 353 203 | 1.8988933 | 1.8988 | 0.9251 | 0.0048 | [TBD: 1.89891] |
+| 22 | 10 460 353 203 | 1.8988933 | 1.8988 | 0.9251 | 0.0048 | 1.89891 |
 
 An independent implementation (HiGHS on the explicit LP, constraints written out from residues in exact integers,
 no code shared with the search) reproduces λ_k to 10^{−6} for k ≤ 9, and its LP solutions at λ_k − 2·10^{−6}
@@ -209,7 +209,8 @@ An infeasibility certificate is therefore a vector C with the coefficients round
 q = ⌈D Q²/P²⌉, L_j = ⌈D u_j⌉ with u_j a rigorous rational upper bound for λ^{α−j}, and the strict reverse
 inequality q C_{4m} + L_j C̄ < D C_i checked in int64 for every i. The power-iterated vector at λ_k + 10^{−5}
 serves directly (its maximal ratio is about 1 − 3·10^{−6}); at k = 3 the float32 rounding floor of the ratio gap
-(≈ 3·10^{−5} at N = 9) required λ_k + 2·10^{−4}. The two certificates bracket λ_k:
+(≈ 3·10^{−5} at N = 9) required λ_k + 2·10^{−4}, and at k = 22 the int8 path's floor required λ_k + 2·10^{−5}
+(1.89891; slack 1.6·10^{−6}, 2252 s to re-tune and 293 s to check). The two certificates bracket λ_k:
 
 | k | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 |
 |---|---|---|---|---|---|---|---|---|---|---|
@@ -217,10 +218,10 @@ serves directly (its maximal ratio is about 1 − 3·10^{−6}); at k = 3 the fl
 
 | k | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| width | 4e-5 | 4e-5 | 9e-5 | 8e-5 | 5e-5 | 1e-4 | 4e-5 | 3e-5 | 2e-5 | 6e-5 | [TBD] |
+| width | 4e-5 | 4e-5 | 9e-5 | 8e-5 | 5e-5 | 1e-4 | 4e-5 | 3e-5 | 2e-5 | 6e-5 | 1e-4 |
 
 The brackets confirm the published Table 2 of Krasikov–Lagarias at k = 2 … 11 and show that at level k the method
-provably cannot give γ ≥ log₂ λ_upper. The same reverse check verifies in `verify_cert.py` (format `/2-upper`).
+provably cannot give γ ≥ log₂ λ_upper; at k = 22, γ_22 ∈ [0.92509, 0.92517]. The same reverse check verifies in `verify_cert.py` (format `/2-upper`).
 
 ### 4.3 Certificate metadata
 
@@ -270,7 +271,7 @@ embedded as hexadecimal chunks of 32 MiB (`include_str`) and checked by `native_
 |---|---|---|---|---|---|---|
 | 18 | 9032/10000 | x^{903/1000} ≤ π_a(x) (`CollatzPredecessor0903`) | 643 s | 871 s | 14.0 GB | 3 standard + 2 `native_decide` |
 | 19 | 9093/10000 | x^{909/1000} ≤ π_a(x) (`CollatzPredecessor0909`) | 2113 s | 2554 s | 24.4 GB | 3 standard + 2 `native_decide` |
-| 20 | 9150/10000 | x^{915/1000} ≤ π_a(x) (`CollatzPredecessor0915`) | [TBD] | [TBD] | [TBD] | [TBD] |
+| 20 | 9150/10000 | x^{915/1000} ≤ π_a(x) (`CollatzPredecessor0915`) | 5940 s | 7382 s | 55.9 GB | [TBD: audit] |
 
 Each level also yields the constant-free forms `_nat` (natural cutoffs) and `_0903x` (c · x^{p/q} with the full
 certificate exponent). `#print axioms` lists propext, Classical.choice, Quot.sound and the two named `native_decide`

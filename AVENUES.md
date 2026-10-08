@@ -18,7 +18,7 @@ everything adjacent (cycle bounds, predecessor density, the long shots, formal v
 | 6 | Wirsching's positive-density program | numerical test of an open conjecture | not started |
 | 7 | Divergent orbits | new theorem, no known tool | not started, no concrete idea |
 | 8 | 5x+1 as a calibration case for avenue 1 | tests our extrapolation where the answer is known | running: k ≤ 13 done (`kl5.py`, `kl5_mlx.py`), see §8 |
-| 9 | Dual certificates: λ_k is optimal at level k | exact λ_k, confirms K–L's optimality belief | DONE for k ≤ 19 (2026-10-08): `certify_fast.py --upper`, brackets in RESULTS.md |
+| 9 | Dual certificates: λ_k is optimal at level k | exact λ_k, confirms K–L's optimality belief | DONE for k = 2 … 22 (2026-10-08/09): `certify_fast.py --upper`, `kl_split.py certify --upper`, brackets in RESULTS.md |
 | 10 | Explicit constants in the predecessor bound | tables comparable with real counts | proposed 2026-10-08 |
 | 11 | 3x+d cycle census at scale | tests Belaga–Mignotte conjectures | proposed 2026-10-08 |
 | 12 | Terras's coefficient stopping time conjecture | compute upgrade | largely pre-empted: Rozier–Terracol 2026 reach 2.8·10^19 (lit. search 2026-10-08) |
@@ -304,7 +304,7 @@ rigorous check is the same kind of int64 streaming check as `certify_fast.py`, a
 **Done (2026-10-08).** No dual ray needed: for the monotone 1-homogeneous F, a positive C with F(C) < C strictly
 proves infeasibility (Collatz–Wielandt upper bound; proof in RESULTS.md). `certify_fast.py --upper` rounds the
 coefficients up and checks the strict reverse inequality in int64; `verify_cert.py` verifies the `-upper` format.
-Brackets [λ_cert, λ_upper] of width 2e-5 … 1e-4 for k = 2 … 19, all verified; k = 20–22 pending the GPU. The
+Brackets [λ_cert, λ_upper] of width 2e-5 … 1e-4 for k = 2 … 22, all verified (k = 22: 1.89891, slack 1.6e-6). The
 power-iterated vector at λ_k + 1e-5 serves directly as the upper certificate (float32 noise permitting; k = 3 needed
 +2e-4). λ_k is thus a rigorously two-sided number at every level we have.
 
