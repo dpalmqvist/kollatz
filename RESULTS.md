@@ -154,6 +154,11 @@ N = 9 the float32 ratio gap has a rounding floor of ~3e-5); all 21 upper certifi
   15 % of one level's gain), raises 1 − ρ by 1.6 % and leaves q_k unchanged within 0.005. Scrambling only the top level is invisible from
   k = 9 on; scrambling from level 6 or 3 costs 10^{−2} or more. The arithmetic matters in the coarse residues and
   the weights; the fine alignment can be random. The question λ_k → 2 can thus be posed for a random K–L model.
+  A cavity (population-dynamics) treatment of that model reproduces the mechanism behind the rising q_k, the
+  broadening of the magnitude distribution, but its asymptotics depend on how the loss-factor fluctuation is
+  closed (q at k = 60 between 0.95 and 0.99), so it does not decide q∞ (`popdyn.py`). In the exact vectors the
+  spread of the ×4 weight and of log c both grow with increments shrinking 7–10 % per level, which heuristically
+  points to q∞ < 1 but is not yet visible in q_k itself.
 - The dependence of c on each ternary digit decays geometrically in the digit position, with a factor
   that rises with k (0.828 at k = 12, 0.875 at k = 19) and extrapolates to roughly 0.94. The spread
   C_max/C_min grows like 1.52^k, so the k → ∞ limit object is unbounded.

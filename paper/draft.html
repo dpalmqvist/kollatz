@@ -26,7 +26,7 @@ a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: un
 </style></head>
 <body>
 <h1>Certified Krasikov–Lagarias predecessor bounds for the 3x+1 problem to k = 22: two-sided brackets, machine-checked instances, and the finite-level loss</h1>
-<p><em>Draft 0.6, 2026-10-09. All numbers are taken from <code>RESULTS.md</code>, <code>certs/*/cert.json</code>, <code>AVENUES.md</code>,
+<p><em>Draft 0.7, 2026-10-09. All numbers are taken from <code>RESULTS.md</code>, <code>certs/*/cert.json</code>, <code>AVENUES.md</code>,
 <code>spectrum.json</code>, <code>kl5.json</code> and the literature survey <code>reports/Collatz adjacent work and references.md</code>.</em></p>
 <h2>Abstract</h2>
 <p>For a positive integer a ≢ 0 (mod 3), let π_a(x) be the number of n ≤ x whose 3x+1 orbit passes through a.
@@ -613,7 +613,16 @@ arithmetic of 2 and 3 acts through the coarse residues and the weights, and the 
 independent randomness. The question λ_k → 2 can therefore be posed for a random Krasikov–Lagarias model, the exact
 system up to a fixed level lifted with independent uniform alignments above it, in which it becomes a quenched-
 versus-annealed question of the kind studied for branching random walks. Whether the residual offset itself
-shrinks with k is open. Integrating the limit inequality on X = {m ∈ Z₃ : m ≡ 2 (mod 3)} with
+shrinks with k is open. A cavity (population-dynamics) treatment of the random model, with sibling triples typed
+by the level-8 residue, reproduces the mechanism behind the rising q_k, namely the broadening of the magnitude
+distribution, which leaves more classes dominated by either the ×4 transport or the injection and so weakens the
+contraction per level. It does not decide the limit: the loss factor c̄_{k+1}/c_k fluctuates by one third of the
+loss in the exact system (with sibling correlation 0.35), and closing that fluctuation differently moves q at
+k = 60 between 0.95 and 0.99 (<code>popdyn.py</code>). Two direct measurements point the same way without deciding it: the
+spread of the ×4 weight λ^{−2} c(4m)/c(m) within a class and the spread of log c both grow with k, but with
+increments that shrink by 7–10 % per level, so the weight distribution appears to converge, which would make the
+contraction per level converge to a constant below 1. The increments of q_k itself, about 0.002 per level up to
+k = 21, do not yet show the corresponding deceleration. Integrating the limit inequality on X = {m ∈ Z₃ : m ≡ 2 (mod 3)} with
 Haar measure gives 1 ≤ λ^{−2} + (1/3)(λ^{α−2} + λ^{α−1}) with equality exactly at λ = 2, so λ = 2 is the critical
 value of the limit problem and the finite-k deficit is precisely 1 − ρ_k.</p>
 <h3>6.5 The spectrum of the linearisation</h3>

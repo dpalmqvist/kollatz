@@ -210,6 +210,15 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   av ett stegs vinst), 1−ρ +1.6 %, q_k lika inom 0.005; nivåer ≥ 12 → −7.8e-4 vid k = 15; ≥ 6 → −9e-3; ≥ 3 → −4e-2. ⇒ λ_k, q_k är mean-field-storheter; aritmetiken
   sitter i de grova nivåerna (≤ 8) och vikterna. `python meanfield.py KMAX SEEDS K0 MODES TAG` → meanfield_TAG.json
   (modes top,sigma,pi,all; all = slumpa alla nivåer från K0). k = 14: 90 s, k = 15: 320 s per λ-sökning. Se AVENUES §1.
+- `popdyn.py` – spår 1 (2026-10-09): typad kavitets-/populationsdynamik för den slumpade K–L-modellen (syskontripplar
+  per nivå-8-residy, 2187 typer × 300). Startar från exakta slumpmodellen vid k = 12, 13, validerar mot
+  meanfield_all9b vid k = 14, 15. INTE prediktiv: slutningen av förlustfaktorn c̄_{k+1}/c_k styr svaret (draw: förlusten
+  växer; const: q_60 = 0.95; kalibrerad ν = 0.33, syskonkorr 0.35: 0.955; ν = 0.5: 0.987). Alla ger stigande q_k
+  drivet av bredare magnitudfördelning. `python popdyn.py KMAX P SWEEPS SEED B KS CLOSURE [NU CC]` → popdyn_*.json.
+  Mätt i exakta vektorer: förlustfaktorns rel. std = 1/3 av 1−ρ_k (k = 15, 19), syskonkorr 0.35; ×4-vikten
+  a = λ^-2 c(nxt)/c har std inom klass 2: 0.227 → 0.260 (k = 8 → 19), inkrement −10 %/steg (mättar ≈ 0.276);
+  std(log c) 0.71 → 0.91 (k = 8 → 21), inkrement −7 %/steg (`weights_stats.json`). Heuristik: mättad viktfördelning
+  ⇒ q∞ < 1 (≈ 0.94–0.95); q_k:s egna inkrement (0.002/steg) visar ännu ingen inbromsning.
 - `.venv/` – Python 3.14, numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1, mlx 0.32.3, matplotlib 3.11.2 (Apple M5, 24 GB)
 
 ## Referensvärden (regressionstest – ska reproduceras)

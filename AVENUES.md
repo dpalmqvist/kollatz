@@ -229,6 +229,47 @@ fixed cost and decide q∞ for the model numerically; the ×4 transport makes ea
 the triple-shape law rather than a one-step map, so the formulation needs the cavity-style self-consistency;
 (b) a proof of q∞ < 1 for the random model, if (a) says so.
 
+**Population dynamics for the random model: not predictive (2026-10-09, `popdyn.py`).** Typed cavity model: pools of
+sibling triples Ξ_{k+1}(w) per level-8 residue class (2187 types, 300 samples each), ×4 source an independent draw
+from the pool of type nxt(τ) with a random permutation, auxiliary injection = sibling magnitudes (c_k(w_s))_s from
+the level-k pool (exact sibling correlation kept) times a loss factor c̄_{k+1}/c_k, λ_{k+1} from the summed identity.
+Initialised from the exact random model at k = 12, 13 (same seeds as `meanfield_all9b.json`), validated against it at
+k = 14, 15. The result hinges on how the loss factor is closed:
+
+| closure of c̄_{k+1}(w_s)/c_k(w_s) | 1 − ρ_15 (random model: 0.0414) | q at k = 16–25 | q at k = 51–60 | λ_60 |
+|---|---|---|---|---|
+| independent min/mean draws per sibling ("draw") | 0.0479 | 1.006 | > 1 (loss grows) | – |
+| constant = pool mean ("const") | 0.0382 | 0.911 | 0.951 | 1.9917 |
+| ρ(1 + ε), rel. std ε = 0.33(1 − ρ), sibling corr 0.35 (calibrated on the exact system) | 0.0397 | 0.927 | 0.955 | 1.9857 |
+| ρ(1 + ε), rel. std 0.5(1 − ρ), no sibling corr | 0.0444 | 0.966 | 0.987 | 1.926 |
+
+In the exact system the loss factor c̄_k(w)/c_{k−1}(w) has relative std 0.0136 (k = 15) and 0.0097 (k = 19), one third
+of 1 − ρ_k at both levels, with sibling correlation 0.35; the triple's own min/mean fluctuates more (0.022, 0.017)
+because the triple mean deviates from the parent value by 2.5 % while the min stays within 1.4 % of ρ·parent (this
+is R c_k ≈ c_{k−1} again: the minimum is the stable quantity). The independent-draw closure injects this larger,
+uncorrelated noise at every level and pins the loss at a floor; the constant closure removes a real source of
+spread and decays too fast; the calibrated closure sits between and matches the random model to 4 % at k = 15.
+**All closures with bounded noise give λ_k ↑ and q_k rising with k**, as in the exact system, and the rise is driven
+by the broadening of the pool's magnitude distribution (C_max/C_min grows to 10^3–10^4): with wider magnitude
+ratios more nodes are dominated by either the ×4 transport (no contraction) or the injection, which lowers the
+contraction per level. But the asymptotic value of q at k = 60 ranges from 0.95 to 0.99 depending on the closure
+parameter, i.e. the model cannot decide q∞ < 1 versus q∞ = 1: the closure error is of the size of the effect.
+A depth-2 (sibling-of-sibling) cavity would push the same closure one level down without removing it, because the
+loss-factor fluctuation is a fixed fraction of the loss at every level.
+
+**What the exact vectors say about the mechanism (`weights_stats.json`, k = 8 … 19; log-spread to k = 21).** The ×4
+weight a_w = λ^{−2} c(nxt w)/c(w) (= 1 on class 5, so that the injection weight is b = 1 − a) has mean 0.52 at every k;
+its spread within class 2 grows 0.227 → 0.260 and within class 8 0.119 → 0.135 from k = 8 to 19, with increments
+that shrink by ≈ 10 % per level (0.0049 → 0.0018), extrapolating to ≈ 0.276. The naive variance recursion
+q² = E[b²]/(1 − E[a²]) gives q = 0.81 → 0.83 (0.85 → 0.89 magnitude-weighted), far below the actual 0.91 → 0.93
+(the min is not additive) but rising at the same rate, so the rising q_k is the polarisation of the weights. The
+typical magnitude spread saturates too: std(log c) = 0.714 (k = 8) → 0.913 (k = 21) with increments 0.024 → 0.0095,
+decaying ≈ 7 % per level (limit ≈ 1.04); the growth of C_max/C_min ∝ 1.52^k is in the extreme tail only. If the
+weight distribution converges, the per-level contraction converges and q∞ < 1 follows heuristically, with the
+crude extrapolations landing at q∞ ≈ 0.94–0.95 (then 1 − ρ_k → 0 geometrically and λ_k → 2). The measured q_k
+increments (≈ 0.002 per level for k = 16 … 21) do not yet show the deceleration that the saturating weight spread
+predicts, so this remains a mechanism-based expectation, not a measurement.
+
 **How to pick up.**
 1. Measure convergence of the mass distribution μ_k(class) = c_m / Σc on 3-adic balls across k (total variation
    between level-j marginals of consecutive k). If it converges, a limit measure exists.
@@ -236,7 +277,9 @@ the triple-shape law rather than a one-step map, so the formulation needs the ca
    λ_k. If the shapes agree, the limit object is the λ = 2 eigenmeasure of the 3-adic operator.
 3. ✅ (2026-10-09) The boundary layer is the 1 − ρ_k sequence through R; the defect D_k is measured (`defect.py`).
    ✅ The recursion's mean-field character is tested directly (`meanfield.py`): random alignments reproduce λ_k, q_k.
-   Next: distributional (population-dynamics) formulation of the random K–L model to reach k ≫ 22.
+   ✅ Population dynamics tried (`popdyn.py`): reproduces the mechanism (rising q from weight polarisation) but the
+   asymptotics depend on the loss-factor closure (q_60 = 0.95 … 0.99) – not predictive. Next: a controlled
+   closure (depth-2 with the measured sibling correlation) or a direct estimate of the weight-distribution limit.
 4. Decide whether the per-digit factor converges to r∞ < 1. If so, 1 − ρ_k eventually decays geometrically and
    λ_k → 2 follows from the summed inequality.
 
