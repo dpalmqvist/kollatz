@@ -28,7 +28,7 @@ everything adjacent (cycle bounds, predecessor density, the long shots, formal v
 | 16 | Spectrum, gap and traces of the K–L transfer matrix | mixing rate vs k; cycle footprints | first results 2026-10-08 (`spectrum.py`, k ≤ 15): gap does NOT close, see §16 |
 | 17 | Three-statement decomposition: Conjecture A + density-1 boundedness + no cycles ⇒ Collatz | a full proof from three density/Diophantine statements | started 2026-10-09: minimal spread at fixed λ is bounded in k (`spread_iter.py`), t*_∞(λ) ~ (2 − λ)^{−2}; lifted base case (`base_lift.py`) removes most of the spread penalty: certified π_a(x) ≥ 0.865 (x/a)^{0.799} for x ≥ 64a; Conjecture A ⇐ λ_k → 2 + uniform base constant |
 | 18 | No divergence as an arithmetic property of the 2-adic parity map (Q(ℤ) ⊆ ℚ) | settles divergence for integers | first data run 2026-10-09 (`parity_stats.py`, n < 2^32, in progress); by Terras the local gap statistics carry no information, see §18 |
-| 19 | All cycles by equidistribution of numerators mod 2^n − 3^k | settles cycles for all m | proposed 2026-10-09 |
+| 19 | All cycles by equidistribution of numerators mod 2^n − 3^k | settles cycles for all m | first step done 2026-10-09 (`cycle_numerators.py`, n ≤ 32): equidistributed at random level exactly where m ≪ 2^n (the cycle regime); intrinsic bias for m ≈ 2^n |
 | 20 | Adelic ℤ₂ × ℤ₃ picture and a Furstenberg-type rigidity theorem | explains the difficulty and would kill divergent orbits | proposed 2026-10-09 |
 | 21 | Map the no-go theorems; termination with residue-labelled K–L orderings | delimits where a proof can live; one mechanical route | (i) done 2026-10-09: `notes/no_go_theorems.md` (Theorems 1–3 from Terras: no residue-class, bounded-lookahead or residue-monotone potential, violations of positive density); (ii) not started |
 | — | Scaling k further | +0.005 in γ per step | k = 22 certified 2026-10-08 (γ = 0.9251) plus upper certificate; k = 23 needs ~192 GB |
@@ -893,6 +893,22 @@ the discrepancy decays like a power of the modulus. Then attempt the exponential
 Compute days; mathematics months to a year.
 
 **Payoff.** Settles cycles for all m, which no verification range can; with avenue 18 this is the conjecture.
+
+**First step done (2026-10-09, `cycle_numerators.py`, `cycle_analysis.py`; n ≤ 32, all 2^n parity vectors per n on
+the GPU, 104 s in total).** (i) Zeros: for every n ≤ 32 the only v with N(v) ≡ 0 (mod 2^n − 3^k) are the all-even
+vector (x₀ = 0) and, for even n, the two rotations of the trivial cycle (10)^{n/2}: no other cycle of length ≤ 32,
+as known. (ii) Weyl sums S_h = Σ_v e(h N(v)/m)/binom(n, k), h ≤ 8: at the largest admissible k (the cycle-relevant
+regime, where m = 2^n − 3^k ≪ 2^n) they sit at the random level, |S_h|·√binom = 0.6 (n = 24), 1.3 (n = 32); one and
+two steps below k_max the ratio is 18 and 89 at n = 32, and for k ≤ n/2 the h = 1 sum is of order 1 at every n
+(0.27 at k = n/4, 0.027 at k = n/2 for n = 32) and does not decay with n. The latter is intrinsic and not about
+cycles: for m ≈ 2^n the fraction N(v)/m ≈ Σ_i 3^{o_i} 2^{i−n} is dominated by the few top set bits of v, so it is far
+from uniform mod 1; equidistribution holds exactly where the modulus is small relative to 2^n, which is where n/k
+approximates log₂ 3 and where large cycles would have to live. The quality tracks m/2^n: at n = 30 (m/2^n = 0.64)
+the ratio at k_max is 6.9, at n = 24 (0.14) 0.6, at n = 32 (0.19) 1.3. So the heuristic count binom(n, k)/m is
+supported in the relevant regime, and the exponential-sum statement a proof needs can be formulated as: for n/k a
+convergent-type approximation of log₂ 3, the numerators are equidistributed modulo 2^n − 3^k with error O(binom^{1/2+ε}).
+**Next:** push n to 40 at k near k_max only (binom(40, 25) = 4·10^{10}, GPU hours), and test the dependence of the
+error on the quality of n/k as an approximation to log₂ 3.
 
 ## 20. The adelic picture: ℤ₂ × ℤ₃ and a Furstenberg-type rigidity theorem
 

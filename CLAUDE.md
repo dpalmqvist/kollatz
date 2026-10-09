@@ -241,6 +241,10 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   `python base_lift.py K Y [LAM [VEC.npy]]`. Nästa: finare residyer (mod 3^{k'}) för att se om Δ_best(k) planar ut.
 - `pred_density.py`, `pred_compare.py` – spår 17: första banvärdet < 3^8 för alla n < 2^32 (GPU) ⇒ π_a(X) exakt för
   alla a < 6561; klassmedel av d_a·a korrelerar 0.90–0.93 (log) med Perron-vektorn redan vid X = 2^20.
+- `cycle_numerators.py`, `cycle_analysis.py` – spår 19 (2026-10-09): Weyl-summor av cykeltäljarna N(v) mod 2^n − 3^k
+  över alla 2^n paritetsvektorer (Metal-kärna, n ≤ 32 på 104 s). Bara triviala nollor. Ekvidistribution på slumpnivå
+  (|S_h|√binom ≈ 1) exakt vid största tillåtna k (m ≪ 2^n, cykelregimen); för m ≈ 2^n är N/m domineradt av toppbitarna
+  och |S_1| ~ O(1) oberoende av n. `python cycle_numerators.py NMIN NMAX [H CHUNK_BITS]` → cycle_numerators.json.
 - `parity_stats.py`, `analyse_parity.py` – spår 18 (2026-10-09): paritets-/gapstatistik för alla n < 2^32 på GPU (MLX,
   2^24 per chunk, ~50 s/chunk, ~3.5 h; int32-scatter!), tre regimer (fönster t < 32, startvärde ≥ 2^24, litet). Lokala
   gapfördelningar är geometriska enligt Terras – avvikelser är urvals-/sluteffekter; spår 18:s innehåll är globalt.
