@@ -157,8 +157,9 @@ N = 9 the float32 ratio gap has a rounding floor of ~3e-5); all 21 upper certifi
   A cavity (population-dynamics) treatment of that model reproduces the mechanism behind the rising q_k, the
   broadening of the magnitude distribution, but its asymptotics depend on how the loss-factor fluctuation is
   closed (q at k = 60 between 0.95 and 0.99), so it does not decide q∞ (`popdyn.py`). In the exact vectors the
-  spread of the ×4 weight and of log c both grow with increments shrinking 7–10 % per level, which heuristically
-  points to q∞ < 1 but is not yet visible in q_k itself.
+  spread of the ×4 weight and of log c both grow to k = 21 with geometrically shrinking increments (ratios
+  0.91–0.93, fitted limits 0.278 and 1.03; `weights.py`), which heuristically points to q∞ < 1 but is not yet
+  visible in q_k itself (linear in k, slope 0.0018, over k = 12 … 21).
 - The dependence of c on each ternary digit decays geometrically in the digit position, with a factor
   that rises with k (0.828 at k = 12, 0.875 at k = 19) and extrapolates to roughly 0.94. The spread
   C_max/C_min grows like 1.52^k, so the k → ∞ limit object is unbounded.

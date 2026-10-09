@@ -1,6 +1,6 @@
 # Certified Krasikov–Lagarias predecessor bounds for the 3x+1 problem to k = 22: two-sided brackets, machine-checked instances, and the finite-level loss
 
-*Draft 0.7, 2026-10-09. All numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
+*Draft 0.8, 2026-10-09. All numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
 `spectrum.json`, `kl5.json` and the literature survey `reports/Collatz adjacent work and references.md`.*
 
 ## Abstract
@@ -22,12 +22,16 @@ between 2·10^{−5} and 10^{−4}, confirming their numerical values to four or
 theorems x^{0.903} ≤ π_a(x), x^{0.909} ≤ π_a(x) and x^{0.914} ≤ π_a(x) for large x, each resting on Lean's three
 standard axioms and two compiled finite checks. The question whether λ_k → 2, equivalent to
 π_a(x) ≥ x^{1−ε} for every ε, reduces to whether a single number, the mean loss ρ_k from the minimum over three
-lifts, tends to 1. We report its values to k = 22, the spectral radius at λ = 2, a renormalisation argument that
-predicts geometric convergence, the first spectrum of the linearised transfer matrix (its gap does not close with
-k), a first-order explanation of the universal top-digit boundary layer in terms of the 1 − ρ_k sequence, and the
-same construction on 5x+1, where the method's ceiling is the branching-walk exponent 0.6509 of Kontorovich–Lagarias
-rather than 1 and the same question ρ_k → 1 arises. The data to k = 22 are consistent with λ_k → 2 but do not
-establish it; we state what a proof would need.
+lifts, tends to 1. We report ρ_k to k = 22, the spectral radius at λ = 2, and the spectrum of the linearised transfer
+matrix, whose gap does not close with k. We then show that the finite-level loss is a mean-field quantity: replacing
+the top-digit alignments fixed by the arithmetic of 2 and 3 by independent random ones above level 9 changes λ_15 by
+2·10^{−3} and leaves the decay ratio of 1 − ρ_k unchanged, so the limit question can be posed for a random model
+with no number theory above a fixed level. The decay ratio rises with k because the distribution of the ×4 weight
+λ^{−2} c(4m)/c(m) broadens; that distribution converges with geometrically shrinking increments up to k = 21, which
+heuristically gives geometric decay of the loss and λ_k → 2, although the ratio itself shows no deceleration yet.
+The same construction on 5x+1 has the branching-walk exponent 0.6509 of Kontorovich–Lagarias as its ceiling and
+poses the same question. The data to k = 22 are consistent with λ_k → 2 but do not establish it; we state what a
+proof would need.
 
 ## 1. Introduction
 
@@ -370,58 +374,89 @@ carry no information beyond the ratios of successive 1 − ρ_k. Two remarks. Th
 k-independent than the model, which drifts by 0.005 over k = 11 … 17, so a second-order effect remains. And R(c_k) is
 not feasible at level k − 1, because the minimum of a sum exceeds the sum of the minima; the defect
 R(F_k c) − F_{k−1}(R c) is the misalignment of §6.3, and its size is what decides whether 1 − ρ_k → 0
-(`boundary_layer.py`).
+(`boundary_layer.py`). Integrating the limit inequality on X = {m ∈ Z₃ : m ≡ 2 (mod 3)} with Haar measure gives
+1 ≤ λ^{−2} + (1/3)(λ^{α−2} + λ^{α−1}) with equality exactly at λ = 2, so λ = 2 is the critical value of the limit
+problem and the finite-k deficit is precisely 1 − ρ_k.
 
-We have measured that defect D_k for k ≤ 19 (`defect.py`). Since the three level-k rows above a level-(k − 1) index
-r use the three lifts of the ×4 target and the three lifts of the auxiliary target in a paired order, D_k ≥ 0
-pointwise, with equality exactly where the two argmins agree (and on the class 5 mod 9, which has no auxiliary
-term). Because F_k c_k = c_k, the auxiliary vector c̄ = R c_k is a strict super-solution at level k − 1,
-c̄ = F_{k−1}(c̄) + D_k, and the level-(k − 1) summation identity gives the exact relation
+### 6.5 The finite-level loss is mean-field
+
+The object left open in §6.4 is the defect D_k = R(F_k c_k) − F_{k−1}(R c_k). We measured it (`defect.py`), tested
+the independence it suggests by randomising the system (`meanfield.py`), and traced the rise of the decay ratio
+q_k = (1 − ρ_k)/(1 − ρ_{k−1}) to a measurable distribution (`weights.py`, `popdyn.py`). The conclusion of this section
+is a heuristic and is marked as such.
+
+**The defect.** The three level-k rows above a level-(k − 1) index r use the three lifts of the ×4 target and the
+three lifts of the auxiliary target in a paired order, so D_k ≥ 0 pointwise, with equality exactly where the two
+argmins agree (and on the class 5 mod 9, which has no auxiliary term). Because F_k c_k = c_k, the auxiliary vector
+c̄ = R c_k is a strict super-solution at level k − 1, c̄ = F_{k−1}(c̄) + D_k, and the level-(k − 1) summation identity
+gives the exact relation
 
   mean D_k / mean c̄ = g(λ_k) (ρ_k − ρ′_k),   g(λ) = (λ^{α−1} + λ^{α−2})/3,   ρ′_k = mean(R² c_k)/mean(R c_k),
 
-which the data satisfy to all printed digits. The mean defect is therefore bookkeeping: with q_k = (1 − ρ_k)/(1 − ρ_{k−1})
-and e_k = ρ_{k−1} − ρ′_k it equals g(1 − ρ_k)[(1 − q_k)/q_k + e_k/(1 − ρ_k)], and the question λ_k → 2 is unchanged,
-q_k → q∞ < 1 or q_k → 1. We find q_k = 0.913 (k = 12) rising by about 0.002 per level to 0.931 (k = 21), and
-e_k/(1 − ρ_k) falling from 0.048 to 0.029. The pointwise structure is cleaner than the means. The two argmins are
-independent: they agree with probability 0.332 (k ≥ 13), both marginals are uniform to 0.001 and the joint law differs
-from the product by at most 0.002; which lift wins is a fine-digit property, unpredictable from the lowest four digits.
-The expected size of the defect, by contrast, is a coarse property: its conditional mean given the top digit is
-uniform to 10^{−3}, the spread over a single digit falls from 0.60 of the mean at digit 1 to below 0.06 from digit 4,
-and the top six digits explain 0.04 % of its variance. The excess splits 64 % ×4 term and 36 % auxiliary term at every
-k, and is uncorrelated with the local spread of c over the lifts. The defect is thus the product of two independent
-fine-scale choices whose expected size is fixed by the residue mod 3⁴, the mean-field structure that §6.3 assumed.
-What a proof needs is the one-step recursion for 1 − ρ_{k+1} under that independence, and a contraction estimate
-for it.
+which the data satisfy to all printed digits for k ≤ 19. The mean defect is therefore bookkeeping: with
+e_k = ρ_{k−1} − ρ′_k it equals g(1 − ρ_k)[(1 − q_k)/q_k + e_k/(1 − ρ_k)], and the question λ_k → 2 is unchanged,
+q_k → q∞ < 1 or q_k → 1. We find q_k = 0.913 at k = 12 rising to 0.931 at k = 21, linear in k to within 0.003
+(slope 0.0018 per level, no measurable curvature), and e_k/(1 − ρ_k) falling from 0.048 to 0.029. The pointwise
+structure is cleaner than the means. The two argmins are independent: they agree with probability 0.332 for k ≥ 13,
+both marginals are uniform to 0.001, the joint law differs from the product by at most 0.002, and which lift wins
+is unpredictable from the lowest four digits. The expected size of the defect, by contrast, is a coarse property:
+its conditional mean given the top digit is uniform to 10^{−3}, the spread over a single digit falls from 0.60 of
+the mean at digit 1 to below 0.06 from digit 4, and the top six digits explain 0.04 % of its variance. The excess
+splits 64 % ×4 term and 36 % auxiliary term at every k. The defect is thus the product of two independent fine-scale
+choices whose expected size is fixed by the residue mod 3⁴, which is the mean-field structure that §6.3 assumed.
 
-That independence can be tested at the source. The index maps are recursive in the top ternary digit: writing a
-level-k index as i_low + t·N/3, the ×4 target is nxt_{k−1}(i_low) + σ(t)·N/3 and the auxiliary target is
-aux_{k−1}(i_low) + π(t)·N/9, where σ is a cyclic shift and π a shift or a reflection of {0, 1, 2}, both fixed by
-i_low through the arithmetic of 2 and 3. We replaced σ and π by independent uniform random bijections and
-recomputed λ_k and ρ_k (`meanfield.py`); nxt stays a bijection and aux stays 3-to-1, so the summed identity and the
-ceiling λ = 2 are unchanged. Randomising the top level alone is invisible from k = 9 on (the change in λ_k is within
-seed noise, 3·10^{−4}, and at k = 13 the random alignment is marginally better). Randomising every level from 9
-upward changes λ_14 and λ_15 by the same −2.1·10^{−3} ± 5·10^{−4}, a saturated offset of 15 % of one level's gain,
-raises 1 − ρ by 1.6 % at both levels and leaves the ratio q_k unchanged within 0.005; randomising from level 12
-upward costs −7.8·10^{−4} at k = 15. Randomising from level 6 or from level 3 costs 10^{−2} or several 10^{−2}: the
-arithmetic of 2 and 3 acts through the coarse residues and the weights, and the fine alignment can be replaced by
-independent randomness. The question λ_k → 2 can therefore be posed for a random Krasikov–Lagarias model, the exact
-system up to a fixed level lifted with independent uniform alignments above it, in which it becomes a quenched-
-versus-annealed question of the kind studied for branching random walks. Whether the residual offset itself
-shrinks with k is open. A cavity (population-dynamics) treatment of the random model, with sibling triples typed
-by the level-8 residue, reproduces the mechanism behind the rising q_k, namely the broadening of the magnitude
-distribution, which leaves more classes dominated by either the ×4 transport or the injection and so weakens the
-contraction per level. It does not decide the limit: the loss factor c̄_{k+1}/c_k fluctuates by one third of the
-loss in the exact system (with sibling correlation 0.35), and closing that fluctuation differently moves q at
-k = 60 between 0.95 and 0.99 (`popdyn.py`). Two direct measurements point the same way without deciding it: the
-spread of the ×4 weight λ^{−2} c(4m)/c(m) within a class and the spread of log c both grow with k, but with
-increments that shrink by 7–10 % per level, so the weight distribution appears to converge, which would make the
-contraction per level converge to a constant below 1. The increments of q_k itself, about 0.002 per level up to
-k = 21, do not yet show the corresponding deceleration. Integrating the limit inequality on X = {m ∈ Z₃ : m ≡ 2 (mod 3)} with
-Haar measure gives 1 ≤ λ^{−2} + (1/3)(λ^{α−2} + λ^{α−1}) with equality exactly at λ = 2, so λ = 2 is the critical
-value of the limit problem and the finite-k deficit is precisely 1 − ρ_k.
+**Random alignments reproduce λ_k.** The index maps are recursive in the top ternary digit: writing a level-k
+index as i_low + t·N/3, the ×4 target is nxt_{k−1}(i_low) + σ(t)·N/3 and the auxiliary target is
+aux_{k−1}(i_low) + π(t)·N/9, where σ is a cyclic shift and π a shift or a reflection of {0, 1, 2}, both fixed by i_low
+through the arithmetic of 2 and 3. We replaced σ and π by independent uniform random bijections above a chosen
+level and recomputed λ_k and ρ_k; nxt stays a bijection and aux stays 3-to-1, so the summed identity and the ceiling
+λ = 2 are unchanged.
 
-### 6.5 The spectrum of the linearisation
+| randomised levels | change in λ_k | change in 1 − ρ_k | q_k |
+|---|---|---|---|
+| top level only, k = 9 … 13 (8 seeds) | within ±3·10^{−4} | +0.3 % | unchanged |
+| 9 … k at k = 14 and k = 15 (6 seeds) | −2.1·10^{−3} ± 5·10^{−4} at both | +1.6 % at both | unchanged within 0.005 |
+| 12 … 15 | −7.8·10^{−4} ± 9·10^{−5} | +0.6 % | within 0.003 |
+| 6 … 13 | −0.9·10^{−2} | +6 % | noisy |
+| 3 … 11 | −4·10^{−2} | +27 % | – |
+
+The cost of randomising the fine levels saturates at 15 % of one level's gain instead of growing with the number of
+levels, so the per-level increments of λ_k agree from k = 14 on; the coarse levels carry the arithmetic. The
+question λ_k → 2 can therefore be posed for a random Krasikov–Lagarias model, the exact system up to a fixed level
+lifted with independent uniform alignments above it, in which it becomes a quenched-versus-annealed question of the
+kind studied for branching random walks. The exact system is slightly better than random and no comparison theorem
+is known.
+
+**Why q_k rises.** The level-(k + 1) triple above a level-k class m is a λ^{−2}-weighted copy of the triple above 4m
+plus an injected triple from the auxiliary target, so the contraction of the loss from one level to the next is
+governed by the ×4 weight a_m = λ^{−2} c(4m)/c(m), which equals 1 on class 5 and leaves 1 − a_m for the injection. A
+class with a_m near 1 transports its loss without contraction; one with a_m near 0 is dominated by the injection. A
+broader distribution of a_m means a weaker contraction and a larger q_k, and the distribution does broaden:
+
+| k | 8 | 12 | 16 | 19 | 21 | fitted limit (ratio of increments) |
+|---|---|---|---|---|---|---|
+| std of a_m within class 2 mod 9 | 0.227 | 0.244 | 0.255 | 0.260 | 0.264 | 0.278 (0.91) |
+| std of a_m within class 8 mod 9 | 0.119 | 0.127 | 0.132 | 0.135 | 0.137 | 0.145 (0.92) |
+| std of log c | 0.714 | 0.798 | 0.859 | 0.894 | 0.913 | 1.026 (0.93) |
+
+The increments shrink geometrically (maximal residuals of the fits 10^{−4} to 6·10^{−4}), so the weight distribution
+converges, while the growth C_max/C_min ∝ 1.52^k is confined to the extreme tail. The naive variance recursion
+q² = E[(1 − a)²]/(1 − E[a²]) gives 0.85 at k = 8 rising to 0.89 at k = 21 (magnitude weighted), well below the actual
+0.91 to 0.93 because the minimum is not additive, but rising at the same rate as the data. A cavity model of the
+random system, with sibling triples typed by the level-8 residue (`popdyn.py`), reproduces this mechanism but cannot
+decide the limit: the loss factor c̄_{k+1}/c_k fluctuates by one third of the loss in the exact system, with sibling
+correlation 0.35, and different closures of that fluctuation move q at k = 60 between 0.95 and 0.99.
+
+**Heuristic conclusion.** If the distribution of the ×4 weight converges, the contraction per level converges to a
+constant below 1, so q_k → q∞ < 1, 1 − ρ_k → 0 geometrically and λ_k → 2; the fitted limits put q∞ near 0.95.
+Against this, q_k itself is linear in k over k = 12 … 21 with no measurable curvature, so the deceleration the
+mechanism predicts is not yet visible. We state this as an expectation, not a result. A proof along these lines
+needs two statements about the limit object: that the fine alignments may be treated as independent, which the
+scrambling experiment supports to 2·10^{−3} in λ, and that the distribution of the ×4 weight converges, which the
+data to k = 21 support with geometrically shrinking increments. Together they would give a contraction estimate for
+the loss.
+
+### 6.6 The spectrum of the linearisation
 
 At the Perron vector the minimum in every row is attained by a fixed lift, so F is a sparse matrix J there, with
 J[i, 4i] = λ^{−2} and J[i, argmin lift] = λ^{α−j}. We computed its spectrum (dense to k = 9, Arnoldi top-40 to
@@ -446,7 +481,7 @@ structural reason is that the doubling branch m ↦ 4m is an isometry of Z₃ an
 functions the essential radius should be near 1/4 + (3/4)3^{−α}, which approaches 1 as α → 0, and the limit
 vector's Hölder exponent is at most 0.09.
 
-### 6.6 The same construction on 5x+1
+### 6.7 The same construction on 5x+1
 
 The same construction applies to T(n) = n/2, (5n+1)/2: principal classes a ≡ 3 (mod 5) (odd predecessor
 (2a − 1)/5), four doublings return to a principal class (λ^{−4} c_{16a}), and the odd predecessor falls into one
@@ -497,18 +532,20 @@ undecidability result for maps linear on residue classes implies that any proof 
 3 specifically; the Krasikov–Lagarias system does, but only through the branching rule mod 3 and the size factors
 2 and 3/2, which is why it yields exponents and not individual orbits.
 
-Within the method, the open mathematical problem is λ_k → 2 ⇔ ρ_k → 1, which §6 reduces to the alignment of two
-argmins in the limit measure on Z₃, or equivalently to the defect between coarse-graining by the top digit and the
-level-(k − 1) map. The same reduction holds for 5x+1 with ceiling 0.6509 in place of 1, so a proof cannot rest on the
-contracting drift of 3x+1. We regard the data to k = 22 as consistent with that limit and not as
-evidence for it.
+Within the method, the open mathematical problem is λ_k → 2 ⇔ ρ_k → 1. §6 reduces it to two statements about the
+limit object: that the fine top-digit alignments act as independent, which the scrambling experiment supports to
+2·10^{−3} in λ, and that the distribution of the ×4 weight converges, which the data to k = 21 support with
+geometrically shrinking increments; together they would give a contraction estimate for the loss and hence λ_k → 2.
+The same reduction holds for 5x+1 with ceiling 0.6509 in place of 1, so a proof cannot rest on the contracting drift
+of 3x+1. We regard the data to k = 22 as consistent with that limit and not as evidence for it.
 
 ## Data and code availability
 
 Repository: github.com/dpalmqvist/kollatz (MIT). Certificates `certs/k{k}_{λ}/cert.json` and `certs/k{k}_{λ}_upper/`
 with sha256 of the vectors; independent verifier `verify_cert.py`; the search (`kl.py`, `kl_mlx.py`, `kl_split.py`);
 Lean modules, manifests and verifier reports in `lean_formal/`; measurements in `rho.py`, `holder.py`,
-`rF2_fit.py`, `renorm.py`, `renorm2.py`, `spectrum.py`, `boundary_layer.py`, `kl5.py`, `kl5_mlx.py`; the literature survey in `reports/`.
+`rF2_fit.py`, `renorm.py`, `renorm2.py`, `spectrum.py`, `boundary_layer.py`, `defect.py`, `meanfield.py`, `weights.py`,
+`popdyn.py`, `kl5.py`, `kl5_mlx.py`; the literature survey in `reports/`.
 
 ## References
 

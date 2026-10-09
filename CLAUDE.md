@@ -215,10 +215,11 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   meanfield_all9b vid k = 14, 15. INTE prediktiv: slutningen av förlustfaktorn c̄_{k+1}/c_k styr svaret (draw: förlusten
   växer; const: q_60 = 0.95; kalibrerad ν = 0.33, syskonkorr 0.35: 0.955; ν = 0.5: 0.987). Alla ger stigande q_k
   drivet av bredare magnitudfördelning. `python popdyn.py KMAX P SWEEPS SEED B KS CLOSURE [NU CC]` → popdyn_*.json.
-  Mätt i exakta vektorer: förlustfaktorns rel. std = 1/3 av 1−ρ_k (k = 15, 19), syskonkorr 0.35; ×4-vikten
-  a = λ^-2 c(nxt)/c har std inom klass 2: 0.227 → 0.260 (k = 8 → 19), inkrement −10 %/steg (mättar ≈ 0.276);
-  std(log c) 0.71 → 0.91 (k = 8 → 21), inkrement −7 %/steg (`weights_stats.json`). Heuristik: mättad viktfördelning
-  ⇒ q∞ < 1 (≈ 0.94–0.95); q_k:s egna inkrement (0.002/steg) visar ännu ingen inbromsning.
+  Mätt i exakta vektorer: förlustfaktorns rel. std = 1/3 av 1−ρ_k (k = 15, 19), syskonkorr 0.35.
+- `weights.py` – spår 1 (2026-10-09): ×4-vikten a = λ^-2 c(4m)/c(m) (= 1 på klass 5) och std(log c), chunkat (k = 21:
+  60 s). std a inom klass 2: 0.227 → 0.264 (k = 8 → 21), inkrement geometriska (kvot 0.91, gräns 0.278); klass 8
+  0.119 → 0.137 (gräns 0.145); std(log c) 0.71 → 0.91 (kvot 0.93, gräns 1.03). → `weights_stats.json`. Heuristik:
+  mättad viktfördelning ⇒ q∞ < 1 (≈ 0.95); men q_k själv är linjär i k (0.0018/steg, k = 12…21) utan inbromsning.
 - `.venv/` – Python 3.14, numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1, mlx 0.32.3, matplotlib 3.11.2 (Apple M5, 24 GB)
 
 ## Referensvärden (regressionstest – ska reproduceras)

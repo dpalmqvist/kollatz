@@ -257,18 +257,19 @@ parameter, i.e. the model cannot decide q∞ < 1 versus q∞ = 1: the closure er
 A depth-2 (sibling-of-sibling) cavity would push the same closure one level down without removing it, because the
 loss-factor fluctuation is a fixed fraction of the loss at every level.
 
-**What the exact vectors say about the mechanism (`weights_stats.json`, k = 8 … 19; log-spread to k = 21).** The ×4
+**What the exact vectors say about the mechanism (`weights.py` → `weights_stats.json`, k = 8 … 21, chunked).** The ×4
 weight a_w = λ^{−2} c(nxt w)/c(w) (= 1 on class 5, so that the injection weight is b = 1 − a) has mean 0.52 at every k;
-its spread within class 2 grows 0.227 → 0.260 and within class 8 0.119 → 0.135 from k = 8 to 19, with increments
-that shrink by ≈ 10 % per level (0.0049 → 0.0018), extrapolating to ≈ 0.276. The naive variance recursion
+its spread within class 2 grows 0.227 → 0.264 and within class 8 0.119 → 0.137 from k = 8 to 21, with increments
+that shrink geometrically (0.0049 → 0.0015, ratio 0.91, max residual 1e-4), extrapolating to 0.278 resp. 0.145. The naive variance recursion
 q² = E[b²]/(1 − E[a²]) gives q = 0.81 → 0.83 (0.85 → 0.89 magnitude-weighted), far below the actual 0.91 → 0.93
 (the min is not additive) but rising at the same rate, so the rising q_k is the polarisation of the weights. The
-typical magnitude spread saturates too: std(log c) = 0.714 (k = 8) → 0.913 (k = 21) with increments 0.024 → 0.0095,
-decaying ≈ 7 % per level (limit ≈ 1.04); the growth of C_max/C_min ∝ 1.52^k is in the extreme tail only. If the
+typical magnitude spread saturates too: std(log c) = 0.714 (k = 8) → 0.913 (k = 21) with increments 0.024 → 0.0092,
+ratio 0.93 (limit 1.03, max residual 6e-4); the growth of C_max/C_min ∝ 1.52^k is in the extreme tail only. If the
 weight distribution converges, the per-level contraction converges and q∞ < 1 follows heuristically, with the
-crude extrapolations landing at q∞ ≈ 0.94–0.95 (then 1 − ρ_k → 0 geometrically and λ_k → 2). The measured q_k
-increments (≈ 0.002 per level for k = 16 … 21) do not yet show the deceleration that the saturating weight spread
-predicts, so this remains a mechanism-based expectation, not a measurement.
+crude extrapolations landing at q∞ ≈ 0.94–0.95 (then 1 − ρ_k → 0 geometrically and λ_k → 2). The measured q_k is
+linear in k over k = 12 … 21 (slope 0.0018 per level, max residual 0.003, zero curvature) and does not yet show the
+deceleration that the saturating weight spread predicts (the magnitude-weighted naive q's increments shrink with ratio
+0.91, limit 0.909 against 0.891 now), so this remains a mechanism-based expectation, not a measurement.
 
 **How to pick up.**
 1. Measure convergence of the mass distribution μ_k(class) = c_m / Σc on 3-adic balls across k (total variation
