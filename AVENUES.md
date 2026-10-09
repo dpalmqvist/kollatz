@@ -737,13 +737,15 @@ and instant to k = 16): t*(k, λ) is nonincreasing in k (lifting) and **converge
 | 12 | 4.448 | 5.545 | 7.600 | 11.344 | 16.308 | 27.172 |
 | 13 | 4.448 | 5.543 | 7.580 | 11.157 | 15.416 | 20.883 |
 | 14 | 4.448 | 5.542 | 7.571 | 11.017 | 15.000 | 19.347 |
-| 15 | 4.448 | 5.539 | 7.560 | 10.912 | 14.708 | (running) |
+| 15 | 4.448 | 5.539 | 7.560 | 10.912 | 14.708 | 18.629 (1.82: 26.09) |
+| 16 | 4.448 | 5.539 | 7.556 | 10.850 | 14.547 | 18.164 (1.82: 24.01) |
 | Perron C_max | – | – | – | – | – | 147 (k = 12) … 1594 (k = 16) |
 
 At λ = 1.60 the level-5 solution is already optimal (t* = 4.4475 for all k ≥ 5). Extrapolating the decrements
-geometrically: t*_∞ ≈ 4.45, 5.54, 7.53, 10.8, 14.6 for λ = 1.60 … 1.78, which fits t*_∞ ≈ C (2 − λ)^{−a} with
-a = 2.0 (max residual 0.02–0.03 in log t*; local exponents 1.64, 1.99, 1.97, 2.39), while an exponential in λ fits
-worse (0.075). The λ ≥ 1.80 points need k = 15–16 to converge (running).
+geometrically (k ≤ 16): t*_∞ ≈ 4.45, 5.54, 7.55, 10.7, 14.3, 17.6 for λ = 1.60 … 1.80, which fits
+t*_∞ ≈ C (2 − λ)^{−a} with a = 2.0–2.1 (max residual 0.02–0.03 in log t*; local exponents 1.64, 2.01, 1.93, 2.24,
+2.19, drifting slightly upward), while an exponential in λ fits worse (0.085). Points within 0.01 of λ_k converge
+too slowly in k to be useful (the k = 15, λ = 1.84 iteration was stopped).
 
 **Consequences.** (i) *Explicit bounds, certified.* `spread_iter.py --slack=1e-5` produces a feasible point with
 relative slack 10^{−5} in every row, `certify_spread.py` checks it in int64 with rounded-down coefficients and writes
@@ -800,6 +802,11 @@ level, i.e. like t^{−1/2} instead of t^{−1}). **Certified explicit bound:** 
 
 which beats (x/a)^{0.848}/77.4 (k = 14) up to x/a ≈ 10^{37} and the k = 22 Perron bound up to x/a ≈ 10^{40}.
 
+**Empirical densities (`pred_density.py`, n < 2^32, 68 min on the GPU).** π_a(X)/X for a < 3^8 is converged to
+three decimals between X = 2^20 and 2^32 (a = 5: 0.9378 → 0.9379; 7: 0.1916 → 0.1912; 11: 0.4440 → 0.4458;
+13: 0.4749 → 0.4765; 16: 0.0622 → 0.0621): Conjecture A is numerically solid for small a, and d_a·a ≥ 0.77 over
+a ≡ 2 (mod 3), a < 6561, consistent with the lifted constants Δ ≈ 1 (the argument above predicts d_a ≥ Δ₀/a).
+
 **Why this matters beyond constants.** If Δ_best(k) stayed bounded below as k → ∞ (for the Perron vectors at λ_k),
 then π_a(x) ≥ Δ₀ (x/a)^{γ_k} for x ≥ a 2^{Y(k)} with Y(k) ≈ k, and choosing k ≈ log₂(x/a) gives
 π_a(x) ≥ Δ₀ (x/a) exp(−(1 − γ_k) ln(x/a)): with 1 − γ_k ≈ A q^k (geometric, q < 1) the exponent tends to 0 and
@@ -807,9 +814,25 @@ then π_a(x) ≥ Δ₀ (x/a)^{γ_k} for x ≥ a 2^{Y(k)} with Y(k) ≈ k, and ch
 x/exp((log x)^{1−b}). So Conjecture A reduces to (a) λ_k → 2 (avenue 1) and (b) a uniform base constant, i.e. the
 guaranteed trees of all classes tracking c^m λ^y to height ≈ k — a finite statement at each k.
 
-**Next.** Decide (b): compute the guaranteed trees at finer resolution (residues mod 3^{k′}, k′ > k, so more odd
-steps are decidable; the base needs the min over the finer classes inside each coarse class), vectorised over
-classes, and watch whether Δ_best(k) levels off; and certify lifted bounds at k = 12–14 for the explicit table.
+**Finer residues (`base_lift_fine.py`, same day).** With residues mod 3^{k′} the guaranteed trees decide k′ odd
+steps and the base constant uses the min over the fine classes inside each coarse class. Δ_best (Perron vectors):
+
+| k | k′ = k | k′ = k + 2 | k′ = k + 4 | k′ = k + 6 (30 worst classes only) | k′ = k + 8 (30 worst) |
+|---|---|---|---|---|---|
+| 6 | 0.83 | – | – | 1.18 (10 worst) | 1.41 (10 worst) |
+| 7 | 0.68 | 0.93 | 1.17 | 1.25 | 1.33 |
+| 8 | 0.54 | 0.75 | 0.99 | 0.99 (no gain) | – |
+| 9 | 0.38 | 0.60 | 0.80 | 0.80 (no gain) | – |
+
+Refining only the worst 30 classes helps at k ≤ 7 and not at k ≥ 8: the limiting set is broad (many classes sit
+near the minimum), so uniform refinement is needed, and it costs 10× per two levels (k = 9, k′ = 13: 5·10⁹ nodes,
+8 min in numpy). At fixed offset k′ − k = 4 the constant is 1.17, 0.99, 0.80 for k = 7, 8, 9, still falling ≈ 17 %
+per level; the mean ratio over classes stays ≈ 1.5–1.7, so it is the dense tail that limits Δ. Whether k′ − k has to
+grow with k to keep Δ_best bounded is unresolved; this is the computation that decides (b), and it needs a GPU
+enumeration for k ≥ 10 (3^{k′−1} fine classes with 10³–10⁴ nodes each).
+
+**Next.** GPU version of the fine enumeration; Δ_best(k) at k′ = k + 6 uniformly for k = 8 … 11; certify lifted
+bounds at k = 12–14 for the explicit table.
 
 
 ## 18. No divergence as an arithmetic property of the 2-adic parity map
