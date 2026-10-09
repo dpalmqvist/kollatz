@@ -30,7 +30,7 @@ everything adjacent (cycle bounds, predecessor density, the long shots, formal v
 | 18 | No divergence as an arithmetic property of the 2-adic parity map (Q(ℤ) ⊆ ℚ) | settles divergence for integers | first data run 2026-10-09 (`parity_stats.py`, n < 2^32, in progress); by Terras the local gap statistics carry no information, see §18 |
 | 19 | All cycles by equidistribution of numerators mod 2^n − 3^k | settles cycles for all m | proposed 2026-10-09 |
 | 20 | Adelic ℤ₂ × ℤ₃ picture and a Furstenberg-type rigidity theorem | explains the difficulty and would kill divergent orbits | proposed 2026-10-09 |
-| 21 | Map the no-go theorems; termination with residue-labelled K–L orderings | delimits where a proof can live; one mechanical route | proposed 2026-10-09 |
+| 21 | Map the no-go theorems; termination with residue-labelled K–L orderings | delimits where a proof can live; one mechanical route | (i) done 2026-10-09: `notes/no_go_theorems.md` (Theorems 1–3 from Terras: no residue-class, bounded-lookahead or residue-monotone potential, violations of positive density); (ii) not started |
 | — | Scaling k further | +0.005 in γ per step | k = 22 certified 2026-10-08 (γ = 0.9251) plus upper certificate; k = 23 needs ~192 GB |
 
 ## 1. Prove that the Krasikov–Lagarias exponent tends to 1
@@ -758,9 +758,17 @@ positive density. The current fit (a ≈ 2) would give π_a(x) ≫ x/(log x)². 
 t*_∞(λ) = ∞ for λ > lim λ_k. The extrapolation λ → 2 is a limit-object statement and must be proved, not fitted; but
 every finite λ gives a rigorous certified bound today.
 
-**Next.** k = 16 at λ = 1.85 (t* ≈ 40 expected); the structure of the minimal-spread solutions (which classes sit at
-1 and at t, how the active set changes with λ) as the object a bounded-limit theory must describe; and whether a
-weighted system (classes weighted by 3-adic depth) lowers the exponent a.
+**Structure of the minimal-spread solutions (2026-10-09, `spread_structure.py`, k = 14, λ = 1.78 and 1.80).** They are
+*coarse*: the lowest four ternary digits explain 95 % of the variance of log c, the lowest eight 99.5 %, the top
+digits 0 %; the top-digit loss profile 1 − ρ_j falls geometrically from 0.62 to 0.008 (Perron vector: 0.68 to 0.044).
+No class sits at the floor 1; 4–6 % sit at the cap t, almost all in class 8 mod 9 (11–16 % of that class) and none in
+class 5 (whose values are small, mean 2.3–2.5, since c_m = λ^{−2} c_{4m} there); 94–96 % of the rows are tight, the
+slack rows being the capped ones. The solution is the Perron-like fixed point with its upper tail cut off, and the two
+λ's correlate at 0.996 in log c (0.95–0.97 with the Perron vector). So the bounded limit object is close to a locally
+constant function on ℤ₃ and needs no re-weighting to be nice; the "weighted system" idea is dropped for that reason.
+
+**Next.** k = 16 at λ = 1.85; the exponent a of t*_∞ ≈ (2 − λ)^{−a} from the λ ≥ 1.80 points; then the theory of the
+capped fixed point as λ → 2 on ℤ₃ (which classes are capped, and why the cap must grow like (2 − λ)^{−2}).
 
 ## 18. No divergence as an arithmetic property of the 2-adic parity map
 
@@ -852,8 +860,10 @@ excluded is termination of the Yolcu–Aaronson–Heule rewriting system with se
 and the K–L weights as the ordering, which supplies exactly the unbounded-residue information that plain matrix
 interpretations lack.
 
-**First steps.** (i) Write the no-go theorems with proofs (a day each; they are folklore but not collected), and
-check msharpe248's "no bounded multiplicative potential" claim against them. (ii) Build the labelled rewriting
+**First steps.** (i) ✅ `notes/no_go_theorems.md` (2026-10-09): Theorems 1–3 with proofs from Terras's lemma — any
+potential that is a function of n mod M, or of n mod M plus L parities of lookahead, or monotone in n within residue
+classes mod M, fails on a set of positive lower density (the all-odd runs n ≡ −1 mod 2^L); this covers the
+"bounded multiplicative potentials" claimed excluded elsewhere. (ii) Build the labelled rewriting
 system with residues mod 3^k for k ≤ 6 and search for a certificate with a termination tool (AProVE/TTT2) or our
 own LP over the labelled rules; the expected outcome is a precise statement of what fails, which sharpens (i).
 Weeks.
