@@ -196,7 +196,8 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   Kontorovich–Lagarias η_{5,BP}, Thm 8.10) ⇒ 5x+1 är INTE ett fall med känt "λ∞ < tak" (AVENUES §8 rättad);
   (2) gränsskiktet: R(c) = min över toppsiffran (normerad) ger R(c_k) ≈ c_{k−1} (TV 0.0045 vid k = 17, 4× närmare än
   tile), osc_k(d) ≈ Σ_{i<d}(1 − ρ_{k−i}) ⇒ β(d) förklaras till första ordningen av 1 − ρ_k-följden (fel 0.003–0.011).
-  `python boundary_layer.py [KMAX]` (k ≤ 11 räknas om med kl.py; < 1 min vid KMAX = 17).
+  `python boundary_layer.py [KMAX]` (k ≤ 11 räknas om med kl.py; < 1 min vid KMAX = 17). Saknas certifikatvektorn
+  (k = 12–17 finns bara på M5-maskinen) används `c_k{k}_mlx.npy`; ger samma siffror.
 - `.venv/` – Python 3.14, numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1, mlx 0.32.3, matplotlib 3.11.2 (Apple M5, 24 GB)
 
 ## Referensvärden (regressionstest – ska reproduceras)

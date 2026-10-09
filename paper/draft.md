@@ -1,6 +1,6 @@
 # Certified Krasikov–Lagarias predecessor bounds for the 3x+1 problem to k = 22: two-sided brackets, machine-checked instances, and the finite-level loss
 
-*Draft 0.3, 2026-10-09. All numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
+*Draft 0.4, 2026-10-09. All numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
 `spectrum.json`, `kl5.json` and the literature survey `reports/Collatz adjacent work and references.md`.*
 
 ## Abstract
@@ -24,8 +24,10 @@ standard axioms and two compiled finite checks. The question whether λ_k → 2,
 π_a(x) ≥ x^{1−ε} for every ε, reduces to whether a single number, the mean loss ρ_k from the minimum over three
 lifts, tends to 1. We report its values to k = 22, the spectral radius at λ = 2, a renormalisation argument that
 predicts geometric convergence, the first spectrum of the linearised transfer matrix (its gap does not close with
-k), and a calibration run of the same construction on 5x+1. The data to k = 22 are consistent with λ_k → 2 but do
-not establish it; we state what a proof would need.
+k), a first-order explanation of the universal top-digit boundary layer in terms of the 1 − ρ_k sequence, and the
+same construction on 5x+1, where the method's ceiling is the branching-walk exponent 0.6509 of Kontorovich–Lagarias
+rather than 1 and the same question ρ_k → 1 arises. The data to k = 22 are consistent with λ_k → 2 but do not
+establish it; we state what a proof would need.
 
 ## 1. Introduction
 
@@ -355,8 +357,20 @@ geometrically (ratio ≈ 0.92), so a limit measure on Z₃ exists. It is singula
 (147 at k = 12, 9851 at k = 22), the mass in the top 1 % of classes rises from 6.5 % to over 9 %, and the Hölder
 exponent of the digit profile on coarse scales falls from 0.14 (k = 12) to 0.085 (k = 19), extrapolating to
 0.04–0.09, possibly 0. The boundary layer is universal: the Hölder exponent at distance d from the top digit is
-0.665, 0.401, 0.293, 0.232, 0.194 for d = 1 … 5, identical for every k to three decimals, which looks like a fixed
-point of "append a digit, then minimise". Integrating the limit inequality on X = {m ∈ Z₃ : m ≡ 2 (mod 3)} with
+0.665, 0.401, 0.293, 0.232, 0.194 for d = 1 … 5, identical for every k to three decimals. To first order it is not a
+new object. Let R(c) be c minimised over its top ternary digit and renormalised to mean 1, a vector on level k − 1.
+Then R(c_k) is close to c_{k−1}: the total variation distance is 0.0126 at k = 8 and 0.0045 at k = 17, four times
+smaller than the distance from c_k to the lift of c_{k−1}, and R²(c_k) is likewise close to c_{k−2}. The oscillation
+over a ball with d free top digits is therefore the loss accumulated along the chain c_k → c_{k−1} → ⋯,
+osc_k(d) ≈ Σ_{i<d} (1 − ρ_{k−i}): at k = 17 the measured values 0.0347, 0.0720, 0.1119, 0.1543, 0.1991 stand against
+the partial sums 0.0347, 0.0722, 0.1129, 0.1571, 0.2053. The exponents β(d) = log₃(S(d+1)/S(d)) of the partial sums
+are 0.668, 0.407, 0.301, 0.243, within 0.003–0.011 of the observed ones; with 1 − ρ_k ≈ q^k they are logarithms of
+ratios of geometric partial sums, log₃ 2, log₃ 3/2, log₃ 4/3, … pulled up slightly by q ≈ 0.92. The five numbers
+carry no information beyond the ratios of successive 1 − ρ_k. Two remarks. The observed exponents are more
+k-independent than the model, which drifts by 0.005 over k = 11 … 17, so a second-order effect remains. And R(c_k) is
+not feasible at level k − 1, because the minimum of a sum exceeds the sum of the minima; the defect
+R(F_k c) − F_{k−1}(R c) is the misalignment of §6.3, and its size is what decides whether 1 − ρ_k → 0
+(`boundary_layer.py`). Integrating the limit inequality on X = {m ∈ Z₃ : m ≡ 2 (mod 3)} with
 Haar measure gives 1 ≤ λ^{−2} + (1/3)(λ^{α−2} + λ^{α−1}) with equality exactly at λ = 2, so λ = 2 is the critical
 value of the limit problem and the finite-k deficit is precisely 1 − ρ_k.
 
@@ -385,7 +399,7 @@ structural reason is that the doubling branch m ↦ 4m is an isometry of Z₃ an
 functions the essential radius should be near 1/4 + (3/4)3^{−α}, which approaches 1 as α → 0, and the limit
 vector's Hölder exponent is at most 0.09.
 
-### 6.6 Calibration on 5x+1
+### 6.6 The same construction on 5x+1
 
 The same construction applies to T(n) = n/2, (5n+1)/2: principal classes a ≡ 3 (mod 5) (odd predecessor
 (2a − 1)/5), four doublings return to a principal class (λ^{−4} c_{16a}), and the odd predecessor falls into one
@@ -394,10 +408,21 @@ it is ≡ 0 mod 5), with the minimum over five lifts. A residue-walking LP (HiGH
 following the map on residues, no index formulas) reproduces Table 2 for 3x+1 to 10^{−6} and matches the 5x+1
 index formulas to 10^{−8} for k ≤ 6; a Metal kernel matches the NumPy map to 10^{−7}.
 
-Integrating the 5x+1 limit inequality gives 1 ≤ λ^{−4} + (λ^β/5)(λ^{−1} + λ^{−2} + λ^{−3} + λ^{−4}), with equality
-again exactly at λ = 2: the same mass-conservation identity, although the predecessor exponent of 5x+1 is believed
-to be η₅ ≈ 0.65 (Kontorovich–Lagarias; Volkov 0.678). For 5x+1, then, the loss 1 − ρ_k(5) must not vanish if that
-belief is right; it is a case where λ∞ < 2 is the expected truth.
+Summing the 5x+1 inequalities gives (1 − λ^{−4}) c̄ ≤ (λ^β/5)(λ^{−1} + λ^{−2} + λ^{−3} + λ^{−4}) ρ c̄ with ρ ≤ 1 the mean
+loss from the minimum over five lifts. At ρ = 1 the two sides agree at λ = 2, the same mass-conservation identity as
+for 3x+1, but that is not the binding root: they also cross at λ* = 1.5701677, and every λ in (λ*, 2) violates the
+summed inequality even with ρ = 1. So λ_k(5) ≤ λ* for every k. Factoring 1 − λ^{−4} = (1 − λ^{−1})(1 + λ^{−1} + λ^{−2}
++ λ^{−3}) reduces the ρ = 1 equation to 1/λ + λ^{β−1}/5 = 1, the Malthusian equation of the naive backward
+branching walk (child 2a at height +1; child (2a − 1)/5 at height 1 − β with probability 1/5). Its root
+γ* = log₂ λ* = 0.650919 is the exponent η_{5,BP} of Kontorovich–Lagarias (Theorem 8.10) to every printed digit; the
+0.649 of their Conjecture 7.2 is the same number rounded, and Volkov's 0.678 lies above the ceiling, beyond the
+reach of this method at any k. For 3x+1 the same factoring gives 1/λ + λ^{α−1}/3 = 1, whose only root above 1 is 2.
+In both systems, therefore,
+
+  λ_k → (Malthusian root of the branching model) ⇔ ρ_k → 1.
+
+5x+1 is thus not a calibration case with a known answer. The heuristic prediction for it is the ceiling itself,
+1 − ρ_k(5) → 0, exactly as for 3x+1; it is a second instance of the open question.
 
 | k | 6 | 8 | 10 | 11 | 12 | 13 | 14 |
 |---|---|---|---|---|---|---|---|
@@ -405,12 +430,15 @@ belief is right; it is a case where λ∞ < 2 is the expected truth.
 | 1 − ρ_k(5) | 0.150 | 0.113 | 0.090 | 0.082 | 0.074 | 0.068 | 0.063 |
 | ratio | 0.83 | 0.88 | 0.90 | 0.90 | 0.91 | 0.915 | 0.919 |
 
-Through k = 14 the 5x+1 data do not show the expected saturation: γ_k(5) is well below the heuristic ceiling, but
-the ratios of 1 − ρ_k rise, by about 0.004 per level, faster than for 3x+1. Either saturation sets in later than
-k = 14, or the Krasikov–Lagarias exponent for 5x+1 eventually passes the heuristic. In both cases the lesson for
-3x+1 is that a rising ratio is not by itself evidence for ρ_k → 1; only the mechanism can decide. (No explicit
-predecessor-count exponent for 5x+1 exists in the literature; π_a(x) ≥ x^{0.516} numerically at k = 14 appears to
-be the first, pending the same certification.)
+At k = 14 the gap to the ceiling is 0.134 in γ, close to the 3x+1 gap of 0.128 at the same k, and the ratios of
+1 − ρ_k(5) rise from 0.83 to 0.919, faster than for 3x+1. What 5x+1 offers is a second sequence to set beside the
+first under the same conjectural answer, and a constraint on proofs: an argument that ρ_k → 1 must work for 5x+1 as
+well, which excludes arguments that use the contracting drift of 3x+1 (the 5x+1 walk drifts upward, since
+log₂ 5 > 2). Equivalently, ρ_k → 1 says that the deterministic residue system realises the annealed, first-moment
+growth rate of the branching walk. A calibration against a known negative would need a map whose deterministic
+predecessor exponent is provably below its Malthusian root; we know of none. (No explicit predecessor-count
+exponent for 5x+1 exists in the literature; π_a(x) ≥ x^{0.516} numerically at k = 14 appears to be the first,
+pending the same certification.)
 
 ## 7. What is and is not established
 
@@ -423,7 +451,9 @@ undecidability result for maps linear on residue classes implies that any proof 
 2 and 3/2, which is why it yields exponents and not individual orbits.
 
 Within the method, the open mathematical problem is λ_k → 2 ⇔ ρ_k → 1, which §6 reduces to the alignment of two
-argmins in the limit measure on Z₃. We regard the data to k = 22 as consistent with that limit and not as
+argmins in the limit measure on Z₃, or equivalently to the defect between coarse-graining by the top digit and the
+level-(k − 1) map. The same reduction holds for 5x+1 with ceiling 0.6509 in place of 1, so a proof cannot rest on the
+contracting drift of 3x+1. We regard the data to k = 22 as consistent with that limit and not as
 evidence for it.
 
 ## Data and code availability
@@ -431,7 +461,7 @@ evidence for it.
 Repository: github.com/dpalmqvist/kollatz (MIT). Certificates `certs/k{k}_{λ}/cert.json` and `certs/k{k}_{λ}_upper/`
 with sha256 of the vectors; independent verifier `verify_cert.py`; the search (`kl.py`, `kl_mlx.py`, `kl_split.py`);
 Lean modules, manifests and verifier reports in `lean_formal/`; measurements in `rho.py`, `holder.py`,
-`rF2_fit.py`, `renorm.py`, `renorm2.py`, `spectrum.py`, `kl5.py`, `kl5_mlx.py`; the literature survey in `reports/`.
+`rF2_fit.py`, `renorm.py`, `renorm2.py`, `spectrum.py`, `boundary_layer.py`, `kl5.py`, `kl5_mlx.py`; the literature survey in `reports/`.
 
 ## References
 

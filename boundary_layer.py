@@ -51,7 +51,8 @@ def load(k, prev):
     else:
         d = max((d for d in glob.glob(f"certs/k{k}_*") if not d.endswith("_upper")),
                 key=lambda d: float(d.rsplit("_", 1)[1]))
-        p = f"{d}/c_f32.npy" if os.path.exists(f"{d}/c_f32.npy") else f"{d}/C.npy"
+        cands = [f"{d}/c_f32.npy", f"{d}/C.npy", f"c_k{k}_mlx.npy"]   # certificate vector, else lambda_k solution
+        p = next(p for p in cands if os.path.exists(p))
         c = np.load(p).astype(np.float64).reshape(-1)
     return c / c.mean()
 

@@ -121,7 +121,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
     <li><a href="#a1">Sixteen avenues, and the ones closed</a></li>
     <li><a href="#a2">Does the exponent reach 1? A mechanism</a></li>
     <li><a href="#sp1">The spectrum: the gap does not close</a></li>
-    <li><a href="#f1">5x+1 as a calibration case</a></li>
+    <li><a href="#f1">5x+1: same question, lower ceiling</a></li>
     <li><a href="#a3">The 3x+d family</a></li>
     <li><a href="#s15">Next steps</a></li>
     <li><a href="#s16">Files and how to verify</a></li>
@@ -284,7 +284,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
     <li><strong>Applegate–Lagarias Conjecture A is positive density</strong> (π<sub>a</sub>(x) ≥ c<sub>a</sub>x), not (4/3)<sup>k</sup> tree growth; those are Conjectures B, C, C′, and C′ fails for the random branching models. Their extremal tree counts stop at depth 30 and were never extended.</li>
     <li><strong>Hercher's m ≤ 91 used X<sub>0</sub> = 695·2<sup>60</sup></strong>, not 2<sup>68</sup>; 3·2<sup>69</sup> is only the hypothesis of his Corollary 29, which Barina's 2<sup>71</sup> (2025) makes unconditional: every nontrivial cycle has ≥ 1.4 × 10<sup>11</sup> odd terms. A corrigendum (June 2026) leaves the result standing. Nobody has re-run the m-cycle iteration with 2<sup>71</sup> in print.</li>
     <li><strong>Terras's coefficient stopping time conjecture</strong> is open, but Rozier–Terracol (Discrete Math. 2026) already carry the equality check to 2.8 × 10<sup>19</sup>; a "new" computation must start past that.</li>
-    <li><strong>No predecessor exponent for 5x+1 exists</strong> in the literature: Kontorovich–Lagarias leave the constant unspecified and predict a limit near 0.65. Our 5x+1 run (later slide) is the first explicit bound.</li>
+    <li><strong>No predecessor exponent for 5x+1 exists</strong> in the literature: Kontorovich–Lagarias leave the constant unspecified and predict a limit near 0.65; their branching-walk value 0.650919 is exactly the ceiling of the K–L method for 5x+1 (later slide). Our 5x+1 run is the first explicit bound.</li>
     <li><strong>Mazur's September 2026 "positive lower density" theorem</strong> (Codex-generated, method undisclosed, no human review) is the upstream of the neljaouh Conjecture A repository; if sound it supersedes every x<sup>γ</sup> statement. A July 2026 Lean kernel bug, exposed by an AI-assisted Collatz "disproof", argues for independent checkers and pinned toolchains with any native_decide claim.</li>
   </ul>
 </section>
@@ -310,7 +310,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
       <li>The ratio rises steadily, so pure geometric decay is wrong and the earlier limit of 0.98 was a model artefact.</li>
       <li>Dependence of c on a ternary digit decays by a factor per digit that rises with k: 0.828 at k = 12, 0.875 at k = 19, extrapolating to roughly 0.94.</li>
       <li>The spread max c / min c grows like 1.52<sup>k</sup>. The k → ∞ limit object is unbounded, so a limit theory must live in L¹, not among continuous functions.</li>
-      <li>A universal boundary layer: the Hölder exponent at distance d from the top digit is 0.665, 0.401, 0.293, 0.232, 0.194 for d = 1 … 5, identical for every k to three decimals. This is the cleanest structural fact we found and the most promising thing to try to prove.</li>
+      <li>A universal boundary layer: the Hölder exponent at distance d from the top digit is 0.665, 0.401, 0.293, 0.232, 0.194 for d = 1 … 5, identical for every k to three decimals. <strong>Explained to first order</strong> (<code>boundary_layer.py</code>): minimising c<sub>k</sub> over its top digit gives almost c<sub>k−1</sub> (TV 0.0045 at k = 17), so the ball oscillation is the partial sum of 1 − ρ<sub>k−i</sub> and the exponents are log<sub>3</sub> of ratios of those sums: model 0.668, 0.407, 0.301, 0.243. The five numbers carry nothing beyond the 1 − ρ<sub>k</sub> sequence; what remains is the defect R(F<sub>k</sub>c) − F<sub>k−1</sub>(Rc).</li>
     </ul>
   </div>
 </section>
@@ -554,14 +554,14 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 
 <section class="slide" id="f1">
   <p class="eyebrow">22 · Avenue 8</p>
-  <h2>5x+1 as a calibration case for "does ρ<sub>k</sub> → 1?"</h2>
+  <h2>5x+1: the same question with a lower ceiling</h2>
   <div class="cols">
     <div>
       <p>Same construction for T(n) = n/2, (5n+1)/2: principal classes a ≡ 3 (mod 5), four doublings return to a principal class, the odd predecessor (2a−1)/5 falls into one of five cases by a mod 25, minimum over five lifts. Validated by a generic residue-walking LP that reproduces Table 2 for 3x+1 to 10<sup>−6</sup>; a Metal kernel matches to 10<sup>−7</sup>.</p>
       <ul>
-        <li>Integrating the limit inequality gives the <em>same</em> mass-conservation identity, critical at λ = 2, although the predecessor exponent of 5x+1 is believed to be about 0.65. So for 5x+1 the loss 1 − ρ<sub>k</sub> must <em>not</em> vanish if that belief is right: it is a case where "λ<sub>∞</sub> &lt; 2" is the expected truth.</li>
-        <li>Through k = 14 it does not show it. γ<sub>k</sub>(5) rises to 0.517, well below 0.65, but the ratios of 1 − ρ<sub>k</sub> rise 0.83 → 0.92, <em>faster</em> than for 3x+1 (0.91 → 0.93).</li>
-        <li><strong>Lesson.</strong> A rising ratio is not evidence for ρ<sub>k</sub> → 1. Either the saturation sets in later than k = 14, or the K–L exponent for 5x+1 passes the heuristic ceiling, which would be a surprise about 5x+1, not about the method. k = 15 needs a split-buffer kernel.</li>
+        <li><strong>Ceiling.</strong> Since ρ ≤ 1, the summed inequality caps λ<sub>k</sub> at the <em>smallest</em> root of its ρ = 1 form. At ρ = 1 it factors to the Malthusian equation of the naive branching walk, 1/λ + λ<sup>log₂p − 1</sup>/p = 1. For 3x+1 the only root is 2 (γ = 1). For 5x+1 the roots are 1.5701677 and 2, so γ<sub>k</sub>(5) ≤ 0.650919 for every k: exactly Kontorovich–Lagarias's η<sub>5,BP</sub>. Volkov's 0.678 is above the ceiling and unreachable by this method.</li>
+        <li>So in both systems λ<sub>k</sub> → ceiling ⇔ ρ<sub>k</sub> → 1, and the heuristic predicts ρ<sub>k</sub>(5) → 1 too. 5x+1 is a <em>second instance</em> of the open question, not a known-answer calibration. At k = 14 the gap to the ceiling is 0.134 (3x+1: 0.128); the ratios of 1 − ρ<sub>k</sub> rise 0.83 → 0.92, faster than for 3x+1 (0.91 → 0.93).</li>
+        <li><strong>Lesson.</strong> Any proof of ρ<sub>k</sub> → 1 must work for 5x+1 as well, which rules out arguments based on the contracting drift of 3x+1 (5x+1 expands). ρ<sub>k</sub> → 1 says the deterministic residue system realises the annealed growth rate of the branching walk. A known-negative calibration would need a map whose predecessor exponent is provably below its Malthusian root; none is known. k = 15 needs a split-buffer kernel.</li>
       </ul>
     </div>
     <div class="tablewrap">
@@ -612,8 +612,8 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
   <ol>
     <li><strong>Lean.</strong> k = 18, 19 and 20 are Lean theorems on the 64 GB machine (k = 20: potential 5940 s, weights 7382 s at 55.9 GB; axioms: the three standard ones plus two native_decide checks). x^0.914 is the first formal record from this project, above Mazur's 0.90. Two lessons on multi-gigabyte oleans (import the big module first; pick module names whose hashed base address is free) are in the Lean README. k = 21, 22 need a streamed verified checker, weeks of work.</li>
     <li><strong>Write-up.</strong> A preprint draft exists (<code>paper/draft.md</code>): computation, certificates, brackets, formalisation, and the limit measurements with their honest verdict. Registering the certificate at ccchallenge.org and contacting Lagarias and Mazur are the owner's call.</li>
-    <li><strong>Theory, sharpened by the spectrum.</strong> The linear gap is fixed, so λ<sub>k</sub> → 2 is decided by the minimum, not by mixing: prove that the two argmins stay independent and the two variations comparable in the limit measure, which bounds the amplification below 4/3.</li>
-    <li><strong>Calibration.</strong> 5x+1 to k = 15 with a split-buffer kernel; if its ratio keeps rising past 0.93 the "rising ratio" signature is uninformative and only the mechanism counts.</li>
+    <li><strong>Theory, sharpened by the spectrum.</strong> The linear gap is fixed, so λ<sub>k</sub> → 2 is decided by the minimum, not by mixing: prove that the two argmins stay independent and the two variations comparable in the limit measure, which bounds the amplification below 4/3. The boundary layer is now reduced to the 1 − ρ<sub>k</sub> sequence; the object to control is the defect between top-digit coarse-graining and the level-(k−1) map.</li>
+    <li><strong>5x+1.</strong> k = 15 with a split-buffer kernel, to compare the two 1 − ρ<sub>k</sub> sequences at equal gap to their ceilings (1 and 0.6509). It is a second instance of the same question, not a known-answer calibration.</li>
     <li><strong>Scaling stops at k = 22</strong> on this hardware (k = 23 needs 147 GiB). Each level now buys 0.005 in γ; the remaining value is trend data, which k = 22 has supplied.</li>
     <li><strong>Cycle track, optional.</strong> The m-cycle update with Barina's 2<sup>71</sup> is open in print and modest in compute; the block search with residue dismissal is designed but not started.</li>
   </ol>

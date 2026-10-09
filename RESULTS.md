@@ -1,4 +1,4 @@
-# Lower bounds for 3x+1 predecessor counts: the Krasikov–Lagarias program to k = 21
+# Lower bounds for 3x+1 predecessor counts: the Krasikov–Lagarias program to k = 22
 
 Daniel Palmqvist, October 2026. Computation and certificates; the mathematics is Krasikov–Lagarias (2003).
 
@@ -132,8 +132,18 @@ N = 9 the float32 ratio gap has a rounding floor of ~3e-5); all 21 upper certifi
 
 - The summed inequality (1 − λ^−2) c̄_{k,k} ≤ ⅓(λ^(α−1) + λ^(α−2)) c̄_{k−1,k} [KL §6] is tight to 3e-5 on
   all our solutions, so λ_k is determined by the mixing ratio ρ_k = c̄_{k−1,k}/c̄_{k,k} alone. [KL]:
-  exponent 1 is reachable iff λ_k → 2, which holds iff ρ_k → 1. We find 1 − ρ_k = 0.0573 (k = 11) … 0.0258
-  (k = 21) with successive ratios rising from 0.913 to 0.931; the data do not decide whether ρ_k → 1.
+  exponent 1 is reachable iff λ_k → 2, which holds iff ρ_k → 1. We find 1 − ρ_k = 0.0573 (k = 11) … 0.0241
+  (k = 22) with successive ratios rising from 0.913 to 0.933; the data do not decide whether ρ_k → 1.
+- The ceiling is the branching-walk exponent. Since ρ ≤ 1, the summed inequality caps λ_k at the smallest root of
+  its ρ = 1 form, which factors to the Malthusian equation 1/λ + λ^(log2 p − 1)/p = 1 of the naive backward
+  branching walk. For 3x+1 (p = 3) the only root is 2; for 5x+1 (p = 5) the smallest root is 1.5701677,
+  γ = 0.650919, exactly the Kontorovich–Lagarias exponent η_{5,BP}. In both systems λ_k → ceiling ⇔ ρ_k → 1; the
+  5x+1 system (`kl5.py`, k ≤ 14, γ_14 = 0.517) is a second instance of the same open question (`boundary_layer.py`).
+- The universal top-digit boundary layer (Hölder exponents 0.665, 0.401, 0.293, 0.232, 0.194 at distance 1 … 5
+  from the top digit, k-independent to three decimals) is explained to first order: minimising c_k over its top
+  digit gives c_{k−1} to total variation 0.0045 (k = 17), so the ball oscillation with d free digits is the partial
+  sum of 1 − ρ_{k−i} and the exponents are log_3 of ratios of those sums (model 0.668, 0.407, 0.301, 0.243). The
+  remaining object is the defect R(F_k c) − F_{k−1}(R c) between coarse-graining and the level-(k−1) map.
 - The dependence of c on each ternary digit decays geometrically in the digit position, with a factor
   that rises with k (0.828 at k = 12, 0.875 at k = 19) and extrapolates to roughly 0.94. The spread
   C_max/C_min grows like 1.52^k, so the k → ∞ limit object is unbounded.
