@@ -804,8 +804,12 @@ which beats (x/a)^{0.848}/77.4 (k = 14) up to x/a ≈ 10^{37} and the k = 22 Per
 
 **Empirical densities (`pred_density.py`, n < 2^32, 68 min on the GPU).** π_a(X)/X for a < 3^8 is converged to
 three decimals between X = 2^20 and 2^32 (a = 5: 0.9378 → 0.9379; 7: 0.1916 → 0.1912; 11: 0.4440 → 0.4458;
-13: 0.4749 → 0.4765; 16: 0.0622 → 0.0621): Conjecture A is numerically solid for small a, and d_a·a ≥ 0.77 over
-a ≡ 2 (mod 3), a < 6561, consistent with the lifted constants Δ ≈ 1 (the argument above predicts d_a ≥ Δ₀/a).
+13: 0.4749 → 0.4765; 16: 0.0622 → 0.0621): Conjecture A is numerically solid for small a, and d_a·a ≥ 0.67 over
+a ≡ 2 (mod 3), a < 6561 (median 7.2), consistent with the lifted constants Δ ≈ 1 (the argument above predicts
+d_a ≥ Δ₀/a). Class means of d_a·a correlate with the Perron vector at 0.92–0.93 (log, k = 4 … 6) and 0.90 (k = 8),
+unchanged from X = 2^20 (`pred_compare.py`); with the bounded λ = 1.60 solution 0.76–0.91. The empirical spread of
+the class means (51 → 2713 for k = 4 → 8) is far larger than any LP profile's because d_a·a carries the a-dependence
+within a class, not only the class dependence.
 
 **Why this matters beyond constants.** If Δ_best(k) stayed bounded below as k → ∞ (for the Perron vectors at λ_k),
 then π_a(x) ≥ Δ₀ (x/a)^{γ_k} for x ≥ a 2^{Y(k)} with Y(k) ≈ k, and choosing k ≈ log₂(x/a) gives
