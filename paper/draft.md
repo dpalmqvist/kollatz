@@ -1,6 +1,6 @@
 # Certified Krasikov–Lagarias predecessor bounds for the 3x+1 problem to k = 22: two-sided brackets, machine-checked instances, and the finite-level loss
 
-*Draft 0.5, 2026-10-09. All numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
+*Draft 0.6, 2026-10-09. All numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
 `spectrum.json`, `kl5.json` and the literature survey `reports/Collatz adjacent work and references.md`.*
 
 ## Abstract
@@ -392,7 +392,22 @@ and the top six digits explain 0.04 % of its variance. The excess splits 64 % ×
 k, and is uncorrelated with the local spread of c over the lifts. The defect is thus the product of two independent
 fine-scale choices whose expected size is fixed by the residue mod 3⁴, the mean-field structure that §6.3 assumed.
 What a proof needs is the one-step recursion for 1 − ρ_{k+1} under that independence, and a contraction estimate
-for it. Integrating the limit inequality on X = {m ∈ Z₃ : m ≡ 2 (mod 3)} with
+for it.
+
+That independence can be tested at the source. The index maps are recursive in the top ternary digit: writing a
+level-k index as i_low + t·N/3, the ×4 target is nxt_{k−1}(i_low) + σ(t)·N/3 and the auxiliary target is
+aux_{k−1}(i_low) + π(t)·N/9, where σ is a cyclic shift and π a shift or a reflection of {0, 1, 2}, both fixed by
+i_low through the arithmetic of 2 and 3. We replaced σ and π by independent uniform random bijections and
+recomputed λ_k and ρ_k (`meanfield.py`); nxt stays a bijection and aux stays 3-to-1, so the summed identity and the
+ceiling λ = 2 are unchanged. Randomising the top level alone is invisible from k = 9 on (the change in λ_k is within
+seed noise, 3·10^{−4}, and at k = 13 the random alignment is marginally better). Randomising every level from 9
+upward changes λ_14 by −2.1·10^{−3} ± 4·10^{−4}, about 2 % of the gain per level, raises 1 − ρ_14 by 1.6 % and leaves
+the ratio q_k unchanged within noise. Randomising from level 6 or from level 3 costs 10^{−2} or several 10^{−2}: the
+arithmetic of 2 and 3 acts through the coarse residues and the weights, and the fine alignment can be replaced by
+independent randomness. The question λ_k → 2 can therefore be posed for a random Krasikov–Lagarias model, the exact
+system up to a fixed level lifted with independent uniform alignments above it, in which it becomes a quenched-
+versus-annealed question of the kind studied for branching random walks. Whether the small residual cost of
+randomness vanishes with k is open. Integrating the limit inequality on X = {m ∈ Z₃ : m ≡ 2 (mod 3)} with
 Haar measure gives 1 ≤ λ^{−2} + (1/3)(λ^{α−2} + λ^{α−1}) with equality exactly at λ = 2, so λ = 2 is the critical
 value of the limit problem and the finite-k deficit is precisely 1 − ρ_k.
 

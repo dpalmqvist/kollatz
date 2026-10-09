@@ -10,7 +10,7 @@ everything adjacent (cycle bounds, predecessor density, the long shots, formal v
 
 | # | Avenue | Kind of payoff | Status (2026-10-08) |
 |---|---|---|---|
-| 1 | Prove λ_k → 2 (exponent 1 − ε) via the limit object | theorem about the method | theory started 2026-10-09: boundary layer reduced to 1 − ρ_k (`boundary_layer.py`); defect D_k measured, exact identity δ_k = g(ρ_k − ρ′_k), argmins independent (`defect.py`) |
+| 1 | Prove λ_k → 2 (exponent 1 − ε) via the limit object | theorem about the method | theory started 2026-10-09: boundary layer reduced to 1 − ρ_k (`boundary_layer.py`); defect D_k measured, exact identity δ_k = g(ρ_k − ρ′_k), argmins independent (`defect.py`); λ_k and q_k are mean-field: random fine alignments change λ_14 by −2e-3 and q_k not at all (`meanfield.py`) |
 | 2 | Stronger inequality systems at small k | could change the slope of the whole program | started 2026-10-08, see below |
 | 3 | The 3x+d family | publishable computations, sanity checks | not started |
 | 4 | Cycle block search with residue dismissal | bits of verification range | designed, not started |
@@ -189,13 +189,48 @@ injects second-digit sensitivity, the ×4 term transports top-digit sensitivity,
 test it against q_k and e_k; a proof of independence plus a contraction estimate for that recursion would give
 q∞ < 1 and hence λ_k → 2. Scaling the full analysis beyond k = 19 needs a chunked rewrite (50 GB RSS at k = 19).
 
+**λ_k is a mean-field quantity (2026-10-09, `meanfield.py`).** The index maps are recursive in the top digit:
+nxt_k(i_low + t·N/3) = nxt_{k−1}(i_low) + σ_{i_low}(t)·N/3 and aux_k(i_low + t·N/3) = aux_{k−1}(i_low) + π_{i_low}(t)·N/9,
+with σ a cyclic shift and π a shift or reflection of {0, 1, 2} fixed by the arithmetic of 2 and 3 (verified: the
+recursive build reproduces `kl.structure` exactly). The alignment of σ and π is what the defect measures. The test:
+replace σ, π by i.i.d. uniform random bijections and recompute λ_k and ρ_k. nxt stays a bijection and aux 3-to-1,
+so the summed identity and the ceiling λ = 2 are untouched; only the fine alignment arithmetic is destroyed.
+
+| scrambled levels | k | Δλ (model − exact) | 1 − ρ model / exact | q_k model / exact |
+|---|---|---|---|---|
+| top level only (8 seeds) | 9 … 12 | −3e-4 … −4e-4 (± 3e-4 … 1e-3) | +0.2 … +0.3 % | same within 0.003 |
+| top level only | 13 | +1.8e-4 ± 2e-4 | −0.1 % | 0.916 / 0.920 |
+| all levels 9 … k (6 seeds) | 14 | −2.1e-3 ± 4e-4 | 0.04495 / 0.04426 (+1.6 %) | 0.925 ± 0.004 / 0.919 |
+| all levels 6 … k (6 seeds) | 13 | −8.9e-3 ± 1e-3 | 0.05119 / 0.04818 (+6 %) | 0.922 ± 0.02 / 0.920 |
+| all levels 3 … k (3 seeds) | 11 | −4e-2 ± 1e-2 | +27 % | – |
+
+Reading: (i) scrambling the top level alone costs nothing measurable from k = 9 on (at k = 13 the random
+alignment is even marginally better); σ-only and π-only behave the same. (ii) Scrambling every fine level from 9
+up costs ≈ 3·10^{−4} in λ per level, about 2 % of the per-level gain Δλ_k ≈ 0.013, and raises 1 − ρ by 1.6 % at
+k = 14, with the decay ratio q_k unchanged within seed noise (0.005). (iii) The coarse levels carry real
+arithmetic: scrambling from level 6 costs 10^{−2}, from level 3 several 10^{−2}, and the cost decays only slowly
+with k (ratio ≈ 0.9). **So λ_k and the loss ratio q_k are mean-field quantities to ≈ 1 % in the loss and 2 % in the
+per-level gain: the arithmetic of 2 and 3 enters through the coarse residues (mod 3^8, say) and the weights, and
+the fine alignment can be replaced by independent uniform randomness.** Random K–L model := the exact system up
+to level K0, lifted with i.i.d. uniform top-digit bijections above it. The question λ_k → 2 ⇔ q_k → q∞ < 1 can
+therefore be posed in that model, which has no number theory left above K0: it is a random monotone
+1-homogeneous recursion on a 3-adic tree, i.e. a quenched-versus-annealed question of the type studied for
+branching random walks (Kontorovich–Lagarias's η_BP is the annealed rate). Caveats: the exact system is
+*better* than random by a small offset, and no comparison theorem is known; and the residual per-level cost
+(3·10^{−4}) has not been shown to vanish with k (runs to k = 15 pending).
+**Next:** (a) a distributional (population-dynamics) formulation of the random model, which would allow k ≫ 22 at
+fixed cost and decide q∞ for the model numerically; the ×4 transport makes each level a fixed-point equation for
+the triple-shape law rather than a one-step map, so the formulation needs the cavity-style self-consistency;
+(b) a proof of q∞ < 1 for the random model, if (a) says so.
+
 **How to pick up.**
 1. Measure convergence of the mass distribution μ_k(class) = c_m / Σc on 3-adic balls across k (total variation
    between level-j marginals of consecutive k). If it converges, a limit measure exists.
 2. Compare the Perron vector of F at λ = 2 (finite k, spectral radius < 1 but the eigenvector exists) with c_k at
    λ_k. If the shapes agree, the limit object is the λ = 2 eigenmeasure of the 3-adic operator.
 3. ✅ (2026-10-09) The boundary layer is the 1 − ρ_k sequence through R; the defect D_k is measured (`defect.py`).
-   Next: the one-step recursion for 1 − ρ_{k+1} under argmin independence, tested against q_k and e_k.
+   ✅ The recursion's mean-field character is tested directly (`meanfield.py`): random alignments reproduce λ_k, q_k.
+   Next: distributional (population-dynamics) formulation of the random K–L model to reach k ≫ 22.
 4. Decide whether the per-digit factor converges to r∞ < 1. If so, 1 − ρ_k eventually decays geometrically and
    λ_k → 2 follows from the summed inequality.
 

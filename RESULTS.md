@@ -148,6 +148,12 @@ N = 9 the float32 ratio gap has a rounding floor of ~3e-5); all 21 upper certifi
   (so it adds nothing to the ρ_k sequence), and pointwise it is the product of two independent argmin choices
   (agreement 0.332) whose expected size depends only on the residue mod 3^4. The decisive sequence is
   q_k = (1 − ρ_k)/(1 − ρ_{k−1}) = 0.913 (k = 12) … 0.931 (k = 21), rising ≈ 0.002 per level; undecided.
+- λ_k is a mean-field quantity (`meanfield.py`): the index maps are recursive in the top ternary digit with a
+  bijection of {0, 1, 2} per class fixed by the arithmetic of 2 and 3; replacing these bijections by i.i.d. uniform
+  random ones at every level from 9 up changes λ_14 by −2.1·10^{−3} ± 4·10^{−4} (2 % of the per-level gain), raises
+  1 − ρ_14 by 1.6 % and leaves q_k unchanged within seed noise. Scrambling only the top level is invisible from
+  k = 9 on; scrambling from level 6 or 3 costs 10^{−2} or more. The arithmetic matters in the coarse residues and
+  the weights; the fine alignment can be random. The question λ_k → 2 can thus be posed for a random K–L model.
 - The dependence of c on each ternary digit decays geometrically in the digit position, with a factor
   that rises with k (0.828 at k = 12, 0.875 at k = 19) and extrapolates to roughly 0.94. The spread
   C_max/C_min grows like 1.52^k, so the k → ∞ limit object is unbounded.

@@ -204,6 +204,12 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   oberoende (P(lika) = 0.332, |joint − produkt| ≤ 0.002), förväntad storlek bestäms av residyn mod 3^4, topp-siffran
   informationslös (1e-3). q_k: 0.913 (12) → 0.931 (21), +0.002/steg; e_k/(1−ρ_k): 0.048 → 0.029. `python defect.py [KMAX=19]`
   → `defect.json`; 50 GB RSS vid k = 19 (k = 20, 21 bara medelvärden, chunkat). Se AVENUES §1.
+- `meanfield.py` – spår 1 (2026-10-09): indexkartorna är rekursiva i toppsiffran (nxt_k = nxt_{k−1} + σ(t)·N/3,
+  aux_k = aux_{k−1} + π(t)·N/9; rekursiv bygge == kl.structure). Byt σ, π mot i.i.d. slumpbijektioner: bara toppnivån
+  → Δλ inom brus (±3e-4) från k = 9; alla nivåer ≥ 9 → Δλ_14 = −2.1e-3 ± 4e-4 (≈ 3e-4 per nivå, 2 % av Δλ_k),
+  1−ρ +1.6 %, q_k oförändrad; nivåer ≥ 6 → −9e-3; ≥ 3 → −4e-2. ⇒ λ_k, q_k är mean-field-storheter; aritmetiken
+  sitter i de grova nivåerna (≤ 8) och vikterna. `python meanfield.py KMAX SEEDS K0 MODES TAG` → meanfield_TAG.json
+  (modes top,sigma,pi,all; all = slumpa alla nivåer från K0). k = 14: 90 s/λ-sökning. Se AVENUES §1.
 - `.venv/` – Python 3.14, numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1, mlx 0.32.3, matplotlib 3.11.2 (Apple M5, 24 GB)
 
 ## Referensvärden (regressionstest – ska reproduceras)
@@ -432,7 +438,9 @@ Kvar: 7c (kräver stor maskin eller samarbete), 9 (teori).
 8. ✅ Adaptivt-träd-experimentet vid k = 12 och 14 (idé 1) – förkastat, se Idéer punkt 1.
 9. ρ_k-teori (idé 2). Mätningarna i `holder.py` är gjorda (se Gränsobjektet). Öppna delfrågor: (i) ✅ gränsskiktet β(d) förklarat till första ordningen
    (2026-10-09, `boundary_layer.py`); defekten R(F_k(c)) − F_{k−1}(R c) mätt (`defect.py`): medelvärdet är en exakt
-   identitet i ρ_k, ρ′_k, strukturen är oberoende argmin + grov residy ⇒ nästa: enstegsrekursionen för 1 − ρ_{k+1}; (ii) avgör om β∞ > 0 (r∞ < 1) – då är ρ_k → 1 geometriskt och
+   identitet i ρ_k, ρ′_k, strukturen är oberoende argmin + grov residy; `meanfield.py` visar att slumpade fina
+   justeringar ger samma λ_k (−2e-3) och q_k ⇒ frågan kan ställas i den slumpade K–L-modellen (nästa:
+   populationsdynamik/RDE för k ≫ 22); (ii) avgör om β∞ > 0 (r∞ < 1) – då är ρ_k → 1 geometriskt och
    γ∞ = 1; (iii) formulera transferoperatorn vid λ = 2 på L¹(X, Haar) och undersök om den har en positiv
    egenfunktion (obegränsad). Uppdatera ρ-tabellen och profilerna när nya k tillkommer (`python rho.py`, `holder.py`).
 
