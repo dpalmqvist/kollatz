@@ -26,7 +26,7 @@ everything adjacent (cycle bounds, predecessor density, the long shots, formal v
 | 14 | Matrix interpretations for the rewriting system | a success would be a proof; odds very low | proposed 2026-10-08 |
 | 15 | Applegate–Lagarias extremal trees to depth 45–50 | direct test of Conjectures C / C′ | proposed 2026-10-08 |
 | 16 | Spectrum, gap and traces of the K–L transfer matrix | mixing rate vs k; cycle footprints | first results 2026-10-08 (`spectrum.py`, k ≤ 15): gap does NOT close, see §16 |
-| 17 | Three-statement decomposition: Conjecture A + density-1 boundedness + no cycles ⇒ Collatz | a full proof from three density/Diophantine statements | started 2026-10-09: minimal spread at fixed λ is bounded in k (`spread_iter.py`), t*_∞(λ) ~ (2 − λ)^{−2} to λ = 1.78; certified explicit bound π_a(x) ≥ (x/a)^{0.848}/77.4 for all x ≥ a (k = 14, λ = 1.80) |
+| 17 | Three-statement decomposition: Conjecture A + density-1 boundedness + no cycles ⇒ Collatz | a full proof from three density/Diophantine statements | started 2026-10-09: minimal spread at fixed λ is bounded in k (`spread_iter.py`), t*_∞(λ) ~ (2 − λ)^{−2}; lifted base case (`base_lift.py`) removes most of the spread penalty: certified π_a(x) ≥ 0.865 (x/a)^{0.799} for x ≥ 64a; Conjecture A ⇐ λ_k → 2 + uniform base constant |
 | 18 | No divergence as an arithmetic property of the 2-adic parity map (Q(ℤ) ⊆ ℚ) | settles divergence for integers | first data run 2026-10-09 (`parity_stats.py`, n < 2^32, in progress); by Terras the local gap statistics carry no information, see §18 |
 | 19 | All cycles by equidistribution of numerators mod 2^n − 3^k | settles cycles for all m | proposed 2026-10-09 |
 | 20 | Adelic ℤ₂ × ℤ₃ picture and a Furstenberg-type rigidity theorem | explains the difficulty and would kill divergent orbits | proposed 2026-10-09 |
@@ -767,8 +767,50 @@ slack rows being the capped ones. The solution is the Perron-like fixed point wi
 λ's correlate at 0.996 in log c (0.95–0.97 with the Perron vector). So the bounded limit object is close to a locally
 constant function on ℤ₃ and needs no re-weighting to be nice; the "weighted system" idea is dropped for that reason.
 
-**Next.** k = 16 at λ = 1.85; the exponent a of t*_∞ ≈ (2 − λ)^{−a} from the λ ≥ 1.80 points; then the theory of the
-capped fixed point as λ → 2 on ℤ₃ (which classes are capped, and why the cap must grow like (2 − λ)^{−2}).
+**Next (spread).** k = 16 at λ = 1.85; the exponent a of t*_∞ ≈ (2 − λ)^{−a} from the λ ≥ 1.80 points; the theory of
+the capped fixed point as λ → 2 on ℤ₃.
+**Lifting the base case (2026-10-09, `base_lift.py`): the spread penalty is not intrinsic.** K–L's constant
+Δ = λ^{−ν} min φ(0)/max c (Thm 5.1, (5.2)) comes from starting the induction at y = 0, where every class has count 1,
+so the capped classes (c = t) cost the factor 1/t. The induction (their proof of Thm 5.1) works from any base
+window [Y − ν, Y] with Δ_Y := min over m and y ∈ [Y − 2, Y] of φ_k^m(y)/(c^m λ^y), and for y up to about k the counts
+φ_k^m(y) = inf_a π*_a(2^y a) are bounded below by the **guaranteed tree** of the class: predecessors 2n (always) and
+(2n − 1)/3 iff n ≡ 2 (mod 3), decidable while the residue is known mod 3^{k−j} after j odd steps; values bounded by
+a 2^e (2/3)^j so the path-maximum condition is implied. Exact enumeration (DFS per class, seconds to k = 9); checked
+against brute-force pruned trees of random integers in the class, 225 cases, always ≤ and tight (ratio 1.000) for
+some a, as the infimum must be.
+
+| k, solution | max c = t | K–L Δ₁ = 1/(4t) | best Y | Δ_Y | gain | corr(log counts at Y, log c) |
+|---|---|---|---|---|---|---|
+| 6, Perron λ₆ | 12.9 | 0.019 | 5 | 0.83 | 43× | 0.98 |
+| 7, Perron λ₇ | 20.2 | 0.012 | 5 | 0.68 | 55× | 0.98 |
+| 8, Perron λ₈ | 29.1 | 0.0086 | 5 | 0.54 | 63× | 0.98 |
+| 9, Perron λ₉ | 43.3 | 0.0058 | 5–6 | 0.38 | 67× | 0.98 |
+| 8, bounded λ = 1.70 | 7.9 | 0.032 | 6 | 1.36 | 43× | 0.98 |
+| 8, bounded λ = 1.74 (certified) | 14.3 | 0.018 | 6 | 0.865 | 49× | 0.985 |
+
+The guaranteed counts correlate with c at 0.98 in log at every level: the LP vector *is* the tree-density profile
+(confirmed independently by the empirical predecessor densities, `pred_density.py`/`pred_compare.py`: class means of
+d_a·a correlate with the Perron vector at 0.90–0.93 already at X = 2^20). The argmin for Y ≥ 6 is always the
+largest-c class, because the guaranteed tree (≤ k odd steps) undercounts most for the densest classes; this is why
+Δ_Y peaks at Y ≈ 5–6 and why Δ_best still decays slowly with k for the Perron vectors (0.83 → 0.38, ≈ 0.8 per
+level, i.e. like t^{−1/2} instead of t^{−1}). **Certified explicit bound:** with the int64-verified vector
+`certs/spread_k8_1.74/` and the exact counts, for every a ≢ 0 (mod 3) not in a cycle,
+
+  π_a(x) ≥ 0.865 · (x/a)^{0.7991}   for all x ≥ 2^6 a,
+
+which beats (x/a)^{0.848}/77.4 (k = 14) up to x/a ≈ 10^{37} and the k = 22 Perron bound up to x/a ≈ 10^{40}.
+
+**Why this matters beyond constants.** If Δ_best(k) stayed bounded below as k → ∞ (for the Perron vectors at λ_k),
+then π_a(x) ≥ Δ₀ (x/a)^{γ_k} for x ≥ a 2^{Y(k)} with Y(k) ≈ k, and choosing k ≈ log₂(x/a) gives
+π_a(x) ≥ Δ₀ (x/a) exp(−(1 − γ_k) ln(x/a)): with 1 − γ_k ≈ A q^k (geometric, q < 1) the exponent tends to 0 and
+**positive density follows from λ_k → 2 alone**; with sub-geometric decay 1 − γ_k ≈ k^{−b} one still gets
+x/exp((log x)^{1−b}). So Conjecture A reduces to (a) λ_k → 2 (avenue 1) and (b) a uniform base constant, i.e. the
+guaranteed trees of all classes tracking c^m λ^y to height ≈ k — a finite statement at each k.
+
+**Next.** Decide (b): compute the guaranteed trees at finer resolution (residues mod 3^{k′}, k′ > k, so more odd
+steps are decidable; the base needs the min over the finer classes inside each coarse class), vectorised over
+classes, and watch whether Δ_best(k) levels off; and certify lifted bounds at k = 12–14 for the explicit table.
+
 
 ## 18. No divergence as an arithmetic property of the 2-adic parity map
 

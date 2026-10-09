@@ -233,6 +233,14 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   `spread_iter.py --slack=1e-5 K LAM` ger certifierbar vektor; `certify_spread.py K LAM vec.npy` → `certs/spread_k{K}_{LAM}/`
   + verify_cert. Certifierat: k = 14, λ = 1.80: π_a(x) ≥ (x/a)^{0.848}/77.4 (första K–L-gränsen med explicit konstant).
   Reduktion: Conjecture A ⇔ (upp till log-potenser) t*_∞(λ) begränsad när λ → 2. Se AVENUES §17, RESULTS.md.
+- `base_lift.py` – spår 17 (2026-10-09): lyft basfallet i K–L:s sats 5.1 till fönstret [Y−2, Y] med exakta räkningar
+  av klassens GARANTERADE föregångarträd (2n alltid, (2n−1)/3 om n ≡ 2 mod 3, avgörbart i ≤ k udda steg; värden
+  ≤ a·2^e(2/3)^j). Δ_Y = min_m min_y L(m,y)/(c^m λ^y): 0.83/0.68/0.54/0.38 (Perron k = 6…9, bästa Y = 5–6) mot K–L:s
+  1/(4t) = 0.019…0.0058 (43–67×). Räkningarna korrelerar 0.98 med c. Certifierat: `certs/spread_k8_1.74/` + Δ = 0.865
+  ⇒ π_a(x) ≥ 0.865 (x/a)^{0.7991} för x ≥ 64a. Conjecture A ⇐ λ_k → 2 + likformig baskonstant (AVENUES §17).
+  `python base_lift.py K Y [LAM [VEC.npy]]`. Nästa: finare residyer (mod 3^{k'}) för att se om Δ_best(k) planar ut.
+- `pred_density.py`, `pred_compare.py` – spår 17: första banvärdet < 3^8 för alla n < 2^32 (GPU) ⇒ π_a(X) exakt för
+  alla a < 6561; klassmedel av d_a·a korrelerar 0.90–0.93 (log) med Perron-vektorn redan vid X = 2^20.
 - `parity_stats.py`, `analyse_parity.py` – spår 18 (2026-10-09): paritets-/gapstatistik för alla n < 2^32 på GPU (MLX,
   2^24 per chunk, ~50 s/chunk, ~3.5 h; int32-scatter!), tre regimer (fönster t < 32, startvärde ≥ 2^24, litet). Lokala
   gapfördelningar är geometriska enligt Terras – avvikelser är urvals-/sluteffekter; spår 18:s innehåll är globalt.

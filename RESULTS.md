@@ -127,7 +127,17 @@ int64 with rounded-down coefficients and by `verify_cert.py`):
 | 14 | 1.80 | 0.8480 | 19.353 | π_a(x) ≥ (x/a)^{0.8480}/77.41 | see cert.json |
 
 The certified k = 22 Perron vector gives (x/a)^{0.9251}/39404, which overtakes the k = 14 bound only beyond
-x/a ≈ 10^{35}. The minimal spread t*_∞(λ) grows like (2 − λ)^{−2} on λ ≤ 1.78; if that continued to λ = 2 (an
+x/a ≈ 10^{35}.
+
+The constant improves by starting Krasikov–Lagarias's induction (their Theorem 5.1) at a higher base window
+[Y − 2, Y], where the counts φ_k^m(y) are bounded below by exact enumeration of the residue-determined
+("guaranteed") predecessor tree of each class (`base_lift.py`; counts verified against brute-force trees of
+integers in the class). With the certified vector `certs/spread_k8_1.74/` (k = 8, λ = 1.74, spread 14.28) and
+the window [4, 6] the constant is Δ = 0.865 instead of 1/(4·14.28) = 0.0175:
+
+  π_a(x) ≥ 0.865 · (x/a)^{0.7991}   for all x ≥ 2^6 a and all a ≢ 0 (mod 3) not in a cycle,
+
+the strongest explicit bound of this kind for x/a up to about 10^{37}. The minimal spread t*_∞(λ) grows like (2 − λ)^{−2} on λ ≤ 1.78; if that continued to λ = 2 (an
 unproved limit statement) it would give π_a(x) ≫ x/(log x)².
 
 ## Independent checks
