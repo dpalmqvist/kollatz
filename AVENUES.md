@@ -10,14 +10,14 @@ everything adjacent (cycle bounds, predecessor density, the long shots, formal v
 
 | # | Avenue | Kind of payoff | Status (2026-10-08) |
 |---|---|---|---|
-| 1 | Prove λ_k → 2 (exponent 1 − ε) via the limit object | theorem about the method | measurements done, theory not started |
+| 1 | Prove λ_k → 2 (exponent 1 − ε) via the limit object | theorem about the method | theory started 2026-10-09: boundary layer reduced to 1 − ρ_k via coarse-graining R (`boundary_layer.py`) |
 | 2 | Stronger inequality systems at small k | could change the slope of the whole program | started 2026-10-08, see below |
 | 3 | The 3x+d family | publishable computations, sanity checks | not started |
 | 4 | Cycle block search with residue dismissal | bits of verification range | designed, not started |
 | 5 | Formalise k = 20, 21 in Lean | record becomes formal | needs 30 / 90 GiB machine or a collaborator |
 | 6 | Wirsching's positive-density program | numerical test of an open conjecture | not started |
 | 7 | Divergent orbits | new theorem, no known tool | not started, no concrete idea |
-| 8 | 5x+1 as a calibration case for avenue 1 | tests our extrapolation where the answer is known | running: k ≤ 13 done (`kl5.py`, `kl5_mlx.py`), see §8 |
+| 8 | 5x+1 as a calibration case for avenue 1 | second instance of the same question | k ≤ 14 done; REFRAMED 2026-10-09: the K–L ceiling for 5x+1 is the branching exponent 0.650919, so it is not a known-answer case (§8) |
 | 9 | Dual certificates: λ_k is optimal at level k | exact λ_k, confirms K–L's optimality belief | DONE for k = 2 … 22 (2026-10-08/09): `certify_fast.py --upper`, `kl_split.py certify --upper`, brackets in RESULTS.md |
 | 10 | Explicit constants in the predecessor bound | tables comparable with real counts | proposed 2026-10-08 |
 | 11 | 3x+d cycle census at scale | tests Belaga–Mignotte conjectures | proposed 2026-10-08 |
@@ -26,7 +26,7 @@ everything adjacent (cycle bounds, predecessor density, the long shots, formal v
 | 14 | Matrix interpretations for the rewriting system | a success would be a proof; odds very low | proposed 2026-10-08 |
 | 15 | Applegate–Lagarias extremal trees to depth 45–50 | direct test of Conjectures C / C′ | proposed 2026-10-08 |
 | 16 | Spectrum, gap and traces of the K–L transfer matrix | mixing rate vs k; cycle footprints | first results 2026-10-08 (`spectrum.py`, k ≤ 15): gap does NOT close, see §16 |
-| — | Scaling k further | +0.005 in γ per step | k = 22 running 2026-10-08 on a 64 GB M4 Pro (`kl_split.py`) |
+| — | Scaling k further | +0.005 in γ per step | k = 22 certified 2026-10-08 (γ = 0.9251) plus upper certificate; k = 23 needs ~192 GB |
 
 ## 1. Prove that the Krasikov–Lagarias exponent tends to 1
 
@@ -127,6 +127,23 @@ derives Conjecture A and the Kontorovich–Lagarias growth-exponent conjecture e
 "positive lower density" theorem (6 Sep 2026); if that upstream is sound it supersedes every x^γ statement, so it is the
 one external claim worth a human expert's attention. No refereed or preprint progress on K–L §6 (λ_k → 2) exists;
 Lagarias's overview (arXiv:2111.02635) still lists π_1(x) > c(ε)x^{1−ε} as open.
+
+**Boundary layer explained to first order (2026-10-09, `boundary_layer.py`).** Let R(c) be c minimised over
+its top ternary digit and renormalised to mean 1 (a vector on level k − 1). Then R(c_k) ≈ c_{k−1}. The TV distance is
+0.0126 (k = 8) → 0.0045 (k = 17), four times smaller than TV(c_k, tile c_{k−1}), and it decays with 1 − ρ_k (ratio
+≈ 0.13 throughout). R² behaves the same way against c_{k−2}. Consequence: the ball oscillation with d free top
+digits equals the d-step loss of the chain c_k → c_{k−1} → …, so osc_k(d) ≈ Σ_{i<d} (1 − ρ_{k−i}). At k = 17:
+osc = 0.0347, 0.0720, 0.1118, 0.1543, 0.1991 against partial sums 0.0347, 0.0722, 0.1129, 0.1571, 0.2053. The
+"universal" exponents are then β(d) = log_3(S(d+1)/S(d)) of these partial sums. With 1 − ρ_k ≈ q^k they are
+log_3((1 + … + q^−d)/(1 + … + q^−(d−1))): about log_3 2, log_3 1.5, … pulled up slightly by q ≈ 0.92. The model gives
+0.668, 0.407, 0.301, 0.243 against the observed 0.665, 0.401, 0.293, 0.232. It is right to 0.003–0.011, with the
+error growing in d. **So the boundary layer is not an independent fixed point. It is the 1 − ρ_k sequence seen
+through the coarse-graining R**, and the five numbers carry no information beyond the ratios of 1 − ρ_k. Two caveats.
+The observed β(d) are k-independent to three decimals, while the partial-sum model drifts by ~0.005 over k = 11 … 17,
+so a second-order effect makes the exact profile more universal than the model. And R(c_k) is *not* feasible at
+level k − 1: min over the top digit of a sum is at least the sum of the mins, which is the wrong direction. The defect
+is the ×4/aux misalignment of `renorm2.py`. This is where the theory has to go: the exact relation between R(c_k) and
+c_{k−1}, i.e. the size of R(F_k(c)) − F_{k−1}(R c), now decides whether 1 − ρ_k → 0.
 
 **How to pick up.**
 1. Measure convergence of the mass distribution μ_k(class) = c_m / Σc on 3-adic balls across k (total variation
@@ -241,7 +258,8 @@ Sturmian-like (critical). Do not start here without a specific idea; the territo
 construction has a critical value strictly below 2 (integrating the limit inequality with the 5-adic branching
 gives a different equation), almost all orbits are believed to diverge, and the predecessor-tree exponent is
 below 1 by the standard heuristic. So 5x+1 is a case where the analogue of "λ∞ = critical value?" has a
-predictable answer.
+predictable answer. [Corrected 2026-10-09, see the end of this section: the K–L ceiling for 5x+1 is exactly the
+heuristic exponent 0.650919, so the predicted answer is "ρ_k → 1" here as well.]
 
 **Why.** If the extrapolation models that disagree on 3x+1 (geometric with offset vs stretched exponential vs
 power law, CLAUDE.md "Blandningskvoten") can be told apart on 5x+1, where the true limit can be computed from
@@ -289,6 +307,24 @@ limit is slow enough that k ≤ 13 cannot see it (geometric-with-offset fit on k
 for ρ_k → 1. k = 14 (2026-10-08, `kl5_mlx.py`, 495 s, 10 GB): γ = 0.5166, 1 − ρ = 0.0626, ratio 0.919 — still rising at ≈ 0.004 per
 level, faster than 3x+1's ≈ 0.002. Next: k = 15 (N = 6.1e9, needs a split-buffer version of `kl5_mlx.py`, 48 GB);
 the question is whether the 5x+1 ratio crosses 0.93 (3x+1 at k = 21) or saturates.
+
+**CORRECTION 2026-10-09 (`boundary_layer.py`): the framing above is wrong; 5x+1 is NOT a "λ∞ < ceiling" case.**
+Since cbar ≤ c pointwise, ρ ≤ 1, and the summed inequality then caps λ_k at the *smallest* root > 1 of
+(1 − λ^-4) = (λ^β/5)(λ^-1 + … + λ^-4). That root is not 2: the function changes sign at λ* = 1.5701677 and again at 2,
+and λ ∈ (λ*, 2) is infeasible at every k even with ρ = 1. Factoring 1 − λ^-4 = (1 − 1/λ)(1 + λ^-1 + λ^-2 + λ^-3), the
+equation at ρ = 1 is exactly 1/λ + λ^(β−1)/5 = 1, the Malthusian equation of the naive backward branching walk.
+Its root, γ* = log2 λ* = 0.650919, is Kontorovich–Lagarias's η_{5,BP} ≈ 0.650919 (arXiv:0910.1944, Thm 8.10), to
+every digit they print. (Their "η5 ≈ 0.649" in Conj. 7.2 is the rounded value. Volkov's 0.678 is *above* the K–L
+ceiling, so this method can never certify it.) For 3x+1 the same factoring gives 1/λ + λ^(α−1)/3 = 1, whose only
+root is λ = 2. So in both systems:
+  **λ_k → (Malthusian root of the branching model) ⇔ ρ_k → 1**,
+and for 5x+1 the heuristic prediction is the ceiling itself, with 1 − ρ_k(5) → 0, just as for 3x+1. The 5x+1 data
+(ratios rising 0.83 → 0.919) are therefore the *same* open question in a second system, not a calibration against a
+known "no". What 5x+1 still offers: the gap to the ceiling is similar at equal k (0.134 at k = 14, against 0.128 for
+3x+1), so the two sequences can be compared. Any proof of ρ_k → 1 must work for 5x+1 too, which rules out arguments
+that use the contracting drift of 3x+1 (5x+1 expands). Equivalently, ρ_k → 1 says the deterministic residue system
+realises the *annealed* (first-moment) growth rate of the branching walk. A true "known no" calibration would need a
+map whose deterministic predecessor exponent is provably below its Malthusian root. None is known to us.
 
 ## 9. Dual certificates: λ_k is optimal at level k
 

@@ -24,9 +24,11 @@ Summed inequality (i -> 16i+9 and each i -> aux_t(i) are bijections):
   (1 - lam^-4) <= (1/5) lam^beta (lam^-1 + lam^-2 + lam^-3 + lam^-4) * rho,  rho = mean(cbar)/mean(c),
 with equality at lam = 2, rho = 1: the same mass-conservation identity as for 3x+1.  So lam = 2 is formally
 critical for 5x+1 too, although the predecessor exponent of 5x+1 is believed to be eta5 ~ 0.65
-(Kontorovich-Lagarias, arXiv:0910.1944, Conj. 7.2; Volkov 0.678).  Hence lambda_k(5) must stay <= 2^eta5 ~ 1.57
-and 1 - rho_k(5) must stay bounded away from 0: 5x+1 realises the "lambda_inf < 2" scenario, and shows what the
-sequence 1 - rho_k looks like in that case.  (Lower bound logic as in K-L Thm 2.2; here used only numerically.)
+(Kontorovich-Lagarias, arXiv:0910.1944, Conj. 7.2; Volkov 0.678).
+CORRECTED 2026-10-09: since rho <= 1, the summed inequality caps lambda_k(5) at its smallest root 1.5701677
+(gamma 0.650919), which is exactly the branching-walk exponent eta_{5,BP} of Kontorovich-Lagarias (Thm 8.10):
+at rho = 1 the equation factors to 1/lam + lam^(beta-1)/5 = 1.  So the heuristic predicts rho_k(5) -> 1 here too;
+5x+1 is a second instance of the 3x+1 question, not a "lambda_inf < ceiling" case (boundary_layer.py, AVENUES §8).  (Lower bound logic as in K-L Thm 2.2; here used only numerically.)
 
 Usage:
   python kl5.py check            # generic residue LP (HiGHS) for p = 3 vs K-L Table 2 and p = 5 vs the numpy map

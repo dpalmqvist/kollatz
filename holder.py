@@ -19,7 +19,8 @@ from scipy.optimize import curve_fit
 
 
 def load(k):
-    d = glob.glob(f"certs/k{k}_*")[0]
+    d = max((d for d in glob.glob(f"certs/k{k}_*") if not d.endswith("_upper")),   # skip infeasibility certs
+            key=lambda d: float(d.rsplit("_", 1)[1]))                            # highest certified lambda
     p = f"{d}/c_f32.npy" if os.path.exists(f"{d}/c_f32.npy") else f"{d}/C.npy"
     c = np.load(p).astype(np.float64).reshape(-1)
     return c / c.min()

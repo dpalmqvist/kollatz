@@ -24,7 +24,8 @@ LAMBDA = {8: 1.7449630, 9: 1.7615320, 10: 1.7771270, 11: 1.7922310, 12: 1.806423
 
 
 def load(k):
-    d = glob.glob(f"certs/k{k}_*")[0]
+    d = max((d for d in glob.glob(f"certs/k{k}_*") if not d.endswith("_upper")),   # skip infeasibility certs
+            key=lambda d: float(d.rsplit("_", 1)[1]))                            # highest certified lambda
     p = f"{d}/c_f32.npy" if os.path.exists(f"{d}/c_f32.npy") else f"{d}/C.npy"
     return np.load(p).astype(np.float64).reshape(-1)
 

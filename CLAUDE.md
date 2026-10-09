@@ -191,6 +191,12 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   (sparar c_k{K}_part{0,1,2}.npy), `certify K LAMBDA SRC` (trimmar, skriver sammanslagen c_f32.npy via memmap, int64).
 - `kl5.py`, `kl5_mlx.py`, `kl5.json` – spår 8: K–L-systemet för 5x+1 (härledning i docstring; generisk residy-LP
   reproducerar tabell 2 för p = 3 och indexformlerna för p = 5). λ_k(5), γ_k(5), ρ_k(5) för k ≤ 13, se AVENUES §8.
+- `boundary_layer.py` – spår 1 (2026-10-09): (1) metodens tak: summerade olikheten vid ρ = 1 ⇔ Malthus-ekvationen
+  1/λ + λ^(log2 p − 1)/p = 1 för den naiva förgreningsvandringen; 3x+1: λ* = 2, 5x+1: λ* = 1.5701677 (γ* = 0.650919 =
+  Kontorovich–Lagarias η_{5,BP}, Thm 8.10) ⇒ 5x+1 är INTE ett fall med känt "λ∞ < tak" (AVENUES §8 rättad);
+  (2) gränsskiktet: R(c) = min över toppsiffran (normerad) ger R(c_k) ≈ c_{k−1} (TV 0.0045 vid k = 17, 4× närmare än
+  tile), osc_k(d) ≈ Σ_{i<d}(1 − ρ_{k−i}) ⇒ β(d) förklaras till första ordningen av 1 − ρ_k-följden (fel 0.003–0.011).
+  `python boundary_layer.py [KMAX]` (k ≤ 11 räknas om med kl.py; < 1 min vid KMAX = 17).
 - `.venv/` – Python 3.14, numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1, mlx 0.32.3, matplotlib 3.11.2 (Apple M5, 24 GB)
 
 ## Referensvärden (regressionstest – ska reproduceras)
@@ -289,6 +295,10 @@ Kvoten stiger monotont (k = 22: ρ_22 = 0.975934 vid λ_cert = 1.8988, `rho.py` 
 lika bra (max residual ~1e-4, k = 11…21): geometrisk + offset (B = 0.0088 ⇒ ρ∞ = 0.991 ⇒ γ∞ ≈ 0.971),
 sträckt exponential (⇒ γ∞ = 1), potenslag (⇒ γ∞ = 1). Data t.o.m. k = 21 kan alltså INTE skilja "metoden
 stannar under 1" från "metoden når 1 långsamt". Prognoser för k = 22: 0.925 (alla modeller); k = 30: 0.950–0.960.
+
+Tak och 5x+1 (2026-10-09): ρ ≤ 1 ger λ_k ≤ minsta roten av den summerade olikheten = Malthus-roten för förgrenings-
+modellen (3x+1: 2; 5x+1: 2^0.650919 = K–L:s η_{5,BP}). 5x+1 har alltså samma fråga (ρ_k(5) → 1?), inte ett känt nej.
+Gränsskiktet β(d) är 1 − ρ_k sett genom grovkorningen R (R(c_k) ≈ c_{k−1}), se `boundary_layer.py`.
 
 Siffer-känslighetsprofil: 1 − ρ_j = 1 − medel(min över siffra j)/medel(c) mäter hur mycket c beror på ternär
 siffra j. Den avtar geometriskt i j, snabbare nära toppen (trunkeringseffekt av min). Faktorn i mitten av
@@ -413,9 +423,8 @@ Kvar: 7c (kräver stor maskin eller samarbete), 9 (teori).
    utrett, kräver ≥ 64 GB (k = 19) resp. ≥ 384 GB (k = 21) och Mazurs potentialcertifikat; kontakt med
    Mazur/msharpe248 och ev. Lagarias är nästa steg. Skrivelse: `RESULTS.md`.
 8. ✅ Adaptivt-träd-experimentet vid k = 12 och 14 (idé 1) – förkastat, se Idéer punkt 1.
-9. ρ_k-teori (idé 2). Mätningarna i `holder.py` är gjorda (se Gränsobjektet). Öppna delfrågor: (i) förklara det
-   universella gränsskiktet β(d) = 0.665, 0.401, 0.293, 0.232, 0.194 (d = avstånd till toppen) – troligen en
-   fixpunkt för "lägg till en siffra + minimera"; (ii) avgör om β∞ > 0 (r∞ < 1) – då är ρ_k → 1 geometriskt och
+9. ρ_k-teori (idé 2). Mätningarna i `holder.py` är gjorda (se Gränsobjektet). Öppna delfrågor: (i) ✅ gränsskiktet β(d) förklarat till första ordningen
+   (2026-10-09, `boundary_layer.py`); kvar: defekten R(F_k(c)) − F_{k−1}(R c) (felriktningen min-av-summa ≥ summa-av-min); (ii) avgör om β∞ > 0 (r∞ < 1) – då är ρ_k → 1 geometriskt och
    γ∞ = 1; (iii) formulera transferoperatorn vid λ = 2 på L¹(X, Haar) och undersök om den har en positiv
    egenfunktion (obegränsad). Uppdatera ρ-tabellen och profilerna när nya k tillkommer (`python rho.py`, `holder.py`).
 
