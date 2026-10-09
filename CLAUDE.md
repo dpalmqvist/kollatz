@@ -198,6 +198,12 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   tile), osc_k(d) ≈ Σ_{i<d}(1 − ρ_{k−i}) ⇒ β(d) förklaras till första ordningen av 1 − ρ_k-följden (fel 0.003–0.011).
   `python boundary_layer.py [KMAX]` (k ≤ 11 räknas om med kl.py; < 1 min vid KMAX = 17). Saknas certifikatvektorn
   (k = 12–17 finns bara på M5-maskinen) används `c_k{k}_mlx.npy`; ger samma siffror.
+- `defect.py` – spår 1 (2026-10-09): defekten D_k = R(F_k c_k) − F_{k−1}(R c_k) ≥ 0 (= ×4/aux-felriktningen). EXAKT
+  identitet δ_k = mean D/mean c̄ = g(λ_k)(ρ_k − ρ′_k), ρ′_k = andra-siffre-förlusten; med q_k = (1−ρ_k)/(1−ρ_{k−1}) och
+  e_k = ρ_{k−1} − ρ′_k: δ_k/(g(1−ρ_k)) = (1−q_k)/q_k + e_k/(1−ρ_k) – medelvärdet är bokföring. Pekvis: argmin-paret
+  oberoende (P(lika) = 0.332, |joint − produkt| ≤ 0.002), förväntad storlek bestäms av residyn mod 3^4, topp-siffran
+  informationslös (1e-3). q_k: 0.913 (12) → 0.931 (21), +0.002/steg; e_k/(1−ρ_k): 0.048 → 0.029. `python defect.py [KMAX=19]`
+  → `defect.json`; 50 GB RSS vid k = 19 (k = 20, 21 bara medelvärden, chunkat). Se AVENUES §1.
 - `.venv/` – Python 3.14, numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1, mlx 0.32.3, matplotlib 3.11.2 (Apple M5, 24 GB)
 
 ## Referensvärden (regressionstest – ska reproduceras)
@@ -425,7 +431,8 @@ Kvar: 7c (kräver stor maskin eller samarbete), 9 (teori).
    Mazur/msharpe248 och ev. Lagarias är nästa steg. Skrivelse: `RESULTS.md`.
 8. ✅ Adaptivt-träd-experimentet vid k = 12 och 14 (idé 1) – förkastat, se Idéer punkt 1.
 9. ρ_k-teori (idé 2). Mätningarna i `holder.py` är gjorda (se Gränsobjektet). Öppna delfrågor: (i) ✅ gränsskiktet β(d) förklarat till första ordningen
-   (2026-10-09, `boundary_layer.py`); kvar: defekten R(F_k(c)) − F_{k−1}(R c) (felriktningen min-av-summa ≥ summa-av-min); (ii) avgör om β∞ > 0 (r∞ < 1) – då är ρ_k → 1 geometriskt och
+   (2026-10-09, `boundary_layer.py`); defekten R(F_k(c)) − F_{k−1}(R c) mätt (`defect.py`): medelvärdet är en exakt
+   identitet i ρ_k, ρ′_k, strukturen är oberoende argmin + grov residy ⇒ nästa: enstegsrekursionen för 1 − ρ_{k+1}; (ii) avgör om β∞ > 0 (r∞ < 1) – då är ρ_k → 1 geometriskt och
    γ∞ = 1; (iii) formulera transferoperatorn vid λ = 2 på L¹(X, Haar) och undersök om den har en positiv
    egenfunktion (obegränsad). Uppdatera ρ-tabellen och profilerna när nya k tillkommer (`python rho.py`, `holder.py`).
 

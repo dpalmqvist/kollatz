@@ -10,7 +10,7 @@ everything adjacent (cycle bounds, predecessor density, the long shots, formal v
 
 | # | Avenue | Kind of payoff | Status (2026-10-08) |
 |---|---|---|---|
-| 1 | Prove λ_k → 2 (exponent 1 − ε) via the limit object | theorem about the method | theory started 2026-10-09: boundary layer reduced to 1 − ρ_k via coarse-graining R (`boundary_layer.py`) |
+| 1 | Prove λ_k → 2 (exponent 1 − ε) via the limit object | theorem about the method | theory started 2026-10-09: boundary layer reduced to 1 − ρ_k (`boundary_layer.py`); defect D_k measured, exact identity δ_k = g(ρ_k − ρ′_k), argmins independent (`defect.py`) |
 | 2 | Stronger inequality systems at small k | could change the slope of the whole program | started 2026-10-08, see below |
 | 3 | The 3x+d family | publishable computations, sanity checks | not started |
 | 4 | Cycle block search with residue dismissal | bits of verification range | designed, not started |
@@ -145,13 +145,57 @@ level k − 1: min over the top digit of a sum is at least the sum of the mins, 
 is the ×4/aux misalignment of `renorm2.py`. This is where the theory has to go: the exact relation between R(c_k) and
 c_{k−1}, i.e. the size of R(F_k(c)) − F_{k−1}(R c), now decides whether 1 − ρ_k → 0.
 
+**The defect measured (2026-10-09, `defect.py`, k = 6 … 19 in float64; k = 20, 21 means only).** Write D_k =
+R(F_k c_k) − F_{k−1}(R c_k) with R = min over the top digit (so R c_k = c̄, the auxiliary vector, a level-(k − 1)
+vector) and both maps at λ_k. Exact facts first. For level-(k − 1) index r the three level-k rows r + tN/3 have ×4 term
+λ^{−2} c[lift_s(4r+2)] and aux term L_j c̄[lift_{s′}(aux r)], with s, s′ permutations of t; hence D_k ≥ 0 pointwise,
+D_k = 0 on class 5 and wherever the two argmins agree, and D_k is exactly the ×4/aux misalignment of `renorm2.py`.
+Since F_k c_k = c_k, c̄ = F_{k−1}(c̄) + D_k: c̄ is a strict super-solution at level k − 1. Taking means with the
+summation identity at level k − 1 gives the **exact identity**
+
+  δ_k := mean D_k / mean c̄ = g(λ_k) (ρ_k − ρ′_k),   g = (λ^{α−1} + λ^{α−2})/3,   ρ′_k = mean(R² c_k)/mean(R c_k),
+
+verified to all printed digits at every k. With q_k = (1 − ρ_k)/(1 − ρ_{k−1}) and the second-level excess
+e_k = ρ_{k−1} − ρ′_k (R c_k is lossier at its top digit than c_{k−1} is) this reads
+δ_k /(g(1 − ρ_k)) = (1 − q_k)/q_k + e_k/(1 − ρ_k). **So the mean defect is bookkeeping: it carries nothing beyond the
+loss sequence and e_k.** Data:
+
+| k | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 |
+|---|---|---|---|---|---|---|---|---|---|---|
+| q_k | 0.913 | 0.920 | 0.919 | 0.920 | 0.922 | 0.924 | 0.927 | 0.928 | 0.930 | 0.931 |
+| e_k ×10³ | 2.49 | 2.30 | 1.79 | 1.47 | 1.29 | 1.13 | 1.03 | 0.92 | 0.82 | 0.75 |
+| e_k/(1 − ρ_k) | 0.048 | 0.048 | 0.040 | 0.036 | 0.034 | 0.033 | 0.032 | 0.031 | 0.030 | 0.029 |
+| δ_k/(1 − ρ_k) | 0.104 | 0.099 | 0.095 | 0.091 | 0.088 | 0.085 | 0.082 | 0.080 | – | – |
+
+e_k decays at the same rate as 1 − ρ_k (ratio 0.89–0.92) and its share falls slowly; q_k rises by ≈ 0.002 per level
+with no sign of levelling off (linear continuation would reach 1 near k ≈ 60). The question is still q_k → q∞ < 1
+(geometric, ρ_k → 1) or q_k → 1 (sub-geometric: offset or stretched exponential, undecided).
+
+The **pointwise structure** is where the new information is, and it is clean:
+- The two argmins are independent. P(agree) = 0.332 for k ≥ 13 (class 2: 0.328, class 8: 0.334), both marginals
+  uniform to 0.001, max |joint − product| = 0.002. Which lift wins is a fine-digit property: given the lowest four
+  digits of r the best guess of either argmin is right 0.337 of the time (1/3 = uninformative).
+- The expected size of the defect is a coarse-residue property. The conditional mean of D given the top digit is
+  uniform to 10^{−3} at every k ≥ 15; the spread of the conditional mean over a single digit, relative to δ_k, is 2.17
+  (digit 0, i.e. the class), 0.60, 0.31, 0.21 for digits 1–3 and below 0.06 from digit 4 on. The lowest 8 digits
+  explain 24 % of the variance of D, the top 6 digits 0.04 %.
+- The excess splits 64–65 % ×4 term, 35 % aux term, constant in k. Given misalignment, D/c̄ averages 0.008 (k = 15);
+  the 99 % quantile of D/c̄ is 0.022 and the maximum 0.24 at k = 19. The defect is uncorrelated with the local spread
+  of c over the three lifts (correlation −0.02 → −0.013).
+So the defect is the product of two independent fine-scale choices whose expected size is fixed by the residue
+mod 3^4: exactly the mean-field structure `renorm2.py` assumed, now seen pointwise. **Where the theory has to go:**
+derive the one-step recursion for 1 − ρ_{k+1} from level-k quantities under the independence hypothesis (the aux term
+injects second-digit sensitivity, the ×4 term transports top-digit sensitivity, the minimum removes a fraction) and
+test it against q_k and e_k; a proof of independence plus a contraction estimate for that recursion would give
+q∞ < 1 and hence λ_k → 2. Scaling the full analysis beyond k = 19 needs a chunked rewrite (50 GB RSS at k = 19).
+
 **How to pick up.**
 1. Measure convergence of the mass distribution μ_k(class) = c_m / Σc on 3-adic balls across k (total variation
    between level-j marginals of consecutive k). If it converges, a limit measure exists.
 2. Compare the Perron vector of F at λ = 2 (finite k, spectral radius < 1 but the eigenvector exists) with c_k at
    λ_k. If the shapes agree, the limit object is the λ = 2 eigenmeasure of the 3-adic operator.
-3. Write the top-digit renormalisation map explicitly (c_k ↦ profile of oscillation at distance d from the top) and
-   look for its fixed point analytically; the five universal numbers are the target.
+3. ✅ (2026-10-09) The boundary layer is the 1 − ρ_k sequence through R; the defect D_k is measured (`defect.py`).
+   Next: the one-step recursion for 1 − ρ_{k+1} under argmin independence, tested against q_k and e_k.
 4. Decide whether the per-digit factor converges to r∞ < 1. If so, 1 − ρ_k eventually decays geometrically and
    λ_k → 2 follows from the summed inequality.
 

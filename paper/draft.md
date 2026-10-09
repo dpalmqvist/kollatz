@@ -1,6 +1,6 @@
 # Certified Krasikov–Lagarias predecessor bounds for the 3x+1 problem to k = 22: two-sided brackets, machine-checked instances, and the finite-level loss
 
-*Draft 0.4, 2026-10-09. All numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
+*Draft 0.5, 2026-10-09. All numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
 `spectrum.json`, `kl5.json` and the literature survey `reports/Collatz adjacent work and references.md`.*
 
 ## Abstract
@@ -370,7 +370,29 @@ carry no information beyond the ratios of successive 1 − ρ_k. Two remarks. Th
 k-independent than the model, which drifts by 0.005 over k = 11 … 17, so a second-order effect remains. And R(c_k) is
 not feasible at level k − 1, because the minimum of a sum exceeds the sum of the minima; the defect
 R(F_k c) − F_{k−1}(R c) is the misalignment of §6.3, and its size is what decides whether 1 − ρ_k → 0
-(`boundary_layer.py`). Integrating the limit inequality on X = {m ∈ Z₃ : m ≡ 2 (mod 3)} with
+(`boundary_layer.py`).
+
+We have measured that defect D_k for k ≤ 19 (`defect.py`). Since the three level-k rows above a level-(k − 1) index
+r use the three lifts of the ×4 target and the three lifts of the auxiliary target in a paired order, D_k ≥ 0
+pointwise, with equality exactly where the two argmins agree (and on the class 5 mod 9, which has no auxiliary
+term). Because F_k c_k = c_k, the auxiliary vector c̄ = R c_k is a strict super-solution at level k − 1,
+c̄ = F_{k−1}(c̄) + D_k, and the level-(k − 1) summation identity gives the exact relation
+
+  mean D_k / mean c̄ = g(λ_k) (ρ_k − ρ′_k),   g(λ) = (λ^{α−1} + λ^{α−2})/3,   ρ′_k = mean(R² c_k)/mean(R c_k),
+
+which the data satisfy to all printed digits. The mean defect is therefore bookkeeping: with q_k = (1 − ρ_k)/(1 − ρ_{k−1})
+and e_k = ρ_{k−1} − ρ′_k it equals g(1 − ρ_k)[(1 − q_k)/q_k + e_k/(1 − ρ_k)], and the question λ_k → 2 is unchanged,
+q_k → q∞ < 1 or q_k → 1. We find q_k = 0.913 (k = 12) rising by about 0.002 per level to 0.931 (k = 21), and
+e_k/(1 − ρ_k) falling from 0.048 to 0.029. The pointwise structure is cleaner than the means. The two argmins are
+independent: they agree with probability 0.332 (k ≥ 13), both marginals are uniform to 0.001 and the joint law differs
+from the product by at most 0.002; which lift wins is a fine-digit property, unpredictable from the lowest four digits.
+The expected size of the defect, by contrast, is a coarse property: its conditional mean given the top digit is
+uniform to 10^{−3}, the spread over a single digit falls from 0.60 of the mean at digit 1 to below 0.06 from digit 4,
+and the top six digits explain 0.04 % of its variance. The excess splits 64 % ×4 term and 36 % auxiliary term at every
+k, and is uncorrelated with the local spread of c over the lifts. The defect is thus the product of two independent
+fine-scale choices whose expected size is fixed by the residue mod 3⁴, the mean-field structure that §6.3 assumed.
+What a proof needs is the one-step recursion for 1 − ρ_{k+1} under that independence, and a contraction estimate
+for it. Integrating the limit inequality on X = {m ∈ Z₃ : m ≡ 2 (mod 3)} with
 Haar measure gives 1 ≤ λ^{−2} + (1/3)(λ^{α−2} + λ^{α−1}) with equality exactly at λ = 2, so λ = 2 is the critical
 value of the limit problem and the finite-k deficit is precisely 1 − ρ_k.
 

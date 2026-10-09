@@ -143,7 +143,11 @@ N = 9 the float32 ratio gap has a rounding floor of ~3e-5); all 21 upper certifi
   from the top digit, k-independent to three decimals) is explained to first order: minimising c_k over its top
   digit gives c_{k−1} to total variation 0.0045 (k = 17), so the ball oscillation with d free digits is the partial
   sum of 1 − ρ_{k−i} and the exponents are log_3 of ratios of those sums (model 0.668, 0.407, 0.301, 0.243). The
-  remaining object is the defect R(F_k c) − F_{k−1}(R c) between coarse-graining and the level-(k−1) map.
+  remaining object is the defect R(F_k c) − F_{k−1}(R c) between coarse-graining and the level-(k−1) map. Measured
+  (`defect.py`, k ≤ 19): it is nonnegative, its mean obeys the exact identity mean D/mean c̄ = g(λ_k)(ρ_k − ρ′_k)
+  (so it adds nothing to the ρ_k sequence), and pointwise it is the product of two independent argmin choices
+  (agreement 0.332) whose expected size depends only on the residue mod 3^4. The decisive sequence is
+  q_k = (1 − ρ_k)/(1 − ρ_{k−1}) = 0.913 (k = 12) … 0.931 (k = 21), rising ≈ 0.002 per level; undecided.
 - The dependence of c on each ternary digit decays geometrically in the digit position, with a factor
   that rises with k (0.828 at k = 12, 0.875 at k = 19) and extrapolates to roughly 0.94. The spread
   C_max/C_min grows like 1.52^k, so the k → ∞ limit object is unbounded.
