@@ -1,4 +1,4 @@
-# kollatz — Krasikov–Lagarias predecessor bounds for 3x+1, taken to k = 21
+# kollatz — Krasikov–Lagarias predecessor bounds for 3x+1, taken to k = 22
 
 Lower bounds π_a(x) ≥ x^γ for the number of integers below x whose 3x+1 orbit reaches a, by the linear-programming
 method of Krasikov & Lagarias (Acta Arith. 2003, published record γ = 0.84 at k = 11). This repository holds the
@@ -7,9 +7,10 @@ development), the analysis of where the method is heading, and a side track on c
 
 | Result | Where |
 |---|---|
-| γ = 0.9203 certified at k = 21 (3.5 × 10^9 LP variables), all k = 12 … 21 | `RESULTS.md`, `certs/*/cert.json` |
-| Lean-checked theorems x^0.903 (k = 18) and x^0.909 (k = 19) | `lean_formal/` |
-| Why the exponent may or may not reach 1, with a mechanism and a prediction | `AVENUES.md` §1 |
+| γ = 0.9251 certified at k = 22 (1.05 × 10^10 LP variables), all k = 12 … 22, with two-sided brackets for λ_k at every k ≤ 22 | `RESULTS.md`, `certs/*/cert.json` |
+| Lean-checked theorems x^0.903 (k = 18), x^0.909 (k = 19) and x^0.914 (k = 20) | `lean_formal/` |
+| Why the exponent may or may not reach 1: mechanism, prediction, spectrum, 5x+1 calibration | `AVENUES.md` §1, §8, §16 |
+| Preprint draft | `paper/draft.md` (`paper/draft.html`) |
 | Cycle track: Eliahou's bound reproduced, weighted LP, what Hercher adds | `AVENUES.md` §4, `cycles*.py` |
 | Everything else we tried, learned or rejected | `CLAUDE.md` (working notes, Swedish) |
 | Slide deck for walking through all of it | `presentation.html` (open locally; arrows to navigate) |

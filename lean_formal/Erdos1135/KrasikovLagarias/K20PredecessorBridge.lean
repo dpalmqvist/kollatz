@@ -94,13 +94,13 @@ theorem eventually_const_mul_rpow_9150_10000_le_predecessorCountReal
   exact henvelopeAt.trans (hphiTarget.trans htargetTransfer)
 
 /-- The positive exponent reserve turns the exact `0.9150` consequence into
-the displayed eventual unit-coefficient `0.915` predecessor bound. -/
-theorem eventually_rpow_915_1000_le_predecessorCountReal
+the displayed eventual unit-coefficient `0.914` predecessor bound. -/
+theorem eventually_rpow_914_1000_le_predecessorCountReal
     (index : PrincipalIndex 20) {sourceTarget target : Nat}
     (hadmissible : AdmissibleTarget 20 (residue index) sourceTarget)
     (hreach : Reaches sourceTarget target) :
     ∀ᶠ x in atTop,
-      x ^ ((915 : Real) / 1000) ≤ (predecessorCountReal target x : Real) := by
+      x ^ ((914 : Real) / 1000) ≤ (predecessorCountReal target x : Real) := by
   obtain ⟨constant, hconstant, hbound⟩ :=
     eventually_const_mul_rpow_9150_10000_le_predecessorCountReal
       index hadmissible hreach

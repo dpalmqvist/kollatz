@@ -11,7 +11,7 @@ set_option maxRecDepth 100000  -- the 139-chunk certificate array exceeds the de
 
 This module assembles the checked level-20 certificate, the critical-choice
 elimination theorem, and the target-reduction layer.  It improves the source
-paper's exponent `0.84` to `0.915` for every positive target not divisible by
+paper's exponent `0.84` to `0.914` for every positive target not divisible by
 `3`.
 -/
 
@@ -48,23 +48,23 @@ theorem eventually_const_mul_rpow_9150_10000_le_predecessorCountReal
     index hadmissible hreach
 
 /-- Publication-facing theorem: for every positive target not divisible by
-`3`, the predecessor count is eventually at least `x^(915/1000) = x^0.915`. -/
-theorem eventually_rpow_915_1000_le_predecessorCountReal
+`3`, the predecessor count is eventually at least `x^(914/1000) = x^0.914`. -/
+theorem eventually_rpow_914_1000_le_predecessorCountReal
     {target : Nat} (htarget : 0 < target) (hmod : target % 3 ≠ 0) :
     ∀ᶠ x in atTop,
-      x ^ ((915 : Real) / 1000) ≤ (predecessorCountReal target x : Real) := by
+      x ^ ((914 : Real) / 1000) ≤ (predecessorCountReal target x : Real) := by
   obtain ⟨index, source, hadmissible, hreach⟩ :=
     exists_principal_admissible_reaches htarget hmod
-  exact K20PredecessorBridge.eventually_rpow_915_1000_le_predecessorCountReal
+  exact K20PredecessorBridge.eventually_rpow_914_1000_le_predecessorCountReal
     index hadmissible hreach
 
 /-- Natural-cutoff form of the publication-facing theorem. -/
-theorem eventually_natCast_rpow_915_1000_le_predecessorCount
+theorem eventually_natCast_rpow_914_1000_le_predecessorCount
     {target : Nat} (htarget : 0 < target) (hmod : target % 3 ≠ 0) :
     ∀ᶠ cutoff : Nat in atTop,
-      (cutoff : Real) ^ ((915 : Real) / 1000) ≤
+      (cutoff : Real) ^ ((914 : Real) / 1000) ≤
         (predecessorCount target cutoff : Real) := by
-  have hreal := eventually_rpow_915_1000_le_predecessorCountReal htarget hmod
+  have hreal := eventually_rpow_914_1000_le_predecessorCountReal htarget hmod
   filter_upwards [tendsto_natCast_atTop_atTop.eventually hreal] with cutoff hcutoff
   simpa [predecessorCountReal] using hcutoff
 

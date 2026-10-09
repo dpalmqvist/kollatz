@@ -34,8 +34,13 @@ k = 20 (gamma = 9150/10000, λ = 1.8855691 < λ_20 = 1.8857083):
 5. K20*.lean, Generated/K20{Gamma9150,AdaptiveForcedPotential}.lean, CollatzPredecessor0915.lean,
    AxiomAudit0915.lean were generated from the K19 files by substitution (19→20, 18→19, 9093→9150, 909→915) and
    the coefficients 268435456 / 75501396 / 206310311 / 389012342 from `kl_predecessor_common.py`.
-6. `cd $M && lake build Erdos1135.KrasikovLagarias.Generated.K20AdaptiveForcedPotential`, then
-   `…Generated.K20Gamma9150`, then `lake build CollatzPredecessor0915 AxiomAudit0915` (≈ 30 GiB per native_decide).
+6. `cd $M && lake build Erdos1135.KrasikovLagarias.Generated.K20Potential10` (5825 s, 27.8 GB), then
+   `…Generated.K20Gamma9150` (7382 s, 55.9 GB), then `lake build CollatzPredecessor0914 AxiomAudit0914`.
+   Result (2026-10-09 02:07): `CollatzPredecessor0914.predecessor_count_lower_bound_0914` (x^(914/1000) ≤ π_a(x)),
+   `_0914_nat`, `_09150` (constant · x^(9150/10000)); axioms: propext, Classical.choice, Quot.sound,
+   k20AdaptiveForcedPotentialCertificate_checkLoop and k20Gamma9150EncodedCertificate_checkLoop (native_decide).
+   The publication exponent is 914/1000, not 915/1000: the transfer lemma needs γ_pub < γ_cert strictly and
+   915/1000 = 9150/10000.
 
 ### Large oleans: two rules learned at k = 20 (2026-10-09)
 

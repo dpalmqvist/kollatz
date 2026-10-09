@@ -85,7 +85,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
 <div class="deck" id="deck">
 
 <section class="slide" id="s1">
-  <p class="eyebrow">Working notes, 8 October 2026</p>
+  <p class="eyebrow">Working notes, 8–9 October 2026</p>
   <h1>Collatz predecessor bounds: the Krasikov–Lagarias program taken to k = 22</h1>
   <p class="lede">What fraction of integers up to x eventually reach a given number under the 3x+1 map? The published lower bound was x<sup>0.84</sup> since 2003. These notes cover how far it now goes, how we know the result is right, and what the method can and cannot deliver.</p>
   <div class="stats">
@@ -226,7 +226,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
     <li><strong>Independent verifier.</strong> <code>verify_cert.py</code> shares no code with the search; rejects tampered certificates (altered C, q+1, L+1, raised λ). <span class="pill ok">all k</span></li>
     <li><strong>Independent implementation.</strong> <code>lp_check.py</code> solves the LP with HiGHS from residues written out with Python integers. λ<sub>k</sub> agrees with the paper to 10<sup>−6</sup> for k ≤ 9, exact rational re-verification passes. <span class="pill ok">k ≤ 9</span></li>
     <li><strong>Third-party verifier.</strong> Lech Mazur's Python verifier accepts our k = 18, 19 and 20 certificates in his format: 129 million, 387 million and 1.16 billion rows, no failures. <span class="pill ok">k = 18, 19, 20</span></li>
-    <li><strong>Proof assistant.</strong> Lean 4 via Mazur's development, <code>native_decide</code> on the certificate plus his formal proof of the asymptotic step. <span class="pill ok">k = 18: x^0.903 proved</span> <span class="pill ok">k = 19: x^0.909 proved</span> <span class="pill">k = 20: x^0.915 building</span></li>
+    <li><strong>Proof assistant.</strong> Lean 4 via Mazur's development, <code>native_decide</code> on the certificate plus his formal proof of the asymptotic step. <span class="pill ok">k = 18: x^0.903 proved</span> <span class="pill ok">k = 19: x^0.909 proved</span> <span class="pill ok">k = 20: x^0.914 proved</span></li>
   </ul>
 </section>
 
@@ -269,11 +269,11 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
       <tr><td>Krasikov–Lagarias, Acta Arith. 2003</td><td class="num">0.84</td><td class="num">11</td><td>refereed, the published record</td></tr>
       <tr><td>msharpe248/collatz (GitHub)</td><td class="num">0.8676</td><td class="num">14</td><td>Lean kernel-checked, 29 h; 0.895 at k = 17 informal</td></tr>
       <tr><td>L. Mazur, ProofAtlas, July 2026</td><td class="num">0.90, 0.901</td><td class="num">18</td><td>Lean with native_decide, accepted on their platform</td></tr>
-      <tr><td>This project</td><td class="num">0.9251</td><td class="num">22</td><td>int64 certificates, independent verifiers, two-sided brackets; Lean for k = 18, 19 done, k = 20 building</td></tr>
+      <tr><td>This project</td><td class="num">0.9251</td><td class="num">22</td><td>int64 certificates, independent verifiers, two-sided brackets; Lean theorems for k = 18, 19, 20</td></tr>
     </tbody>
   </table>
   </div>
-  <div class="callout">A record now means formally checked. Our k = 18 and k = 19 certificates are Lean theorems (x^0.903, x^0.909) through Mazur's pipeline, rebuilt on the 64 GB machine with the regenerated vectors; k = 20 (x^0.915, about 30 GiB per check) is building. k = 21 and 22 (90 and 270 GiB) need a streamed verified checker. Every post-2003 exponent, ours included, still lives in the unrefereed tier.</div>
+  <div class="callout">A record now means formally checked. Our k = 18 and k = 19 certificates are Lean theorems (x^0.903, x^0.909) through Mazur's pipeline, rebuilt on the 64 GB machine with the regenerated vectors, and k = 20 is now a Lean theorem too: x^0.914 ≤ π<sub>a</sub>(x), with the weights check taking 7382 s at 55.9 GB. k = 21 and 22 (roughly 170 and 500 GB by the same scaling) need a streamed verified checker. Every post-2003 exponent, ours included, still lives in the unrefereed tier.</div>
 </section>
 
 <section class="slide" id="l1">
@@ -610,7 +610,7 @@ figcaption { font-size: 0.85em; color: var(--muted); max-width: 48em; }
   <p class="eyebrow">24 · Next</p>
   <h2>What happens next</h2>
   <ol>
-    <li><strong>Lean.</strong> k = 18 and 19 rebuilt on the 64 GB machine with the regenerated vectors (k = 18: potential 643 s, weights 871 s, 14 GB; clean axiom audits). k = 20 (x^0.915) is building at about 30 GiB per check; if it goes through it is the first formal record from this project. k = 21, 22 need a streamed verified checker, weeks of work.</li>
+    <li><strong>Lean.</strong> k = 18, 19 and 20 are Lean theorems on the 64 GB machine (k = 20: potential 5940 s, weights 7382 s at 55.9 GB; axioms: the three standard ones plus two native_decide checks). x^0.914 is the first formal record from this project, above Mazur's 0.90. Two lessons on multi-gigabyte oleans (import the big module first; pick module names whose hashed base address is free) are in the Lean README. k = 21, 22 need a streamed verified checker, weeks of work.</li>
     <li><strong>Write-up.</strong> A preprint draft exists (<code>paper/draft.md</code>): computation, certificates, brackets, formalisation, and the limit measurements with their honest verdict. Registering the certificate at ccchallenge.org and contacting Lagarias and Mazur are the owner's call.</li>
     <li><strong>Theory, sharpened by the spectrum.</strong> The linear gap is fixed, so λ<sub>k</sub> → 2 is decided by the minimum, not by mixing: prove that the two argmins stay independent and the two variations comparable in the limit measure, which bounds the amplification below 4/3.</li>
     <li><strong>Calibration.</strong> 5x+1 to k = 15 with a split-buffer kernel; if its ratio keeps rising past 0.93 the "rising ratio" signature is uninformative and only the mechanism counts.</li>

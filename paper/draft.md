@@ -1,7 +1,6 @@
 # Certified Krasikov–Lagarias predecessor bounds for the 3x+1 problem to k = 22: two-sided brackets, machine-checked instances, and the finite-level loss
 
-*Draft 0.2, 2026-10-08. Entries marked [TBD] are being produced by runs in progress (Lean k = 19, 20; the k = 22
-infeasibility certificate). All other numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
+*Draft 0.3, 2026-10-09. All numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
 `spectrum.json`, `kl5.json` and the literature survey `reports/Collatz adjacent work and references.md`.*
 
 ## Abstract
@@ -18,10 +17,10 @@ vector, verified in int64 arithmetic by two programs that share no code; the ver
 certificate (39 GB) takes four minutes. For k = 2, …, 22 we also give infeasibility certificates, positive
 vectors C with F(C) < C strictly for the right-hand side map F, which prove that the program at level k is
 infeasible slightly above the certified λ; the Krasikov–Lagarias constants λ_k are thereby bracketed to widths
-between 2·10^{−5} and 10^{−4}, confirming their numerical values to four or five decimals. The levels k = 18 and
-19 [and 20: TBD] are machine-checked in Lean 4 inside L. Mazur's formalisation of the Krasikov–Lagarias argument,
-giving theorems x^{0.903} ≤ π_a(x), x^{0.909} ≤ π_a(x) [and x^{0.915} ≤ π_a(x)] for large x, each resting on
-Lean's three standard axioms and two compiled finite checks. The question whether λ_k → 2, equivalent to
+between 2·10^{−5} and 10^{−4}, confirming their numerical values to four or five decimals. The levels k = 18, 19 and
+20 are machine-checked in Lean 4 inside L. Mazur's formalisation of the Krasikov–Lagarias argument, giving
+theorems x^{0.903} ≤ π_a(x), x^{0.909} ≤ π_a(x) and x^{0.914} ≤ π_a(x) for large x, each resting on Lean's three
+standard axioms and two compiled finite checks. The question whether λ_k → 2, equivalent to
 π_a(x) ≥ x^{1−ε} for every ε, reduces to whether a single number, the mean loss ρ_k from the minimum over three
 lifts, tends to 1. We report its values to k = 22, the spectral radius at λ = 2, a renormalisation argument that
 predicts geometric convergence, the first spectrum of the linearised transfer matrix (its gap does not close with
@@ -57,7 +56,7 @@ number.
 *Formalisation.* Mazur's 2026 Lean 4 development replaces the analytic step of Krasikov–Lagarias (their Theorem 2.2)
 by a second finite certificate, an "adaptive forced potential" on the same residue classes, and checks both
 certificates by compiled evaluation (`native_decide`), so that the statement for a given k is a Lean theorem.
-We feed our certificates through that development for k = 18, 19 [and 20].
+We feed our certificates through that development for k = 18, 19 and 20.
 
 Related work, 2024–2026. Several AI-assisted Lean projects pursue the same program; none is refereed. msharpe248
 obtains π_1(x) = Ω(x^{0.8676}) at k = 14 with a kernel-checked certificate (29 h, 37 GB) and 0.895 at k = 17
@@ -264,6 +263,13 @@ embedded as hexadecimal chunks of 32 MiB (`include_str`) and checked by `native_
   bridge, critical choice, predecessor bridge, all-targets) are generated from his K18 files by textual
   substitution; the generated certificate modules embed no hashes, only the chunk list, so a regenerated vector
   needs no Lean changes.
+- Two facts about large `.olean` files mattered at k = 20 (9.3 GB weights, 2.3 GB potential). Lean maps each
+  olean at a base address derived from a hash of the module name and, if that range is taken, falls back to a
+  single `read()` that fails above 2 GiB on macOS. So the 9.3 GB module is imported first in every dependent
+  module, and the potential module was renamed (`Generated.K20Potential10`) because the original name's range
+  contained `Mathlib.Algebra.Field.Defs`; the base address of a candidate name can be predicted from the hash
+  and checked against all existing oleans before building. The 139-chunk array also needs a higher `simp`
+  recursion limit.
 
 ### 5.3 Results
 
@@ -271,10 +277,12 @@ embedded as hexadecimal chunks of 32 MiB (`include_str`) and checked by `native_
 |---|---|---|---|---|---|---|
 | 18 | 9032/10000 | x^{903/1000} ≤ π_a(x) (`CollatzPredecessor0903`) | 643 s | 871 s | 14.0 GB | 3 standard + 2 `native_decide` |
 | 19 | 9093/10000 | x^{909/1000} ≤ π_a(x) (`CollatzPredecessor0909`) | 2113 s | 2554 s | 24.4 GB | 3 standard + 2 `native_decide` |
-| 20 | 9150/10000 | x^{915/1000} ≤ π_a(x) (`CollatzPredecessor0915`) | 5940 s | 7382 s | 55.9 GB | [TBD: audit] |
+| 20 | 9150/10000 | x^{914/1000} ≤ π_a(x) (`CollatzPredecessor0914`) | 5940 s | 7382 s | 55.9 GB | 3 standard + 2 `native_decide` |
 
 Each level also yields the constant-free forms `_nat` (natural cutoffs) and `_0903x` (c · x^{p/q} with the full
-certificate exponent). `#print axioms` lists propext, Classical.choice, Quot.sound and the two named `native_decide`
+certificate exponent). The publication exponent must be strictly below the certificate exponent for the
+constant to be absorbed (0.903 < 0.9032, 0.909 < 0.9093); at k = 20 the natural choice 915/1000 equals 9150/10000, so
+the unit-coefficient theorem is stated at 914/1000 and the constant form keeps 9150/10000. `#print axioms` lists propext, Classical.choice, Quot.sound and the two named `native_decide`
 axioms per level, the same trust base as Mazur's 0.90. Mazur's own Python verifier passes on the three exports
 (129 140 163, 387 420 489 and 1 162 261 467 rows, zero failures), and his potential verifier passes on the k = 19
 and k = 20 potentials (645 700 815 and 1 937 102 445 inequalities).

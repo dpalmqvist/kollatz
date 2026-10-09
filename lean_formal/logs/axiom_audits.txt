@@ -146,3 +146,48 @@ No directory 'CollatzPredecessor0915' or file 'CollatzPredecessor0915.olean' in 
 /Users/daniel/devel/mazur_dl/collatz_predecessor_090-1.0.0/.lake/build/lib/lean
 /Users/daniel/.elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean
 /Users/daniel/.elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean
+AxiomAudit0915.lean:1:0: error: unknown module prefix 'CollatzPredecessor0915'
+
+No directory 'CollatzPredecessor0915' or file 'CollatzPredecessor0915.olean' in the search path entries:
+/Users/daniel/devel/mazur_dl/collatz_predecessor_090-1.0.0/.lake/packages/Cli/.lake/build/lib/lean
+/Users/daniel/devel/mazur_dl/collatz_predecessor_090-1.0.0/.lake/packages/batteries/.lake/build/lib/lean
+/Users/daniel/devel/mazur_dl/collatz_predecessor_090-1.0.0/.lake/packages/Qq/.lake/build/lib/lean
+/Users/daniel/devel/mazur_dl/collatz_predecessor_090-1.0.0/.lake/packages/aesop/.lake/build/lib/lean
+/Users/daniel/devel/mazur_dl/collatz_predecessor_090-1.0.0/.lake/packages/proofwidgets/.lake/build/lib/lean
+/Users/daniel/devel/mazur_dl/collatz_predecessor_090-1.0.0/.lake/packages/importGraph/.lake/build/lib/lean
+/Users/daniel/devel/mazur_dl/collatz_predecessor_090-1.0.0/.lake/packages/LeanSearchClient/.lake/build/lib/lean
+/Users/daniel/devel/mazur_dl/collatz_predecessor_090-1.0.0/.lake/packages/plausible/.lake/build/lib/lean
+/Users/daniel/devel/mazur_dl/collatz_predecessor_090-1.0.0/.lake/packages/mathlib/.lake/build/lib/lean
+/Users/daniel/devel/mazur_dl/collatz_predecessor_090-1.0.0/.lake/build/lib/lean
+/Users/daniel/.elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean
+/Users/daniel/.elan/toolchains/leanprover--lean4---v4.30.0-rc2/lib/lean
+'CollatzPredecessor0914.predecessor_count_lower_bound_0914' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k20AdaptiveForcedPotentialCertificate_checkLoop._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k20Gamma9150EncodedCertificate_checkLoop._native.native_decide.ax_1_1]
+'CollatzPredecessor0914.predecessor_count_lower_bound_0914_nat' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k20AdaptiveForcedPotentialCertificate_checkLoop._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k20Gamma9150EncodedCertificate_checkLoop._native.native_decide.ax_1_1]
+'CollatzPredecessor0914.predecessor_count_lower_bound_09140' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k20AdaptiveForcedPotentialCertificate_checkLoop._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k20Gamma9150EncodedCertificate_checkLoop._native.native_decide.ax_1_1]
+'CollatzPredecessor0914.predecessor_count_lower_bound_0914' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k20AdaptiveForcedPotentialCertificate_checkLoop._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k20Gamma9150EncodedCertificate_checkLoop._native.native_decide.ax_1_1]
+'CollatzPredecessor0914.predecessor_count_lower_bound_0914_nat' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k20AdaptiveForcedPotentialCertificate_checkLoop._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k20Gamma9150EncodedCertificate_checkLoop._native.native_decide.ax_1_1]
+'CollatzPredecessor0914.predecessor_count_lower_bound_09150' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ Erdos1135.KrasikovLagarias.k20AdaptiveForcedPotentialCertificate_checkLoop._native.native_decide.ax_1_1,
+ Erdos1135.KrasikovLagarias.k20Gamma9150EncodedCertificate_checkLoop._native.native_decide.ax_1_1]

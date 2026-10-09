@@ -143,3 +143,10 @@ N = 9 the float32 ratio gap has a rounding floor of ~3e-5); all 21 upper certifi
 
 [KL] I. Krasikov, J. C. Lagarias, Bounds for the 3x+1 problem using difference inequalities,
 Acta Arith. 109 (2003) 237–258, arXiv:math/0205002.
+
+Formalisation status (2026-10-09): `CollatzPredecessor0903` (x^{903/1000}, k = 18), `CollatzPredecessor0909`
+(x^{909/1000}, k = 19) and `CollatzPredecessor0914` (x^{914/1000}, k = 20) are Lean 4 theorems in Mazur's development,
+each depending on propext, Classical.choice, Quot.sound and two `native_decide` checks (the LP certificate and the
+adaptive forced potential). k = 20: potential check 5940 s (26 GB), weights check 7382 s (55.9 GB) on an M4 Pro 64 GB;
+the publication exponent is 914/1000 because the transfer lemma needs it strictly below the certificate exponent
+9150/10000. Lessons on multi-gigabyte oleans (import order, module-name hash) are in `lean_formal/README.md`.

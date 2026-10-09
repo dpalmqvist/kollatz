@@ -126,7 +126,12 @@ träffade inte efter namnbytet) – rättad; K19-filerna hade rätt open-rader f
 RESULTAT k = 19 (2026-10-08): `CollatzPredecessor0909` byggt med LoopCheck-kontrollerna. native_decide: potential
 1819 s (topp ~7.7 GB), LP 2335 s (~2.7 GB RSS, mer i swap). Ombyggt på M4 Pro 64 GB (kväll 2026-10-08) med de
 regenererade vikterna: potential 2113 s (11.6 GB), LP 2554 s (24.4 GB RSS – ingen swap), samma axiom. k = 18 ombyggt:
-643 s / 871 s (14.0 GB). k = 20 (CollatzPredecessor0915) pågår; LP-kontrollen väntas behöva ~70 GB (> RAM). `predecessor_count_lower_bound_0909`: x^(909/1000) ≤ π_a(x),
+643 s / 871 s (14.0 GB). k = 20 KLART 2026-10-09 02:07: `CollatzPredecessor0914` (x^(914/1000) ≤ π_a(x); 915/1000 = 9150/10000 ger ingen strikt
+marginal) – potential 5940 s (26.3 GB; ombyggd som K20Potential10 5825 s), LP 7382 s (55.9 GB), axiom = 3 standard +
+2 native_decide. FÄLLOR: (1) stora .olean mmappas på hash(modulnamn)-adress, fallback read() misslyckas > 2 GiB –
+importera Generated.K20Gamma9150 FÖRST överallt; (2) K20AdaptiveForcedPotentials adressintervall innehöll
+Mathlib.Algebra.Field.Defs → modulen döptes om till Generated.K20Potential10; (3) set_option maxRecDepth 100000
+(139 chunkar). Se lean_formal/README. k = 21 ≈ 170 GB, k = 22 ≈ 500 GB ⇒ strömmande verifierare krävs. `predecessor_count_lower_bound_0909`: x^(909/1000) ≤ π_a(x),
 samt `_0909_nat` och `_09093` (konstant·x^(9093/10000)); axiom: de tre standard + k19AdaptiveForcedPotentialCertificate_
 checkLoop och k19Gamma9093EncodedCertificate_checkLoop (native_decide). Fallgrop 2: `Generated.K19Gamma901` blev kvar i
 K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rättad med sed. Axiomrevisionerna sparade i
