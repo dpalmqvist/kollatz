@@ -26,6 +26,11 @@ everything adjacent (cycle bounds, predecessor density, the long shots, formal v
 | 14 | Matrix interpretations for the rewriting system | a success would be a proof; odds very low | proposed 2026-10-08 |
 | 15 | Applegate–Lagarias extremal trees to depth 45–50 | direct test of Conjectures C / C′ | proposed 2026-10-08 |
 | 16 | Spectrum, gap and traces of the K–L transfer matrix | mixing rate vs k; cycle footprints | first results 2026-10-08 (`spectrum.py`, k ≤ 15): gap does NOT close, see §16 |
+| 17 | Three-statement decomposition: Conjecture A + density-1 boundedness + no cycles ⇒ Collatz | a full proof from three density/Diophantine statements | proposed 2026-10-09 |
+| 18 | No divergence as an arithmetic property of the 2-adic parity map (Q(ℤ) ⊆ ℚ) | settles divergence for integers | proposed 2026-10-09 |
+| 19 | All cycles by equidistribution of numerators mod 2^n − 3^k | settles cycles for all m | proposed 2026-10-09 |
+| 20 | Adelic ℤ₂ × ℤ₃ picture and a Furstenberg-type rigidity theorem | explains the difficulty and would kill divergent orbits | proposed 2026-10-09 |
+| 21 | Map the no-go theorems; termination with residue-labelled K–L orderings | delimits where a proof can live; one mechanical route | proposed 2026-10-09 |
 | — | Scaling k further | +0.005 in γ per step | k = 22 certified 2026-10-08 (γ = 0.9251) plus upper certificate; k = 23 needs ~192 GB |
 
 ## 1. Prove that the Krasikov–Lagarias exponent tends to 1
@@ -681,11 +686,132 @@ the footprint of the trivial cycle and test whether the weights distinguish "int
 **Payoff.** A spectral-gap scaling law in k would be the most concrete input to a proof of λ_k → 2 we could offer;
 the trace statistic is a new (if long-shot) bridge to cycles.
 
+## Towards a full proof (avenues 17–21, added 2026-10-09)
+
+Everything above is a density or a cycle statement. The five avenues below aim at the conjecture itself. Whether
+an avenue fits the current machinery is not a criterion: if a new machine is needed, it gets built. Each entry says
+what would be proved, why it is well posed, and the first concrete step. None is likely to succeed; each is a
+mathematical target rather than a wish.
+
+## 17. Three-statement decomposition: Conjecture A + density-1 boundedness + no cycles ⇒ Collatz
+
+**Claim.** Collatz follows from (A) every a ≢ 0 (mod 3) has a predecessor set of positive lower natural density
+(Applegate–Lagarias Conjecture A, Wirsching's program, avenue 6), (B) the set of integers with bounded orbit has
+natural density 1, and (C) there is no nontrivial cycle. Proof: if n diverged, its predecessor set would consist of
+divergent numbers and have positive lower density by (A), contradicting (B); cycles are excluded by (C). None of the
+three says "for every n": (A) and (B) are density statements, (C) is Diophantine.
+
+**Where each stands.** (A): our K–L program gives x^γ with γ → 1 at best, and we now know exactly why it cannot
+give positive density: the limit object is unbounded (C_max/C_min ∝ 1.52^k, avenue 1), so the constant
+Δ₁ = 1/(4 max c) in Theorem 2.2 vanishes even for an exact solution at λ = 2. A proof of (A) needs an inequality
+system whose limit solution stays bounded. (B) is one step beyond Tao (arXiv:1909.03562): from "attains almost
+bounded values" in logarithmic density to "bounded" in natural density; Tao's own remarks explain why his method
+stops short. (C) is avenue 19.
+
+**First steps.** (A): design a weighted K–L system (classes weighted by 3-adic depth, or a system with the ×4
+chain summed out) and test at k ≤ 12 whether its solution has bounded spread while keeping λ_k → 2; the mean-field
+structure found in avenue 1 says which quantities such a system must control (the ×4 weight distribution). (B):
+read Tao's proof for the exact point where logarithmic density enters (the Syracuse random variables' approximate
+invariance) and list what a natural-density version would need. Months for either; (A) is where our tools apply.
+
+**Payoff.** A full proof from three statements each of which is the kind of thing analytic number theory proves.
+
+## 18. No divergence as an arithmetic property of the 2-adic parity map
+
+**Claim.** Let Q: ℤ₂ → ℤ₂ be the parity-vector map (Bernstein–Lagarias conjugacy of T with the shift). Q(n)'s
+digits are the parities along the orbit of n, and the inverse is the explicit 2-adically convergent series
+Φ(s) = −Σ_{i≥0} 2^{a_i} 3^{−(i+1)}, a_i = position of the i-th odd step. An integer n has a divergent orbit iff Q(n)
+is not eventually periodic. Lagarias's periodicity conjecture is "Q maps rationals to rationals"; no divergence for
+integers is its special case Q(ℤ) ⊆ ℚ. In this form the problem is an irrationality/transcendence statement about a
+series in which 2 and 3 enter only through 2^{a_i} 3^{−i}: if Σ 2^{a_i} 3^{−i−1} is an integer, then (a_i) is
+eventually arithmetic (gaps 2, the trivial cycle) after a finite prefix.
+
+**Why well posed.** Terras: the first L parities are a bijective function of n mod 2^L, and for an integer n the
+residues n mod 2^L are n itself once 2^L > n, so the whole parity sequence is a property of a single 2-adic number
+with finite expansion. The "no-go" facts (avenue 21) show a proof must use unbounded lookahead and the specific pair
+(2, 3); this formulation contains exactly that and nothing else. p-adic Mahler-type methods (functional equations
+Q(2x) = 2Q(x), Q(x) = 1 + 2Q((3x+1)/2) for odd x) have not been applied to it as far as we know; the functional
+equation is affine rather than a power map, which is what makes it hard.
+
+**First steps.** Compute (a_i) for all n ≤ 2^40 (the gap sequences a_{i+1} − a_i), tabulate their statistics as a
+subset of sequences of density θ = log 2/log 3, and look for any rigidity that distinguishes integer-generated
+sequences from random ones (e.g. constraints on prefixes mod 3^j from n being an integer: 3^{m} n ≡
+−Σ_{i<m} 2^{a_i} 3^{m−1−i} mod 2^{a_m}). Then survey transcendence methods for 2-adic series with 3-adic
+denominators. Compute days; mathematics months.
+
+**Payoff.** Settles divergence for integers; with avenue 19 (cycles) this is the conjecture.
+
+## 19. All cycles by equidistribution of numerators modulo 2^n − 3^k
+
+**Claim.** A cycle of length n with k odd steps corresponds to a parity vector v with k ones whose numerator
+N(v) = Σ_j 3^{k−1−j} 2^{a_j} must be divisible by 2^n − 3^k (then x = N(v)/(2^n − 3^k) is the cycle element).
+There are binom(n, k) ≈ 2^{0.951 n} vectors (k ≈ 0.63 n) and the modulus is ≈ 2^n, so if N(v) were equidistributed
+modulo 2^n − 3^k the expected number of integer cycles of length n would be ≈ 2^{−0.049 n}, summable: finitely many
+cycles, and none beyond the known ones once n exceeds a computable bound. A proof is an exponential-sum
+(Weyl/large-sieve) statement over the combinatorial family of parity vectors, with Baker's method covering the
+vectors with few local minima (the regime where Simons–de Weger and Hercher work, avenues 4 and 13).
+
+**Why well posed.** The question is purely about the distribution of a specific additive function of subsets
+modulo a specific integer; nothing about orbits is needed. The known theory (Eliahou, Simons–de Weger, Hercher)
+is the sparse-local-minima end of the same count.
+
+**First steps.** Compute the exact distribution of N(v) mod (2^n − 3^k) over all vectors for n ≤ 40 (GPU; 2^{38}
+vectors at n = 40) and measure the discrepancy against uniform, by n and by number of local minima; find whether
+the discrepancy decays like a power of the modulus. Then attempt the exponential-sum bound for the family.
+Compute days; mathematics months to a year.
+
+**Payoff.** Settles cycles for all m, which no verification range can; with avenue 18 this is the conjecture.
+
+## 20. The adelic picture: ℤ₂ × ℤ₃ and a Furstenberg-type rigidity theorem
+
+**Claim.** The forward dynamics is a 2-adic object (parity, Q on ℤ₂), the backward branching a 3-adic one (the
+residue classes mod 3^k of Krasikov–Lagarias, our limit measure on ℤ₃), and the integers are the diagonal
+ℤ ⊂ ℤ₂ × ℤ₃. The orbit closure of a hypothetical divergent orbit is a closed subset of ℤ₂ × ℤ₃ carrying both a
+×3-type structure (the odd step) and a ÷2-type structure (the even step). Furstenberg's ×2 ×3 theorem says that
+closed sets invariant under two multiplicatively independent maps are either finite or everything; a rigidity
+statement of this kind for the Collatz pair would force the orbit closure to be either small (contradicting the
+Terras uniformity of parity vectors along a divergent orbit) or everything (contradicting the density facts of
+avenue 17). It would also explain why the problem is hard: it sits exactly on the 2-adic/3-adic transversality
+that makes ×2 ×3 rigidity deep.
+
+**Why well posed.** Both codings are explicit, our limit measure on ℤ₃ is the first concrete object on the 3-adic
+side, and the rigidity literature (Furstenberg, Rudolph, Johnson, Host, Lindenstrauss) is a developed theory
+with known obstacles (entropy assumptions) that can be tested against Collatz data.
+
+**First steps.** Write the two codings down jointly (for n: the parity sequence in ℤ₂ and the predecessor-tree
+address in ℤ₃), compute them for n ≤ 2^30, and measure how the 3-adic limit measure and the 2-adic parity structure
+correlate along orbits; then identify which rigidity theorem's hypotheses (invariance, entropy) the Collatz orbit
+closure can be shown to satisfy. Compute weeks; mathematics a year.
+
+**Payoff.** Would kill divergent orbits and explain the difficulty at once.
+
+## 21. Map the no-go theorems, then try the one mechanical route not excluded
+
+**Claim.** Terras's theorem (all parity vectors of length L occur, as n mod 2^L) implies that no potential
+V(n mod M) can decrease along every orbit, and the same argument excludes bounded lookahead (V depending on n mod M
+and the next L parities): for every L there are n with L odd steps ahead, growing by (3/2)^L. Conway's
+undecidability excludes methods uniform over generalised Collatz maps; Yolcu–Aaronson–Heule show matrix
+interpretations only prove weakenings. Stated and proved cleanly, these delimit where a proof can live: it must use
+the specific pair (2, 3) and unbounded lookahead, which is what avenues 18–20 do. The one mechanical route not
+excluded is termination of the Yolcu–Aaronson–Heule rewriting system with semantic labelling by residues mod 3^k
+and the K–L weights as the ordering, which supplies exactly the unbounded-residue information that plain matrix
+interpretations lack.
+
+**First steps.** (i) Write the no-go theorems with proofs (a day each; they are folklore but not collected), and
+check msharpe248's "no bounded multiplicative potential" claim against them. (ii) Build the labelled rewriting
+system with residues mod 3^k for k ≤ 6 and search for a certificate with a termination tool (AProVE/TTT2) or our
+own LP over the labelled rules; the expected outcome is a precise statement of what fails, which sharpens (i).
+Weeks.
+
+**Payoff.** A map of the negative space, and the only avenue where compute alone could produce a proof.
+
 ## Not avenues
 
 - Scaling k: +0.005 in γ per level for 3× memory. Stopped at 21; 22 needs 64 GB, 23 needs 192 GB.
 - Compressing c or refining sparsely: both tested and rejected (CLAUDE.md "Gränser", `adaptive.py`).
-- Proving the conjecture through any of the above: all are density or cycle statements; none touches divergent orbits.
-- Chamberland's real extension, the Berg–Meinardus functional equations and the Bernstein–Lagarias 2-adic
-  conjugacy: compute produces data on objects no easier than Collatz itself (2026-10-08).
+- Proving the conjecture through avenues 1–16: all are density or cycle statements; none touches divergent orbits.
+  Avenues 17–21 are the ones aimed at the conjecture itself.
+- Chamberland's real extension and the Berg–Meinardus functional equations: compute produces data on objects no
+  easier than Collatz itself (2026-10-08). The Bernstein–Lagarias 2-adic conjugacy was listed here too; as a theory
+  target rather than a compute target it is now avenue 18.
 - Independently re-verifying Barina's 2^71 range on one machine: uncompetitive by orders of magnitude.
