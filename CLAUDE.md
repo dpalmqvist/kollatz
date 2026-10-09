@@ -220,6 +220,10 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   60 s). std a inom klass 2: 0.227 → 0.264 (k = 8 → 21), inkrement geometriska (kvot 0.91, gräns 0.278); klass 8
   0.119 → 0.137 (gräns 0.145); std(log c) 0.71 → 0.91 (kvot 0.93, gräns 1.03). → `weights_stats.json`. Heuristik:
   mättad viktfördelning ⇒ q∞ < 1 (≈ 0.95); men q_k själv är linjär i k (0.0018/steg, k = 12…21) utan inbromsning.
+- `paper/` – preprint: `draft.md` (källa), `render.py` → `draft.html`, `md2docx.js` → `draft.docx` (Word, A4, Georgia; kör
+  `cd paper && npm install docx && node md2docx.js draft.md draft.docx`; ^{…}/_{…} och nakna ^x/_x blir upphöjt/nedsänkt,
+  tabeller, punktlistor, centrerade formelrader; kontrollera med LibreOffice → PDF). Cambria saknas på denna Mac
+  (LibreOffice ersätter med Caladea utan pilar) – därav Georgia; byt med `BODY_FONT=Cambria`.
 - `.venv/` – Python 3.14, numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1, mlx 0.32.3, matplotlib 3.11.2 (Apple M5, 24 GB)
 
 ## Referensvärden (regressionstest – ska reproduceras)

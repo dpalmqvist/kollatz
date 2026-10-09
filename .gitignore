@@ -15,3 +15,4 @@ lean_formal/**/.lake/
 # scratch
 *.tmp
 .DS_Store
+paper/node_modules/
