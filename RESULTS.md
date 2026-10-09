@@ -107,6 +107,29 @@ N = 9 the float32 ratio gap has a rounding floor of ~3e-5); all 21 upper certifi
 1.6e-6 … 1.3e-4 (`certs/k{k}_{λ}_upper/`; k = 22: 39 GB, data sha256 e86951cb…). Consequence: the numerical
 λ_k are rigorously confirmed to 4–5 decimals, and the method at level k provably cannot reach γ ≥ log2 λ_upper.
 
+## Explicit bounds from bounded-spread certificates (2026-10-09)
+
+Krasikov–Lagarias's linear program minimises the spread C_max = max c / min c, and their Theorem 2.2 gives, for
+any feasible point with 1 ≤ c ≤ t at level k and parameter λ, φ_k^m(y) ≥ c^m λ^y/(4t) for all y ≥ 0, where
+φ_k^m(y) is the infimum of π*_a(2^y a) over a ≡ m (mod 3^k) not in a cycle. Hence such a point proves, with no
+threshold x₀,
+
+  π_a(x) ≥ (x/a)^{log₂ λ} / (4t)   for all x ≥ a and all a ≢ 0 (mod 3) not in a cycle.
+
+The Perron vectors above have spread ≈ 1.52^k; at fixed λ < 2 the minimal spread stays bounded as k grows
+(`spread_iter.py`; AVENUES §17). Certified bounded-spread points (format /2, `certs/spread_k{k}_{λ}/`, checked in
+int64 with rounded-down coefficients and by `verify_cert.py`):
+
+| k | λ | γ = log₂ λ | spread t | bound | data sha256 (prefix) |
+|---|---|---|---|---|---|
+| 9 | 1.70 | 0.7655 | 7.753 | π_a(x) ≥ (x/a)^{0.7655}/31.01 | see cert.json |
+| 14 | 1.78 | 0.8319 | 15.003 | π_a(x) ≥ (x/a)^{0.8319}/60.01 | see cert.json |
+| 14 | 1.80 | 0.8480 | 19.353 | π_a(x) ≥ (x/a)^{0.8480}/77.41 | see cert.json |
+
+The certified k = 22 Perron vector gives (x/a)^{0.9251}/39404, which overtakes the k = 14 bound only beyond
+x/a ≈ 10^{35}. The minimal spread t*_∞(λ) grows like (2 − λ)^{−2} on λ ≤ 1.78; if that continued to λ = 2 (an
+unproved limit statement) it would give π_a(x) ≫ x/(log x)².
+
 ## Independent checks
 
 - `lp_check.py`: L^NT_k(λ) solved as an explicit LP (HiGHS), constraints built from residues with Python

@@ -16,3 +16,4 @@ lean_formal/**/.lake/
 *.tmp
 .DS_Store
 paper/node_modules/
+spread_c_*.npy

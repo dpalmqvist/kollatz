@@ -224,6 +224,18 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   `cd paper && npm install docx && node md2docx.js draft.md draft.docx`; ^{…}/_{…} och nakna ^x/_x blir upphöjt/nedsänkt,
   tabeller, punktlistor, centrerade formelrader; kontrollera med LibreOffice → PDF). Cambria saknas på denna Mac
   (LibreOffice ersätter med Caladea utan pilar) – därav Georgia; byt med `BODY_FONT=Cambria`.
+- `spread_lp.py`, `spread_iter.py`, `spread_fit.py`, `certify_spread.py` – spår 17 (2026-10-09): minsta spridning
+  t*(k, λ) = min C_max över tillåtna punkter (K–L:s eget LP (2.7)). LP med HiGHS (k ≤ 9) och monoton iteration
+  c ← min(t, F(c)) + bisektion (identisk till 4 decimaler, sekunder till k = 16). RESULTAT: t*(k, λ) är icke-växande i
+  k och KONVERGERAR vid fast λ (4.448 vid 1.60 för alla k; 7.56 vid 1.70; 10.9 vid 1.75; 14.7 vid 1.78; 19.3 vid 1.80,
+  k = 14) medan Perron-vektorns spridning ~1.52^k. t*_∞(λ) ≈ C(2−λ)^{−2} (λ ≤ 1.78). Sats 2.2 gäller för ALLA y ≥ 0 med
+  Δ = 1/(4 max c) ⇒ tillåten punkt med 1 ≤ c ≤ t ger π_a(x) ≥ (x/a)^{log2 λ}/(4t) för alla x ≥ a utan x₀.
+  `spread_iter.py --slack=1e-5 K LAM` ger certifierbar vektor; `certify_spread.py K LAM vec.npy` → `certs/spread_k{K}_{LAM}/`
+  + verify_cert. Certifierat: k = 14, λ = 1.80: π_a(x) ≥ (x/a)^{0.848}/77.4 (första K–L-gränsen med explicit konstant).
+  Reduktion: Conjecture A ⇔ (upp till log-potenser) t*_∞(λ) begränsad när λ → 2. Se AVENUES §17, RESULTS.md.
+- `parity_stats.py`, `analyse_parity.py` – spår 18 (2026-10-09): paritets-/gapstatistik för alla n < 2^32 på GPU (MLX,
+  2^24 per chunk, ~50 s/chunk, ~3.5 h; int32-scatter!), tre regimer (fönster t < 32, startvärde ≥ 2^24, litet). Lokala
+  gapfördelningar är geometriska enligt Terras – avvikelser är urvals-/sluteffekter; spår 18:s innehåll är globalt.
 - `.venv/` – Python 3.14, numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1, mlx 0.32.3, matplotlib 3.11.2 (Apple M5, 24 GB)
 
 ## Referensvärden (regressionstest – ska reproduceras)

@@ -26,8 +26,8 @@ everything adjacent (cycle bounds, predecessor density, the long shots, formal v
 | 14 | Matrix interpretations for the rewriting system | a success would be a proof; odds very low | proposed 2026-10-08 |
 | 15 | Applegate–Lagarias extremal trees to depth 45–50 | direct test of Conjectures C / C′ | proposed 2026-10-08 |
 | 16 | Spectrum, gap and traces of the K–L transfer matrix | mixing rate vs k; cycle footprints | first results 2026-10-08 (`spectrum.py`, k ≤ 15): gap does NOT close, see §16 |
-| 17 | Three-statement decomposition: Conjecture A + density-1 boundedness + no cycles ⇒ Collatz | a full proof from three density/Diophantine statements | proposed 2026-10-09 |
-| 18 | No divergence as an arithmetic property of the 2-adic parity map (Q(ℤ) ⊆ ℚ) | settles divergence for integers | proposed 2026-10-09 |
+| 17 | Three-statement decomposition: Conjecture A + density-1 boundedness + no cycles ⇒ Collatz | a full proof from three density/Diophantine statements | started 2026-10-09: minimal spread at fixed λ is bounded in k (`spread_iter.py`), t*_∞(λ) ~ (2 − λ)^{−2} to λ = 1.78; certified explicit bound π_a(x) ≥ (x/a)^{0.848}/77.4 for all x ≥ a (k = 14, λ = 1.80) |
+| 18 | No divergence as an arithmetic property of the 2-adic parity map (Q(ℤ) ⊆ ℚ) | settles divergence for integers | first data run 2026-10-09 (`parity_stats.py`, n < 2^32, in progress); by Terras the local gap statistics carry no information, see §18 |
 | 19 | All cycles by equidistribution of numerators mod 2^n − 3^k | settles cycles for all m | proposed 2026-10-09 |
 | 20 | Adelic ℤ₂ × ℤ₃ picture and a Furstenberg-type rigidity theorem | explains the difficulty and would kill divergent orbits | proposed 2026-10-09 |
 | 21 | Map the no-go theorems; termination with residue-labelled K–L orderings | delimits where a proof can live; one mechanical route | proposed 2026-10-09 |
@@ -716,6 +716,52 @@ invariance) and list what a natural-density version would need. Months for eithe
 
 **Payoff.** A full proof from three statements each of which is the kind of thing analytic number theory proves.
 
+**First step done (2026-10-09): bounded spread at fixed λ, and what it buys.** K–L's own linear program L^NT_k(λ) is
+"minimise C_max subject to 1 ≤ c ≤ C_max and feasibility" (their (2.7)–(2.14)), so their Table 2 column C_k^max is the
+*minimal* spread at λ_k, and they note it grows exponentially in k. Theorem 2.2 then gives, for every feasible point,
+φ_k^m(y) ≥ c^m λ^y/(4 max c) for **all y ≥ 0** (Δ = λ^{−ν} min φ(0)/max c with ν ≤ 2, φ(0) ≥ 1; no threshold), and
+φ_k^m(y) is by definition the infimum of π*_a(2^y a) over a ≡ m (mod 3^k) not in a cycle. Hence a feasible point with
+1 ≤ c ≤ t at level k and parameter λ proves, with no x₀ at all,
+
+  π_a(x) ≥ (x/a)^{log₂ λ} / (4t)   for every x ≥ a and every a ≢ 0 (mod 3) not in a cycle.
+
+What K–L did not look at is the spread at *fixed* λ < 2 as k grows. Measured (`spread_lp.py` with HiGHS, k ≤ 9;
+`spread_iter.py`, the greatest fixed point of c ↦ min(t, F(c)) with bisection on t, identical to the LP to 4 decimals
+and instant to k = 16): t*(k, λ) is nonincreasing in k (lifting) and **converges**:
+
+| k \ λ | 1.60 | 1.65 | 1.70 | 1.75 | 1.78 | 1.80 |
+|---|---|---|---|---|---|---|
+| 7 | 4.448 | – | 8.529 | – | – | – |
+| 9 | 4.448 | – | 7.752 | – | – | – |
+| 11 | 4.448 | 5.551 | 7.613 | 11.707 | 18.193 | – |
+| 12 | 4.448 | 5.545 | 7.600 | 11.344 | 16.308 | 27.172 |
+| 13 | 4.448 | 5.543 | 7.580 | 11.157 | 15.416 | 20.883 |
+| 14 | 4.448 | 5.542 | 7.571 | 11.017 | 15.000 | 19.347 |
+| 15 | 4.448 | 5.539 | 7.560 | 10.912 | 14.708 | (running) |
+| Perron C_max | – | – | – | – | – | 147 (k = 12) … 1594 (k = 16) |
+
+At λ = 1.60 the level-5 solution is already optimal (t* = 4.4475 for all k ≥ 5). Extrapolating the decrements
+geometrically: t*_∞ ≈ 4.45, 5.54, 7.53, 10.8, 14.6 for λ = 1.60 … 1.78, which fits t*_∞ ≈ C (2 − λ)^{−a} with
+a = 2.0 (max residual 0.02–0.03 in log t*; local exponents 1.64, 1.99, 1.97, 2.39), while an exponential in λ fits
+worse (0.075). The λ ≥ 1.80 points need k = 15–16 to converge (running).
+
+**Consequences.** (i) *Explicit bounds, certified.* `spread_iter.py --slack=1e-5` produces a feasible point with
+relative slack 10^{−5} in every row, `certify_spread.py` checks it in int64 with rounded-down coefficients and writes
+`certs/spread_k{k}_{λ}/` (format /2), verified by the independent `verify_cert.py`:
+k = 9, λ = 1.70, t = 7.753: π_a(x) ≥ (x/a)^{0.7655}/31.01; k = 14, λ = 1.78, t = 15.003: (x/a)^{0.8319}/60.01;
+**k = 14, λ = 1.80, t = 19.353: π_a(x) ≥ (x/a)^{0.8480}/77.41 for all x ≥ a** — the first K–L bounds with explicit
+constants and no x₀ (avenue 10 done as a by-product). The certified Perron vector at k = 22 gives
+(x/a)^{0.9251}/39404, which overtakes the k = 14 bound only for x/a > 10^{35}.
+(ii) *Conjecture A reduces, up to log powers, to the growth of t*_∞(λ) as λ → 2.* With λ = λ(x) → 2 chosen to balance
+x^{−(2−λ)/(2 ln 2)} against 1/t*_∞(λ): if t*_∞(λ) ≤ C(2 − λ)^{−a} then π_a(x) ≥ c_a x/(log x)^a; if t*_∞ stays bounded,
+positive density. The current fit (a ≈ 2) would give π_a(x) ≫ x/(log x)². This also needs λ_k → 2 (avenue 1), since
+t*_∞(λ) = ∞ for λ > lim λ_k. The extrapolation λ → 2 is a limit-object statement and must be proved, not fitted; but
+every finite λ gives a rigorous certified bound today.
+
+**Next.** k = 16 at λ = 1.85 (t* ≈ 40 expected); the structure of the minimal-spread solutions (which classes sit at
+1 and at t, how the active set changes with λ) as the object a bounded-limit theory must describe; and whether a
+weighted system (classes weighted by 3-adic depth) lowers the exponent a.
+
 ## 18. No divergence as an arithmetic property of the 2-adic parity map
 
 **Claim.** Let Q: ℤ₂ → ℤ₂ be the parity-vector map (Bernstein–Lagarias conjugacy of T with the shift). Q(n)'s
@@ -740,6 +786,15 @@ sequences from random ones (e.g. constraints on prefixes mod 3^j from n being an
 denominators. Compute days; mathematics months.
 
 **Payoff.** Settles divergence for integers; with avenue 19 (cycles) this is the conjecture.
+
+**First step in progress (2026-10-09, `parity_stats.py`, `analyse_parity.py`).** For all n < 2^32 on the GPU: total
+stopping time, odd-step count, height, the last time the orbit is at or above n, gap histograms and gap-pair
+transition counts in three regimes (the window t < 32, where Terras makes the parities exactly i.i.d. fair bits; gaps
+starting at values ≥ 2^24 beyond the window; and the small-value descent). Already clear from the test runs: the
+local statistics cannot show "integer rigidity" at all — for any set of values x the next gap is 1 + v₂(3x+1),
+geometric by Terras, so deviations from the random model are selection effects (which orbits are sampled, and how
+often a segment is counted through merging) and end effects of the descent to 1. The content of avenue 18 is global
+(the series Φ and eventual periodicity), not local; the run is kept for the excursion records.
 
 ## 19. All cycles by equidistribution of numerators modulo 2^n − 3^k
 
