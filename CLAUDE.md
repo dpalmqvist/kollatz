@@ -206,10 +206,10 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   → `defect.json`; 50 GB RSS vid k = 19 (k = 20, 21 bara medelvärden, chunkat). Se AVENUES §1.
 - `meanfield.py` – spår 1 (2026-10-09): indexkartorna är rekursiva i toppsiffran (nxt_k = nxt_{k−1} + σ(t)·N/3,
   aux_k = aux_{k−1} + π(t)·N/9; rekursiv bygge == kl.structure). Byt σ, π mot i.i.d. slumpbijektioner: bara toppnivån
-  → Δλ inom brus (±3e-4) från k = 9; alla nivåer ≥ 9 → Δλ_14 = −2.1e-3 ± 4e-4 (≈ 3e-4 per nivå, 2 % av Δλ_k),
-  1−ρ +1.6 %, q_k oförändrad; nivåer ≥ 6 → −9e-3; ≥ 3 → −4e-2. ⇒ λ_k, q_k är mean-field-storheter; aritmetiken
+  → Δλ inom brus (±3e-4) från k = 9; alla nivåer ≥ 9 → Δλ = −2.1e-3 ± 5e-4 vid k = 14 OCH 15 (mättad offset, 15 %
+  av ett stegs vinst), 1−ρ +1.6 %, q_k lika inom 0.005; nivåer ≥ 12 → −7.8e-4 vid k = 15; ≥ 6 → −9e-3; ≥ 3 → −4e-2. ⇒ λ_k, q_k är mean-field-storheter; aritmetiken
   sitter i de grova nivåerna (≤ 8) och vikterna. `python meanfield.py KMAX SEEDS K0 MODES TAG` → meanfield_TAG.json
-  (modes top,sigma,pi,all; all = slumpa alla nivåer från K0). k = 14: 90 s/λ-sökning. Se AVENUES §1.
+  (modes top,sigma,pi,all; all = slumpa alla nivåer från K0). k = 14: 90 s, k = 15: 320 s per λ-sökning. Se AVENUES §1.
 - `.venv/` – Python 3.14, numpy 2.5.3, scipy 1.18.1, mpmath 1.4.1, mlx 0.32.3, matplotlib 3.11.2 (Apple M5, 24 GB)
 
 ## Referensvärden (regressionstest – ska reproduceras)

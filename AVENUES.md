@@ -201,13 +201,18 @@ so the summed identity and the ceiling λ = 2 are untouched; only the fine align
 | top level only (8 seeds) | 9 … 12 | −3e-4 … −4e-4 (± 3e-4 … 1e-3) | +0.2 … +0.3 % | same within 0.003 |
 | top level only | 13 | +1.8e-4 ± 2e-4 | −0.1 % | 0.916 / 0.920 |
 | all levels 9 … k (6 seeds) | 14 | −2.1e-3 ± 4e-4 | 0.04495 / 0.04426 (+1.6 %) | 0.925 ± 0.004 / 0.919 |
+| all levels 9 … k (6 seeds) | 15 | −2.1e-3 ± 5e-4 | 0.04136 / 0.04070 (+1.6 %) | 0.920 / 0.920 |
+| all levels 12 … k (6 seeds) | 15 | −7.8e-4 ± 9e-5 | 0.04094 / 0.04070 (+0.6 %) | 0.923 / 0.920 |
 | all levels 6 … k (6 seeds) | 13 | −8.9e-3 ± 1e-3 | 0.05119 / 0.04818 (+6 %) | 0.922 ± 0.02 / 0.920 |
 | all levels 3 … k (3 seeds) | 11 | −4e-2 ± 1e-2 | +27 % | – |
 
 Reading: (i) scrambling the top level alone costs nothing measurable from k = 9 on (at k = 13 the random
 alignment is even marginally better); σ-only and π-only behave the same. (ii) Scrambling every fine level from 9
-up costs ≈ 3·10^{−4} in λ per level, about 2 % of the per-level gain Δλ_k ≈ 0.013, and raises 1 − ρ by 1.6 % at
-k = 14, with the decay ratio q_k unchanged within seed noise (0.005). (iii) The coarse levels carry real
+up costs −1.6e-3 (k = 11), −2.1e-3 (k = 14) and −2.1e-3 (k = 15): the cost **saturates** at about 2·10^{−3} (15 % of
+one level's gain Δλ_k ≈ 0.013) instead of growing with the number of scrambled levels, so the per-level increments
+Δλ_k of the random model equal the exact ones from k = 14 on; 1 − ρ is 1.6 % higher throughout and q_k agrees to
+≤ 0.005 (K0 = 9) resp. 0.003 (K0 = 12, where the seed noise on 1 − ρ_15 is 3·10^{−5}).
+Scrambling from level 12 up costs −7.8e-4 ± 9e-5 at k = 15 (0.6 % in 1 − ρ). (iii) The coarse levels carry real
 arithmetic: scrambling from level 6 costs 10^{−2}, from level 3 several 10^{−2}, and the cost decays only slowly
 with k (ratio ≈ 0.9). **So λ_k and the loss ratio q_k are mean-field quantities to ≈ 1 % in the loss and 2 % in the
 per-level gain: the arithmetic of 2 and 3 enters through the coarse residues (mod 3^8, say) and the weights, and
@@ -217,7 +222,8 @@ therefore be posed in that model, which has no number theory left above K0: it i
 1-homogeneous recursion on a 3-adic tree, i.e. a quenched-versus-annealed question of the type studied for
 branching random walks (Kontorovich–Lagarias's η_BP is the annealed rate). Caveats: the exact system is
 *better* than random by a small offset, and no comparison theorem is known; and the residual per-level cost
-(3·10^{−4}) has not been shown to vanish with k (runs to k = 15 pending).
+is bounded (≈ 2·10^{−3} from K0 = 9) and the increments agree from k = 14 on; whether the offset itself
+shrinks with k is not resolved (it would need k ≥ 16, ≈ 20 min per seed at k = 16).
 **Next:** (a) a distributional (population-dynamics) formulation of the random model, which would allow k ≫ 22 at
 fixed cost and decide q∞ for the model numerically; the ×4 transport makes each level a fixed-point equation for
 the triple-shape law rather than a one-step map, so the formulation needs the cavity-style self-consistency;

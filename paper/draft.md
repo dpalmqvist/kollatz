@@ -401,13 +401,14 @@ i_low through the arithmetic of 2 and 3. We replaced σ and π by independent un
 recomputed λ_k and ρ_k (`meanfield.py`); nxt stays a bijection and aux stays 3-to-1, so the summed identity and the
 ceiling λ = 2 are unchanged. Randomising the top level alone is invisible from k = 9 on (the change in λ_k is within
 seed noise, 3·10^{−4}, and at k = 13 the random alignment is marginally better). Randomising every level from 9
-upward changes λ_14 by −2.1·10^{−3} ± 4·10^{−4}, about 2 % of the gain per level, raises 1 − ρ_14 by 1.6 % and leaves
-the ratio q_k unchanged within noise. Randomising from level 6 or from level 3 costs 10^{−2} or several 10^{−2}: the
+upward changes λ_14 and λ_15 by the same −2.1·10^{−3} ± 5·10^{−4}, a saturated offset of 15 % of one level's gain,
+raises 1 − ρ by 1.6 % at both levels and leaves the ratio q_k unchanged within 0.005; randomising from level 12
+upward costs −7.8·10^{−4} at k = 15. Randomising from level 6 or from level 3 costs 10^{−2} or several 10^{−2}: the
 arithmetic of 2 and 3 acts through the coarse residues and the weights, and the fine alignment can be replaced by
 independent randomness. The question λ_k → 2 can therefore be posed for a random Krasikov–Lagarias model, the exact
 system up to a fixed level lifted with independent uniform alignments above it, in which it becomes a quenched-
-versus-annealed question of the kind studied for branching random walks. Whether the small residual cost of
-randomness vanishes with k is open. Integrating the limit inequality on X = {m ∈ Z₃ : m ≡ 2 (mod 3)} with
+versus-annealed question of the kind studied for branching random walks. Whether the residual offset itself
+shrinks with k is open. Integrating the limit inequality on X = {m ∈ Z₃ : m ≡ 2 (mod 3)} with
 Haar measure gives 1 ≤ λ^{−2} + (1/3)(λ^{α−2} + λ^{α−1}) with equality exactly at λ = 2, so λ = 2 is the critical
 value of the limit problem and the finite-k deficit is precisely 1 − ρ_k.
 
