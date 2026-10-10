@@ -218,3 +218,23 @@ beyond O(log m) scales. General u needs S-unit or Baker bounds on 3^m t − 2^s 
 
 Each piece is concrete. (i) is the main computational task: a Lyapunov function on a discretised solenoid with a
 Lipschitz error bound. Continuity (C′) remains a further step.
+
+**5. Who controls the black time.** For ξ = k/3^n the majorant path consumes the 2-adic digits of w = −k/3^n,
+about E[c]/3 = 4 digits per level, so about 4n in all. The first n·log₂3 ≈ 1.585n digits are free: k ↦ w mod 2^T
+is onto for T ≤ n log₂3. An adversarial k can therefore make roughly the first 40 % of the path black (all zeros:
+k = 2^L·small, the extremisers). Beyond that, the digits are fixed by k (the eventually periodic expansion of k/3^n).
+
+The uniform lemma therefore amounts to: *no k can buy more black time than its n·log₂3 free bits*. Information-
+theoretically this is clear, but proving it for every k is a Diophantine statement about the 2-adic digits of
+k/3^n (Baker or S-unit bounds for the returns).
+
+**6. A possibly easier target: L² instead of sup.** Absolute continuity follows from Σ_n S_n < ∞, an average over
+characters. Typical characters decay at about 0.38 per level (S_n ~ (3/7)^n spread over about 3^n characters), and
+L² summability needs only < 3^{−1/2} ≈ 0.577. The worst case (0.64 true, 0.74 majorant) matters only through its
+weight.
+
+A fibre-averaged majorant is natural here: Σ_ξ B_n(ξ)² ≤ Σ_c P(c) max_η [Σ over the 27 lifts ξ of η: κ(ξ)|Ψ_c(ξ)|]
+·Σ_η B_{n−3}(η)². Averaging over lifts randomises the top digits, so no adversary is involved, except along the
+single 2-power chain (one lift of 2^L/3^{n−3} is again near the identity). Next step: a weighted L² norm that
+discounts near-identity characters, plus an explicit treatment of the 2-power chain. This looks more tractable
+than the sup-norm certificate (i).
