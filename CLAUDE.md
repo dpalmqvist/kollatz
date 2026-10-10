@@ -21,12 +21,17 @@ En tillåten lösning för λ ger (Thm 2.2 + §6) π_a(x) ≥ x^γ för alla γ 
 Konstanten: φ^m_k(y) ≥ Δ1 · c_m λ^y med Δ1 = 1/(4 max c_m), så C_max/C_min (växer ~1.52^k, 6457 vid k = 21)
 styr hur stort x0 blir.
 
-Vad artikeln säger om k → ∞ (§6, viktigt): λ_k ≤ λ_{k+1} (lyftet tile(c) är tillåtet), strikt ökning är öppet
-problem (empiriskt sant t.o.m. k = 21). Summering av alla olikheter ger
+Vad artikeln säger om k → ∞ (§6, viktigt): λ_k ≤ λ_{k+1} (lyftet tile(c) är tillåtet), strikt ökning kallas där öppet
+problem (A–L 1995 hävdade "lätt" med ofullständig skiss). BEVISAT HÄR (2026-10-09, `notes/strict_monotonicity.md`,
+`monotone_check.py`): för alla k ≥ 2 nås supremum, 1 < λ_k < 2, varje tillåten punkt vid λ_k har ALLA olikheter som
+likheter och är unik upp till skalning, och λ_k < λ_{k+1}. Nyckel: m ↦ 4m är EN cykel av längd 3^(k−1) på [3^k] och
+varje rad har termen λ^-2 c_{4m} ⇒ slack sprids bakåt längs cykeln till alla rader (irreducibilitet). Följd: c·λ_k^y är
+en exakt lösning av I_k ⇒ ingen bättre exponent ur I_k (K–L:s tro) och A–L:s förmodan 4.1. Summering av alla olikheter ger
   (1 − λ^-2) · c̄_{k,k} ≤ (1/3)(λ^(α−1) + λ^(α−2)) · c̄_{k−1,k},
 där c̄_{k,k} = medel av c och c̄_{k−1,k} = medel av cbar. Nödvändigt och tillräckligt för π_a(x) ≥ x^(1−ε) för
-alla ε är λ_k → 2, vilket följer om ρ_k := c̄_{k−1,k}/c̄_{k,k} → 1. K–L tror (utan bevis) att L^NT_k ger den
-bästa gräns som differensolikheterna I_k alls medger, och att optimum nås med alla olikheter som likheter.
+alla ε är λ_k → 2, vilket följer om ρ_k := c̄_{k−1,k}/c̄_{k,k} → 1. K–L trodde (utan bevis) att L^NT_k ger den
+bästa gräns som differensolikheterna I_k alls medger, och att optimum nås med alla olikheter som likheter – båda nu
+bevisade (se ovan).
 
 ## Indexering (verifierad för k = 3…11; MLX-F mot NumPy-F för k ≤ 13)
 Residy m = 3i+2 har index i ∈ [0, N). Allt är affint, inga indexarrayer behövs:
@@ -163,6 +168,35 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   `python lp_check.py [KMAX]` (k ≤ 9: 3 min, k = 9 dominerar).
 - `holder.py` – mätningar för gränsobjektet k → ∞: kuloscillation osc_j och Hölder-exponent β_j, riktningsprofil,
   spridning (C_max, kvantiler, massa i topp-1 %), extrapolation av r_mid(k) → `holder.json`. `python holder.py`
+- `notes/strict_monotonicity.md`, `monotone_check.py`, `lean_formal/KLMonotone/` (2026-10-09/10): SATS för alla k:
+  λ_k nås, 1 < λ_k < 2, tight + unik vid λ_k, λ_k < λ_{k+1} (K–L 2003:s öppna problem; A–L 1995 hade ofullständig
+  skiss) + c·λ_k^y exakt lösning av I_k (A–L förmodan 4.1). Lean 4 (≈1250 rader, bara standardaxiom, 10 s):
+  `cd ~/devel/mazur_dl/collatz_predecessor_090-1.0.0 && lake env lean …/lean_formal/KLMonotone/Basic.lean`;
+  huvudsats `KLMono.KL_lambda_strictMono` för K–L:s LP ordagrant (2.7)–(2.14). Se README där.
+- `base_lift_chunked.py CERTDIR YMAX [CHUNK [STEP]]` (2026-10-10): RIGORÖS lyft baskonstant (stegfunktion,
+  L(y_i)/(c λ^{y_{i+1}})) för certifierad vektor, chunkad över klasser; → `base_lift_<cert>.json`. k = 14: 3 min, k = 15:
+  19 min, k = 16: ~70 min (1 kärna). Explicit kuvert i RESULTS.md.
+- `cycle_numerators_fine.py` (spår 19 steg 3): fönster nära 0 + delbarhet med primfaktorer p | m (stora avvikelser = periodiska paritetsvektorer: gcd(n,k) = d > 1 ⇒ 2^n − 3^k = (2^{n/d} − 3^{k/d})·Φ och N(w^d) = N(w)·Φ; plus små primtal med små ordningar, rotationskluster), se AVENUES §19.
+- `cycle_numerators_k.py NMIN NMAX [DK] [H] [B]` (spår 19, 2026-10-10): GPU, bara paritetsvektorer med vikt k (unrank +
+  Gosper), n ≤ 45 vid k_max (1.5e9 vektorer/s), validerad mot `cycle_numerators.py` för n ≤ 24 → `cycle_numerators_k.json`.
+- `cycles_by_length.py NMAX d ...` (spår 27, 2026-10-10): EXAKT census av alla 3x+d-cykler med längd ≤ NMAX via alla
+  paritetsvektorer (cykel ⇔ (2^n − 3^k) | d·N(v)), GPU, ~10 s/d vid NMAX = 34 → `cycles_by_length.json`.
+- `extremal_trees.py` + `extremal_trees_core.c` (spår 15/28, 2026-10-10): exakta A–L-extremalträd till k = 59/55 och
+  residyklasscertifikat för djupräkningar: 0.2822·(1.3333119)^k ≤ N*_k(a) ≤ 3.556·(1.3333567)^k för ALLA a (r = 19;
+  A–L 1995: 1.302/1.358). Se `notes/extremal_trees.md`, RESULTS.md. LEAN: `lean_formal/PreimageBound/` (r = 14, kernel-
+  `decide`, standardaxiom, leanchecker + nanoda): 0.2847·1.3331664^k ≤ #{n : T^k(n) = a} för alla a ≢ 0 (3), alla k.
+- `depth_system.py RMAX`, `syracuse_measure.py RMAX [p ...]` (spår 28, 2026-10-10): djupsystemets Perron-vektorer
+  (medelversionen A_r) är EXAKT marginalerna av ett mått ν på ℤ₃^× (E_{r−1}h_r = h_{r−1}, bevisat): stationärt mått
+  för x ↦ x/2 (1−p), (3x+1)/2 (p) med p = 1/4; p = 1/2 är Taos Syracuse-variabel och = K–L vid λ = 2 med mean i st.f.
+  min (på m ≡ 2 mod 3, 1e-15). L²-lag: ‖δ_r‖₂-kvot → √(3p/(2−p)) (diagonalterm exakt, korstermer → 0 numeriskt) ⇒
+  0.65 = √(3/7); p = 1/2 är kritiskt (kvot 1, täthet ∉ L², L¹-kvot 0.931 vid r = 17 stigande som K–L:s 1 − ρ_k).
+  Tröskel p = 1/3 för begränsad täthet (fixpunkten −1 ger faktor 3p/nivå ⇒ K–L:s C_max ~ 1.52^k). p = 1/4: L^q-kvoter
+  < 3^{−1/q} ⇒ kontinuerlig täthet numeriskt; min/max h_17 ↔ (4/3)^k/N^−(k) → 2.039, N^+/(4/3)^k → 1.742 (2e-4).
+  Kontinuitet ⇒ Conjecture C′ (preimage.md Prop. 6). Kolla Wirsching LNM 1681 för prioritet. AVENUES §28.
+- `mcycles.py` (spår 13, 2026-10-10): Hercher/SdW m-cykelmetod, `validate` reproducerar båda; vid 2^71 fortfarande
+  m ≤ 91 (m = 92 kräver 2^73.87). Se `notes/mcycles_2_71.md`; det orefereegranskade m ≥ 102 (Lean) granskat i
+  `notes/mcycles_102_audit.md` (giltigt givet 2^71 + Rhin; leanchecker + nanoda). UTVIDGAT 2026-10-10 till m ≤ 104
+  (≥ 105 lokala minima; m ≤ 103 även nanoda, Lean v4.35, `notes/mcycles_extension.md`, bygg i `~/devel/mazur_dl/m102/extend/`).
 - `RESULTS.md` – fristående skrivelse (engelska) av resultatet med LP-definition, certifikatformat, sha256 för alla
   certifikat, oberoende kontroller och metodens status. Uppdatera vid nya k eller ny status (formalisering).
 - `AVENUES.md` – levande dokument över möjliga spår (7 st) med status, vad som gjorts och hur man plockar upp dem.
@@ -237,7 +271,12 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   av klassens GARANTERADE föregångarträd (2n alltid, (2n−1)/3 om n ≡ 2 mod 3, avgörbart i ≤ k udda steg; värden
   ≤ a·2^e(2/3)^j). Δ_Y = min_m min_y L(m,y)/(c^m λ^y): 0.83/0.68/0.54/0.38 (Perron k = 6…9, bästa Y = 5–6) mot K–L:s
   1/(4t) = 0.019…0.0058 (43–67×). Räkningarna korrelerar 0.98 med c. Certifierat: `certs/spread_k8_1.74/` + Δ = 0.865
-  ⇒ π_a(x) ≥ 0.865 (x/a)^{0.7991} för x ≥ 64a. Conjecture A ⇐ λ_k → 2 + likformig baskonstant (AVENUES §17).
+  ⇒ π_a(x) ≥ 0.865 (x/a)^{0.7991} för x ≥ 64a. RÄTTELSE 2026-10-10: 0.865 var min över 0.25-gridpunkter, ej rigoröst
+  infimum (stegfunktion); `base_lift_chunked.py` (rigoröst, grid 1/64): 0.8435 (x ≥ 16a). FÖRBÄTTRAT: certifierade
+  k = 14, λ = 1.80 ⇒ π_a(x) ≥ 0.7146 (x/a)^{0.848} för x ≥ 2^{6.25} a (a ≡ 2 mod 3; a ≡ 1: /λ), bäst t.o.m. 2^20.8;
+  `certs/spread_k15_1.82` ⇒ 0.5681 (x/a)^{0.8639}; `certs/spread_k16_1.83` ⇒ 0.5514 (x/a)^{0.8718} (x ≥ 2^{6.25} a),
+  bäst 2^15.7–2^18.3; `certs/spread_k17_1.84` ⇒ 0.4987 (x/a)^{0.8797}, bäst 2^18.3–2^335 (k = 14 under 2^15.7);
+  därefter k = 22. Tabell i RESULTS.md. Conjecture A ⇐ λ_k → 2 + likformig baskonstant (AVENUES §17).
   `python base_lift.py K Y [LAM [VEC.npy]]`. Nästa: finare residyer (mod 3^{k'}) för att se om Δ_best(k) planar ut.
 - `pred_density.py`, `pred_compare.py` – spår 17: första banvärdet < 3^8 för alla n < 2^32 (GPU) ⇒ π_a(X) exakt för
   alla a < 6561; klassmedel av d_a·a korrelerar 0.90–0.93 (log) med Perron-vektorn redan vid X = 2^20.

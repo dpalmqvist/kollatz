@@ -1,0 +1,21 @@
+# lake build (lakefile.toml, autoImplicit = false), then lake env lean Audit.lean, Sat 10 Oct 2026 01:01:53 CEST
+KLMono.KL_lambda_strictMono : (StrictMono fun n => sSup (KLMono.LamKL n)) ∧
+  ∀ (n : ℕ), sSup (KLMono.LamKL n) ∈ KLMono.LamKL n ∧ 1 < sSup (KLMono.LamKL n) ∧ sSup (KLMono.LamKL n) < 2
+'KLMono.KL_lambda_strictMono' depends on axioms: [propext, Classical.choice, Quot.sound]
+'KLMono.lamk_strictMono' depends on axioms: [propext, Classical.choice, Quot.sound]
+'KLMono.tight' depends on axioms: [propext, Classical.choice, Quot.sound]
+'KLMono.unique' depends on axioms: [propext, Classical.choice, Quot.sound]
+'KLMono.exact_solution' depends on axioms: [propext, Classical.choice, Quot.sound]
+'KLMono.klFeasible_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'KLMono.auxA_is_KL' depends on axioms: [propext, Classical.choice, Quot.sound]
+'KLMono.auxB_is_KL' depends on axioms: [propext, Classical.choice, Quot.sound]
+'KLMono.nu_is_times_four' depends on axioms: [propext, Classical.choice, Quot.sound]
+'KLMono.lift_is_KL' depends on axioms: [propext, Quot.sound]
+'KLMono.nu_reach' depends on axioms: [propext, Classical.choice, Quot.sound]
+@KLMono.rho_eq : ∀ {n : ℕ} {c : Fin (KLMono.N n) → ℝ},
+  (∀ (i : Fin (KLMono.N n)), 0 < c i) →
+    (∀ (i : Fin (KLMono.N n)), c i ≤ KLMono.F n (KLMono.lamk n) c i) → KLMono.rhoOf c = KLMono.R (KLMono.lamk n)
+KLMono.rho_strictMono : StrictMono fun n => KLMono.R (KLMono.lamk n)
+'KLMono.rho_eq' depends on axioms: [propext, Classical.choice, Quot.sound]
+'KLMono.rho_strictMono' depends on axioms: [propext, Classical.choice, Quot.sound]
+# lake env leanchecker -v Basic: exit 0

@@ -1,6 +1,6 @@
 # Certified Krasikov–Lagarias predecessor bounds for the 3x+1 problem to k = 22: two-sided brackets, machine-checked instances, and the finite-level loss
 
-*Draft 0.8, 2026-10-09. All numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
+*Draft 0.9, 2026-10-10. All numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
 `spectrum.json`, `kl5.json` and the literature survey `reports/Collatz adjacent work and references.md`.*
 
 ## Abstract
@@ -20,7 +20,11 @@ infeasible slightly above the certified λ; the Krasikov–Lagarias constants λ
 between 2·10^{−5} and 10^{−4}, confirming their numerical values to four or five decimals. The levels k = 18, 19 and
 20 are machine-checked in Lean 4 inside L. Mazur's formalisation of the Krasikov–Lagarias argument, giving
 theorems x^{0.903} ≤ π_a(x), x^{0.909} ≤ π_a(x) and x^{0.914} ≤ π_a(x) for large x, each resting on Lean's three
-standard axioms and two compiled finite checks. The question whether λ_k → 2, equivalent to
+standard axioms and two compiled finite checks. We prove for every k that λ_k is attained, that every
+solution at λ_k is unique up to scaling and has all inequalities tight, and that λ_k < λ_{k+1}. Strict increase is
+stated as an open problem by Krasikov and Lagarias. The proof rests on the fact that m ↦ 4m is a single cycle on the
+principal classes, and it is machine-checked in Lean. It also shows that L^NT_k extracts the optimal exponent from
+Krasikov's inequalities. The question whether λ_k → 2, equivalent to
 π_a(x) ≥ x^{1−ε} for every ε, reduces to whether a single number, the mean loss ρ_k from the minimum over three
 lifts, tends to 1. We report ρ_k to k = 22, the spectral radius at λ = 2, and the spectrum of the linearised transfer
 matrix, whose gap does not close with k. We then show that the finite-level loss is a mean-field quantity: replacing
@@ -108,8 +112,9 @@ The ansatz φ_m(y) ≥ c_m λ^y turns the inequalities into the linear system L^
 Let F_λ be the right-hand side map, F(c)_m = λ^{−2} c_{4m} + λ^{α−j} c̄_{r(m)}. F is monotone and positively
 1-homogeneous on the positive cone, so it has a cone spectral radius r(F_λ) (Collatz–Wielandt), and L^NT_k(λ) is
 feasible iff r(F_λ) ≥ 1: a feasible c satisfies c ≤ F(c), which forces r ≥ 1, and conversely an eigenvector with
-F(c) = rc, r ≥ 1, is feasible after scaling. Since r is decreasing in λ, λ_k := sup{λ : L^NT_k(λ) feasible} is the
-unique root of log r(F_λ) = 0.
+F(c) = rc, r ≥ 1, is feasible after scaling. We define λ_k := sup{λ ∈ [1, 2] : L^NT_k(λ) feasible}, where [1, 2]
+is the range of the theorem above. Numerically r(F_λ) is decreasing on [1, 2] (checked on a grid for k ≤ 7), which
+would make λ_k the unique root of log r(F_λ) = 0 there, but we do not need or prove this.
 
 ### 2.3 Indexing
 
@@ -118,6 +123,52 @@ mod 9 is i mod 3 (0 ↔ 2, 1 ↔ 5, 2 ↔ 8); the auxiliary index is 4j mod N/3 
 i = 3j + 2; and c̄[r] = min(c[r], c[r + N/3], c[r + 2N/3]). The ternary digits of i are the digits of m above the
 lowest, and the top digit is the one the minimum ranges over. Lifting a level-(k−1) vector to level k is
 c_k[i + j N_{k−1}] = c_{k−1}[i], which preserves feasibility (this is the monotonicity λ_k ≤ λ_{k+1}).
+
+### 2.4 Structure of L^NT_k: attainment, tightness, strict increase
+
+Krasikov and Lagarias leave three questions about L^NT_k open:
+- in their §6, *"It remains an open problem to show that the values λ_k are strictly increasing in k"*;
+- whether (1) the supremum λ_k is attained and (2) at λ_k some solution has all principal inequalities tight,
+  which they consider *"likely … but this may be difficult to prove"*;
+- whether L^NT_k extracts the best exponential bound from I_k, which they believe "although we have no proof".
+
+Applegate–Lagarias (Density bounds II, 1995, §4) had called strict increase easy. Their sketch shows that the lifted solution has a
+strict inequality somewhere, but for a parametric linear program that alone does not allow λ to increase.
+
+**Theorem 1.** For every k ≥ 2:
+(i) λ_k is attained, and 1 < λ_k < 2;
+(ii) every feasible point at λ_k satisfies all principal inequalities with equality, and it is unique up to a
+positive factor;
+(iii) λ_k < λ_{k+1}.
+Consequently c_m λ_k^y solves Krasikov's system I_k with equality, so no exponential rate above λ_k can be derived
+from I_k, and every linear program obtained from I_k by the splitting and truncation of Applegate–Lagarias has λ* ≤ λ_k
+(their Conjecture 4.1).
+
+The proof rests on one arithmetic fact and some elementary nonlinear Perron–Frobenius theory:
+
+- *The arithmetic fact.* m ↦ 4m permutes the principal classes as a single cycle of length 3^{k−1}, because 4 has
+  order 3^{k−1} modulo 3^k. Every principal inequality contains λ^{−2} c_{4m} with no minimum.
+- *Slack spreads.* If c > 0, F(c) ≥ c and F(c) ≠ c, the set of rows with F^n(c) > c grows by one ×4-preimage per
+  iteration, so F^N(c) > c everywhere. Superadditivity of F (a minimum of linear forms) then makes
+  z = Σ_{n<N} F^n(c) strictly sub-invariant, F(z) > z.
+- *Openness.* By continuity in λ, a strictly sub-invariant z stays feasible slightly above the current λ.
+- *Tightness.* Applied at the supremum, this rules out slack, which gives (ii).
+- *Attainment and λ_k < 2.* Attainment follows from compactness of the normalised feasible sets; zeros of a limit
+  vector are removed by the same propagation. Summing all inequalities at λ = 2 forces both tightness and top-digit
+  invariance. The descent argument of Applegate–Lagarias then shows a tight top-digit-invariant vector is constant, which the
+  m ≡ 5 rows exclude.
+- *Strict increase.* The tiled vector tile(c_k) gains slack exactly where c_k varies over its top digit. That is
+  somewhere, by the same descent, so (iii) follows from the spreading step.
+
+Uniqueness: zeros of c′ − t c propagate forwards along the cycle.
+
+The complete argument is in `notes/strict_monotonicity.md`. It is formalised in Lean 4 with Mathlib
+(`lean_formal/KLMonotone/`, about 1250 lines, no certificates, only the three standard axioms), including the
+equivalence with the program exactly as printed in Krasikov–Lagarias (2.7)–(2.14) and the residue form of all index maps.
+
+The theorem gives no rate. The slack travels with factor λ^{−2} per step along the ×4 cycle, so the increment it
+certifies is exponentially small in k. A uniform version, λ_{k+1} − λ_k ≥ κ(2 − λ_k), is equivalent to geometric
+convergence λ_k → 2 and is the open problem of §6.
 
 ## 3. Computation
 
@@ -313,9 +364,10 @@ and that each auxiliary map is a bijection from a third of them onto the auxilia
   (1 − λ^{−2}) c̄_{k,k} ≤ (1/3)(λ^{α−1} + λ^{α−2}) c̄_{k−1,k},
 
 with c̄_{k,k} the mean of c and c̄_{k−1,k} the mean of c̄. Write ρ_k = c̄_{k−1,k}/c̄_{k,k} ≤ 1 for the mean loss from the
-minimum over lifts. At λ = 2 both sides equal 3/4 when ρ = 1, so λ_k → 2 ⇔ ρ_k → 1. On all our solutions the
-summed inequality is tight to 10^{−5} (the difference is λ_cert < λ_k), so λ_k is, to that precision, a function of
-ρ_k alone: 1 − λ^{−2} = (1/3)(λ^{α−1} + λ^{α−2}) ρ.
+minimum over lifts. At λ = 2 both sides equal 3/4 when ρ = 1, so λ_k → 2 ⇔ ρ_k → 1. By Theorem 1 (§2.4) the unique
+solution at λ_k satisfies every inequality with equality, so the summed inequality is an identity there, and λ_k is
+exactly a function of ρ_k (the mean loss of that solution): 1 − λ_k^{−2} = (1/3)(λ_k^{α−1} + λ_k^{α−2}) ρ_k. On our
+certified solutions at λ_cert < λ_k the summed inequality holds with a gap of order 10^{−5}.
 
 | k | 11 | 12 | 13 | 14 | 15 | 16 | 17 | 18 | 19 | 20 | 21 | 22 |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|
@@ -532,7 +584,9 @@ undecidability result for maps linear on residue classes implies that any proof 
 3 specifically; the Krasikov–Lagarias system does, but only through the branching rule mod 3 and the size factors
 2 and 3/2, which is why it yields exponents and not individual orbits.
 
-Within the method, the open mathematical problem is λ_k → 2 ⇔ ρ_k → 1. §6 reduces it to two statements about the
+Within the method, what is now proved is structural: λ_k is attained, tight, unique and strictly increasing
+(Theorem 1, machine-checked), so the exponents of §3 approximate a well-defined increasing sequence whose
+limit is the method's exact capacity. The open mathematical problem is λ_k → 2 ⇔ ρ_k → 1. §6 reduces it to two statements about the
 limit object: that the fine top-digit alignments act as independent, which the scrambling experiment supports to
 2·10^{−3} in λ, and that the distribution of the ×4 weight converges, which the data to k = 21 support with
 geometrically shrinking increments; together they would give a contraction estimate for the loss and hence λ_k → 2.

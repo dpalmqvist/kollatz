@@ -1,8 +1,10 @@
 """Render paper/draft.md -> paper/draft.html (self-contained, print-ready; MathJax for ```latex blocks).
   python paper/render.py
 """
-import datetime, re, markdown
-src = open("paper/draft.md", encoding="utf-8").read()
+import datetime, re, sys, markdown
+SRC = sys.argv[1] if len(sys.argv) > 1 else "paper/draft.md"
+OUT = sys.argv[2] if len(sys.argv) > 2 else "paper/draft.html"
+src = open(SRC, encoding="utf-8").read()
 src = re.sub(r"```latex\n(.*?)```", lambda m: "\n<div class=\"math\">\\[" + m.group(1).strip() + "\\]</div>\n", src, flags=re.S)
 body = markdown.markdown(src, extensions=["tables", "fenced_code", "sane_lists", "smarty"])
 body = body.replace("[TBD", "<span class=\"tbd\">[TBD").replace("TBD]", "TBD]</span>")
@@ -16,7 +18,7 @@ html = f"""<!doctype html>
 <style>{css}</style></head>
 <body>
 {body}
-<p style="margin-top:3em;color:var(--muted);font-size:0.85em">Rendered from <code>paper/draft.md</code> on {datetime.date.today().isoformat()}. Highlighted [TBD] entries are results still being computed.</p>
+<p style="margin-top:3em;color:var(--muted);font-size:0.85em">Rendered from <code>{SRC}</code> on {datetime.date.today().isoformat()}. Highlighted [TBD] entries are results still being computed.</p>
 </body></html>"""
-open("paper/draft.html", "w", encoding="utf-8").write(html)
-print("wrote paper/draft.html")
+open(OUT, "w", encoding="utf-8").write(html)
+print("wrote", OUT)

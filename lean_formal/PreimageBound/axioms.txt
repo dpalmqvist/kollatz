@@ -1,0 +1,31 @@
+preimage_count_lower_bound : ∀ (a : ℕ),
+  0 < a →
+    a % 3 ≠ 0 →
+      ∀ (k : ℕ),
+        2847 / 10000 * (13331664 / 10000000) ^ k ≤
+          ↑{n ∈ Finset.Icc 1 (2 ^ k * a) | (fun m => if m % 2 = 0 then m / 2 else (3 * m + 1) / 2)^[k] n = a}.card
+preimage_count_ge_pow : ∀ (a : ℕ),
+  0 < a →
+    a % 3 ≠ 0 →
+      ∀ (k : ℕ),
+        20200 ≤ k →
+          (1333 / 1000) ^ k ≤
+            ↑{n ∈ Finset.Icc 1 (2 ^ k * a) | (fun m => if m % 2 = 0 then m / 2 else (3 * m + 1) / 2)^[k] n = a}.card
+'PreimageBound.preimage_count_lower_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.preimage_count_ge_pow' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.preimage_count_lower_bound_R4'' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.preimage_count_lower_bound_R5'' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.preimage_count_lower_bound_R8'' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.preimage_count_lower_bound_R10'' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.preimage_count_lower_bound_R12'' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.preimage_count_lower_bound_R13'' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.preimage_count_lower_bound_R14'' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.residue_class_bound' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.residue_class_bound_nk' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.prunedCount_succ' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.prunedCount_le' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.mem_preimages_iff' depends on axioms: [propext, Classical.choice, Quot.sound]
+'PreimageBound.classOk_sound' depends on axioms: [propext, Quot.sound]
+'PreimageBound.certR14_ok' depends on axioms: [propext, Quot.sound]
+'PreimageBound.chunkR14_0' does not depend on any axioms
+'PreimageBound.chunkR14_728' does not depend on any axioms

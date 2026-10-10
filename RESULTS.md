@@ -133,12 +133,124 @@ The constant improves by starting Krasikov–Lagarias's induction (their Theorem
 [Y − 2, Y], where the counts φ_k^m(y) are bounded below by exact enumeration of the residue-determined
 ("guaranteed") predecessor tree of each class (`base_lift.py`; counts verified against brute-force trees of
 integers in the class). With the certified vector `certs/spread_k8_1.74/` (k = 8, λ = 1.74, spread 14.28) and
-the window [4, 6] the constant is Δ = 0.865 instead of 1/(4·14.28) = 0.0175:
+the window [4, 6] the constant is Δ = 0.843 instead of 1/(4·14.28) = 0.0175.
 
-  π_a(x) ≥ 0.865 · (x/a)^{0.7991}   for all x ≥ 2^6 a and all a ≢ 0 (mod 3) not in a cycle,
+CORRECTION 2026-10-10: the value 0.865 stated here earlier took the minimum of L(y)/(cλ^y) only at the points of a
+0.25-grid. The counts L(y) are step functions that jump off the grid, so the infimum over the real window is
+smaller, by up to λ^{0.25}. `base_lift_chunked.py` (2026-10-10) computes the rigorous value: on the grid y_i it uses
+min_i L(y_i)/(c λ^{y_{i+1}}). With grid 1/64 this gives Δ = 0.8435. Statement for a ≡ 2 (mod 3) not in a cycle:
 
-the strongest explicit bound of this kind for x/a up to about 10^{37}. The minimal spread t*_∞(λ) grows like (2 − λ)^{−2} on λ ≤ 1.78; if that continued to λ = 2 (an
+  π_a(x) ≥ 0.843 · (x/a)^{0.7991}   for all x ≥ 2^4 a.
+
+For a ≡ 1 (mod 3) use π_a ≥ π_{2a}: divide the constant by λ and require x ≥ 2^5 a.
+
+**Improved (2026-10-10).** The certified k = 14 vector `certs/spread_k14_1.80/` (λ = 1.80, spread 19.35), with the
+lifted base window around Y = 8.25 (1.6·10^6 guaranteed trees, 4·10^9 nodes, 3 min; `base_lift_chunked.py
+certs/spread_k14_1.80 10 20000 1/64` → `base_lift_spread_k14_1.80.json`), gives for a ≡ 2 (mod 3) not in a cycle
+
+  π_a(x) ≥ 0.7146 · (x/a)^{0.8480}   for all x ≥ 2^{6.25} a,
+
+compared with 1/(4·19.35) = 0.0129 from Theorem 2.2 directly. For a ≡ 1 (mod 3) divide by 1.8 and require
+x ≥ 2^{7.25} a.
+
+A further certified vector, `certs/spread_k15_1.82/` (k = 15, λ = 1.82, spread 26.10, slack 9.9·10^{−6}, made with
+`spread_iter.py --slack=1e-5 15 1.82` + `certify_spread.py`), gives the same way (4.8·10^6 trees, 2.3·10^{10} nodes,
+19 min):
+
+  π_a(x) ≥ 0.5681 · (x/a)^{0.8639}   for all x ≥ 2^{6.25} a   (a ≡ 2 mod 3; a ≡ 1: divide by 1.82, x ≥ 2^{7.25} a).
+
+Explicit envelope, for a ≡ 2 (mod 3) not in a cycle:
+
+| range of x/a | best explicit bound | source |
+|---|---|---|
+| 2^{6.25} … 2^{15.7} | 0.7146 (x/a)^{0.8480} | k = 14, λ = 1.80, lifted base |
+| 2^{15.7} … 2^{18.3} | 0.5514 (x/a)^{0.8718} | k = 16, λ = 1.83 (`certs/spread_k16_1.83`), lifted base |
+| 2^{18.3} … 2^{335} | 0.4987 (x/a)^{0.8797} | k = 17, λ = 1.84 (`certs/spread_k17_1.84`), lifted base |
+| ≥ 2^{335} | (x/a)^{0.92509} · C_min/(4λ C_max), C_max/C_min = 9840.7 | k = 22 Perron certificate, Thm 2.2 |
+
+The k = 16 vector (spread 29.49, slack 9.9·10^{−6}) gives π_a(x) ≥ 0.5514 (x/a)^{0.8718} for all x ≥ 2^{6.25} a. Its
+base lift takes 5.8·10^{10} nodes in 67 min (grid 1/32). It dominates the k = 15 bound everywhere. The k = 17 vector
+(λ = 1.84, spread 33.84, slack 9.9·10^{−6}) gives 0.4987 (x/a)^{0.8797} for x ≥ 2^{6.25} a (1.7·10^{11} nodes, 2.4 h).
+
+The λ in the last row covers all residues.
+
+(Rigor of the lifted constants: the counts are exact integers, the infimum over each grid cell uses the right-hand
+end, and the float64 path maxima e − j(α − 1) are never within 2.5·10^{−5} of a grid point (j ≤ 80, mpmath check),
+so the binning tolerance of 10^{−12} cannot misplace a node.)
+
+Mazur's positive-density theorem (`notes/m2_audit.md`) has ineffective constants for general a, so these remain the
+best *explicit* lower bounds at any height one can write down. The minimal spread t*_∞(λ) grows like (2 − λ)^{−2} on λ ≤ 1.78; if that continued to λ = 2 (an
 unproved limit statement) it would give π_a(x) ≫ x/(log x)².
+
+## Structure of L^NT_k: attainment, tightness, uniqueness, strict increase (proved 2026-10-09)
+
+Theorem (`notes/strict_monotonicity.md`; machine-checked in Lean 4, `lean_formal/KLMonotone/`, standard axioms
+only). Let λ_k = sup{λ ∈ [1, 2] : L^NT_k(λ) feasible}. For every k ≥ 2:
+1. λ_k is attained, and 1 < λ_k < 2.
+2. Every feasible point at λ_k satisfies all principal inequalities with equality, and it is unique up to scaling.
+3. λ_k < λ_{k+1}.
+
+Consequences:
+- c·λ_k^y solves Krasikov's difference inequalities I_k exactly, so no exponent above log₂ λ_k can be obtained
+  from I_k.
+- Every Applegate–Lagarias splitting/truncation LP has λ* ≤ λ_k ([AL2, Conjecture 4.1]).
+- The bound of [KL, Theorem 2.2] holds at λ_k itself.
+
+Literature status:
+- [KL, §6] lists strict increase as open and conditions (1)–(2) as "likely … but may be difficult to prove".
+- [AL2, §4] (1995) had called strict increase easy. Its sketch shows only that the lifted solution has a strict
+  inequality somewhere; for a parametric LP that does not let λ increase.
+
+The missing ingredient: m ↦ 4m is a single cycle of length 3^{k−1} on [3^k], and every row contains
+λ^{−2} c_{4m}. So slack in one row spreads to all rows, and a positive vector with F(c) ≥ c, F(c) ≠ c can be
+improved to F(z) > z everywhere. Numerical companion: `monotone_check.py`.
+
+For the certificates above this means: each λ_cert < λ_k is a strict lower bound of a uniquely defined number λ_k,
+whose fixed point is the (unique) Perron vector of the certificate computation. The brackets [λ_cert, λ_upper] pin
+it down to 2·10^{−5} … 10^{−4}.
+
+## Uniform bounds for the number of k-step preimages (2026-10-10)
+
+Let n_k(a) = #{n : T^k(n) = a}, and let N*_k(a) be the number of leaves of the depth-k pruned tree (nodes ≢ 0 mod 3)
+of Applegate–Lagarias I. They proved (1.302053)^k ≤ n_k(a) ≤ (1.358386)^k for large k (Theorem 1.1, depth-30
+extremal trees). This night's results (`notes/extremal_trees.md`, `extremal_trees.py`):
+
+- **Exact extremal counts:** N^−(k) to k = 59 and N^+(k) to k = 55. They give (1.317329)^k ≤ n_k(a) ≤
+  (1.346858)^k. N^±(k)/(4/3)^k is constant to 0.7 % for k ≥ 25, which supports Conjecture C′.
+- **Residue-class certificates** (a monotone, homogeneous recursion on classes mod 3^r, verified in exact integer
+  arithmetic for r ≤ 19):
+
+    0.2822 · (1.3333119)^k ≤ N*_k(a) ≤ 3.556 · (1.3333567)^k   for every a ≢ 0 (mod 3) and every k ≥ 0,
+
+  hence (1.3333119)^k ≤ n_k(a) ≤ (1.3333567 + ε)^k for all large k, uniformly in a. The losses shrink by ≈ 0.65 per
+  residue digit.
+- **Machine-checked** (`lean_formal/PreimageBound/`, Lean 4 + Mathlib, 2026-10-10). For every a ≢ 0 (mod 3) and every
+  k ≥ 0:
+
+    0.2847 · (1.3331664)^k ≤ #{n ∈ [1, 2^k a] : T^k(n) = a},
+
+  and (1.333)^k ≤ n_k(a) for k ≥ 20200.
+  - The r = 14 certificate (3.2 M classes) is evaluated by the kernel with `decide +kernel`; no `native_decide`.
+  - Only the three standard axioms (`#print axioms` re-run by the main session).
+  - `leanchecker` passes per module (138 modules for r = 14).
+  - The independent kernel nanoda passes on all three exports (up to 23 481 declarations).
+  - An exact Python check with brute-force comparisons passes.
+- **Independent check:** a separate implementation in the main session certifies r = 13 (μ ≥ 1.333075,
+  μ′ ≤ 1.333637) and r = 16 (μ ≥ 1.333259, μ′ ≤ 1.333416), in agreement with the agent's values.
+- **The limit measure** (`syracuse_measure.py`, `paper/preimage.md` §7, 2026-10-10). With the minimum replaced by the
+  mean, the Perron vectors h_r are exactly the level-r marginals of one probability measure ν on ℤ₃^× (proved: the
+  top-digit average commutes with the operator). ν is the stationary law of x ↦ x/2, x ↦ (3x+1)/2 with
+  probabilities 3/4, 1/4. Probability 1/2 gives Tao's Syracuse random variable, which is also exactly the
+  Krasikov–Lagarias system at λ = 2 with mean instead of min.
+  - The normalised counts (3/4)^k N*_k converge weakly to ν (proved).
+  - Continuity of ν's density implies Conjecture C′ (proved).
+  - The martingale differences contract in L² by √(3/7) = 0.6547 up to cross-correlations that vanish numerically.
+    This explains the 0.65 loss rate. All L^q norms decay fast enough for a continuous density.
+  - At r = 17 the density's extremes, 1/min h = 2.0387 and max h = 1.7386, sit within 2·10^{−4} of the limits
+    2.039 and 1.742 of the exact extremal counts.
+
+  For Tao's case the diagonal L² factor is exactly 1, so the Krasikov–Lagarias problem sits at a critical point.
+  Its L¹ decay ratio (0.931 at r = 17, rising) tracks the 1 − ρ_k ratios.
 
 ## Independent checks
 
@@ -202,8 +314,12 @@ unproved limit statement) it would give π_a(x) ≫ x/(log x)².
 
 [KL] I. Krasikov, J. C. Lagarias, Bounds for the 3x+1 problem using difference inequalities,
 Acta Arith. 109 (2003) 237–258, arXiv:math/0205002.
+[AL2] D. Applegate, J. C. Lagarias, Density bounds for the 3x+1 problem II. Krasikov inequalities,
+Math. Comp. 64 (1995) 427–438.
 
-Formalisation status (2026-10-09): `CollatzPredecessor0903` (x^{903/1000}, k = 18), `CollatzPredecessor0909`
+Formalisation status (2026-10-09): the structure theorem (attainment, tightness, uniqueness, λ_k < λ_{k+1}, for
+all k) is `KLMono.KL_lambda_strictMono` in `lean_formal/KLMonotone/Basic.lean` (Lean 4 + Mathlib, standard axioms
+only, no certificates, 10 s to check). `CollatzPredecessor0903` (x^{903/1000}, k = 18), `CollatzPredecessor0909`
 (x^{909/1000}, k = 19) and `CollatzPredecessor0914` (x^{914/1000}, k = 20) are Lean 4 theorems in Mazur's development,
 each depending on propext, Classical.choice, Quot.sound and two `native_decide` checks (the LP certificate and the
 adaptive forced potential). k = 20: potential check 5940 s (26 GB), weights check 7382 s (55.9 GB) on an M4 Pro 64 GB;

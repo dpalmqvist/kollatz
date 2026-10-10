@@ -1,0 +1,2876 @@
+{
+ "1": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 1,
+    "max": 2,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 1,
+  "heuristic_all": 4.572354823764722
+ },
+ "5": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 5,
+    "max": 10,
+    "primitive": false
+   },
+   {
+    "n": 3,
+    "k": 1,
+    "min": 1,
+    "max": 4,
+    "primitive": true
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 19,
+    "max": 76,
+    "primitive": true
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 23,
+    "max": 58,
+    "primitive": true
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 187,
+    "max": 4162,
+    "primitive": true
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 347,
+    "max": 5098,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 5,
+  "n_all": 6,
+  "heuristic_all": 9.161003919305765
+ },
+ "7": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 7,
+    "max": 14,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 2,
+    "min": 5,
+    "max": 20,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 2,
+  "heuristic_all": 7.406104885643932
+ },
+ "13": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 13,
+    "max": 26,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 1,
+    "min": 1,
+    "max": 8,
+    "primitive": true
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 211,
+    "max": 1688,
+    "primitive": true
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 227,
+    "max": 1202,
+    "primitive": true
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 251,
+    "max": 1004,
+    "primitive": true
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 259,
+    "max": 1364,
+    "primitive": true
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 283,
+    "max": 986,
+    "primitive": true
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 287,
+    "max": 1148,
+    "primitive": true
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 319,
+    "max": 842,
+    "primitive": true
+   },
+   {
+    "n": 24,
+    "k": 15,
+    "min": 131,
+    "max": 2786,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 9,
+  "n_all": 10,
+  "heuristic_all": 14.441101204058919
+ },
+ "11": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 11,
+    "max": 22,
+    "primitive": false
+   },
+   {
+    "n": 6,
+    "k": 2,
+    "min": 1,
+    "max": 16,
+    "primitive": true
+   },
+   {
+    "n": 14,
+    "k": 8,
+    "min": 13,
+    "max": 124,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 3,
+  "heuristic_all": 6.551426731782136
+ },
+ "17": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 17,
+    "max": 34,
+    "primitive": false
+   },
+   {
+    "n": 7,
+    "k": 2,
+    "min": 1,
+    "max": 16,
+    "primitive": true
+   },
+   {
+    "n": 31,
+    "k": 18,
+    "min": 23,
+    "max": 280,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 3,
+  "heuristic_all": 6.04079454959968
+ },
+ "19": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 19,
+    "max": 38,
+    "primitive": false
+   },
+   {
+    "n": 11,
+    "k": 5,
+    "min": 5,
+    "max": 62,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 2,
+  "heuristic_all": 6.283324671903488
+ },
+ "23": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 23,
+    "max": 46,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 2,
+    "min": 5,
+    "max": 40,
+    "primitive": true
+   },
+   {
+    "n": 5,
+    "k": 2,
+    "min": 7,
+    "max": 28,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 3,
+  "heuristic_all": 9.592581173336626
+ },
+ "25": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 25,
+    "max": 50,
+    "primitive": false
+   },
+   {
+    "n": 3,
+    "k": 1,
+    "min": 5,
+    "max": 20,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 95,
+    "max": 380,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 115,
+    "max": 290,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 4,
+    "min": 17,
+    "max": 74,
+    "primitive": true
+   },
+   {
+    "n": 16,
+    "k": 8,
+    "min": 7,
+    "max": 218,
+    "primitive": true
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 935,
+    "max": 20810,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 1735,
+    "max": 25490,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 8,
+  "heuristic_all": 11.251255461294717
+ },
+ "29": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 29,
+    "max": 58,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 1,
+    "min": 1,
+    "max": 16,
+    "primitive": true
+   },
+   {
+    "n": 17,
+    "k": 9,
+    "min": 11,
+    "max": 196,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 3,
+  "heuristic_all": 6.618761656532708
+ },
+ "31": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 31,
+    "max": 62,
+    "primitive": false
+   },
+   {
+    "n": 23,
+    "k": 12,
+    "min": 13,
+    "max": 212,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 2,
+  "heuristic_all": 5.568200447303907
+ },
+ "35": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 35,
+    "max": 70,
+    "primitive": false
+   },
+   {
+    "n": 3,
+    "k": 1,
+    "min": 7,
+    "max": 28,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 2,
+    "min": 25,
+    "max": 100,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 133,
+    "max": 532,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 161,
+    "max": 406,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 4,
+    "min": 13,
+    "max": 208,
+    "primitive": true
+   },
+   {
+    "n": 8,
+    "k": 4,
+    "min": 17,
+    "max": 136,
+    "primitive": true
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 1309,
+    "max": 29134,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 2429,
+    "max": 35686,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 9,
+  "heuristic_all": 14.125701251026564
+ },
+ "37": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 37,
+    "max": 74,
+    "primitive": false
+   },
+   {
+    "n": 6,
+    "k": 3,
+    "min": 19,
+    "max": 152,
+    "primitive": true
+   },
+   {
+    "n": 6,
+    "k": 3,
+    "min": 23,
+    "max": 98,
+    "primitive": true
+   },
+   {
+    "n": 6,
+    "k": 3,
+    "min": 29,
+    "max": 116,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 3,
+  "n_all": 4,
+  "heuristic_all": 9.166002300707518
+ },
+ "41": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 41,
+    "max": 82,
+    "primitive": false
+   },
+   {
+    "n": 20,
+    "k": 8,
+    "min": 1,
+    "max": 256,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 2,
+  "heuristic_all": 6.034445546914001
+ },
+ "43": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 43,
+    "max": 86,
+    "primitive": false
+   },
+   {
+    "n": 11,
+    "k": 3,
+    "min": 1,
+    "max": 56,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 2,
+  "heuristic_all": 5.666898556476054
+ },
+ "47": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 47,
+    "max": 94,
+    "primitive": false
+   },
+   {
+    "n": 7,
+    "k": 4,
+    "min": 65,
+    "max": 520,
+    "primitive": true
+   },
+   {
+    "n": 7,
+    "k": 4,
+    "min": 73,
+    "max": 358,
+    "primitive": true
+   },
+   {
+    "n": 7,
+    "k": 4,
+    "min": 85,
+    "max": 340,
+    "primitive": true
+   },
+   {
+    "n": 7,
+    "k": 4,
+    "min": 89,
+    "max": 412,
+    "primitive": true
+   },
+   {
+    "n": 7,
+    "k": 4,
+    "min": 101,
+    "max": 286,
+    "primitive": true
+   },
+   {
+    "n": 18,
+    "k": 7,
+    "min": 5,
+    "max": 88,
+    "primitive": true
+   },
+   {
+    "n": 28,
+    "k": 16,
+    "min": 25,
+    "max": 988,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 7,
+  "n_all": 8,
+  "heuristic_all": 12.295858814762168
+ },
+ "49": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 49,
+    "max": 98,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 2,
+    "min": 35,
+    "max": 140,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 2,
+  "heuristic_all": 8.247034776338099
+ },
+ "53": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 53,
+    "max": 106,
+    "primitive": false
+   },
+   {
+    "n": 29,
+    "k": 17,
+    "min": 103,
+    "max": 1162,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 2,
+  "heuristic_all": 5.925388293501652
+ },
+ "55": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 55,
+    "max": 110,
+    "primitive": false
+   },
+   {
+    "n": 3,
+    "k": 1,
+    "min": 11,
+    "max": 44,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 209,
+    "max": 836,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 253,
+    "max": 638,
+    "primitive": false
+   },
+   {
+    "n": 6,
+    "k": 2,
+    "min": 5,
+    "max": 80,
+    "primitive": false
+   },
+   {
+    "n": 6,
+    "k": 2,
+    "min": 7,
+    "max": 56,
+    "primitive": true
+   },
+   {
+    "n": 12,
+    "k": 4,
+    "min": 1,
+    "max": 134,
+    "primitive": true
+   },
+   {
+    "n": 14,
+    "k": 8,
+    "min": 65,
+    "max": 620,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 2057,
+    "max": 45782,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 3817,
+    "max": 56078,
+    "primitive": false
+   },
+   {
+    "n": 28,
+    "k": 16,
+    "min": 41,
+    "max": 1268,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 3,
+  "n_all": 11,
+  "heuristic_all": 13.607693768116402
+ },
+ "59": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 59,
+    "max": 118,
+    "primitive": false
+   },
+   {
+    "n": 10,
+    "k": 6,
+    "min": 133,
+    "max": 2128,
+    "primitive": true
+   },
+   {
+    "n": 10,
+    "k": 6,
+    "min": 149,
+    "max": 1192,
+    "primitive": true
+   },
+   {
+    "n": 10,
+    "k": 6,
+    "min": 181,
+    "max": 1156,
+    "primitive": true
+   },
+   {
+    "n": 10,
+    "k": 6,
+    "min": 185,
+    "max": 1480,
+    "primitive": true
+   },
+   {
+    "n": 10,
+    "k": 6,
+    "min": 217,
+    "max": 868,
+    "primitive": true
+   },
+   {
+    "n": 10,
+    "k": 6,
+    "min": 221,
+    "max": 886,
+    "primitive": true
+   },
+   {
+    "n": 28,
+    "k": 11,
+    "min": 1,
+    "max": 238,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 7,
+  "n_all": 8,
+  "heuristic_all": 9.725157623369766
+ },
+ "61": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 61,
+    "max": 122,
+    "primitive": false
+   },
+   {
+    "n": 6,
+    "k": 1,
+    "min": 1,
+    "max": 32,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 2,
+  "heuristic_all": 6.342972271303616
+ },
+ "65": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 65,
+    "max": 130,
+    "primitive": false
+   },
+   {
+    "n": 3,
+    "k": 1,
+    "min": 13,
+    "max": 52,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 1,
+    "min": 5,
+    "max": 40,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 247,
+    "max": 988,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 299,
+    "max": 754,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 1055,
+    "max": 8440,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 1135,
+    "max": 6010,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 1255,
+    "max": 5020,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 1295,
+    "max": 6820,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 1415,
+    "max": 4930,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 1435,
+    "max": 5740,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 1595,
+    "max": 4210,
+    "primitive": false
+   },
+   {
+    "n": 24,
+    "k": 12,
+    "min": 19,
+    "max": 664,
+    "primitive": true
+   },
+   {
+    "n": 24,
+    "k": 15,
+    "min": 655,
+    "max": 13930,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 2431,
+    "max": 54106,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 4511,
+    "max": 66274,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 16,
+  "heuristic_all": 20.388546732912065
+ },
+ "67": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 67,
+    "max": 134,
+    "primitive": false
+   },
+   {
+    "n": 30,
+    "k": 16,
+    "min": 17,
+    "max": 2120,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 2,
+  "heuristic_all": 5.454893239538231
+ },
+ "71": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 71,
+    "max": 142,
+    "primitive": false
+   },
+   {
+    "n": 10,
+    "k": 5,
+    "min": 29,
+    "max": 262,
+    "primitive": true
+   },
+   {
+    "n": 10,
+    "k": 5,
+    "min": 31,
+    "max": 496,
+    "primitive": true
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 2585,
+    "max": 82720,
+    "primitive": true
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 2809,
+    "max": 59878,
+    "primitive": true
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 3985,
+    "max": 52174,
+    "primitive": true
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 4121,
+    "max": 80686,
+    "primitive": true
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 4409,
+    "max": 96976,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 7,
+  "n_all": 8,
+  "heuristic_all": 12.63345776027206
+ },
+ "73": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 73,
+    "max": 146,
+    "primitive": false
+   },
+   {
+    "n": 12,
+    "k": 4,
+    "min": 5,
+    "max": 116,
+    "primitive": true
+   },
+   {
+    "n": 15,
+    "k": 8,
+    "min": 47,
+    "max": 404,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 3,
+  "heuristic_all": 7.543545048398297
+ },
+ "77": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 77,
+    "max": 154,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 2,
+    "min": 55,
+    "max": 220,
+    "primitive": false
+   },
+   {
+    "n": 6,
+    "k": 2,
+    "min": 7,
+    "max": 112,
+    "primitive": false
+   },
+   {
+    "n": 14,
+    "k": 8,
+    "min": 91,
+    "max": 868,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 4,
+  "heuristic_all": 10.188312554750857
+ },
+ "79": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 79,
+    "max": 158,
+    "primitive": false
+   },
+   {
+    "n": 23,
+    "k": 14,
+    "min": 233,
+    "max": 3728,
+    "primitive": true
+   },
+   {
+    "n": 23,
+    "k": 14,
+    "min": 265,
+    "max": 2774,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 3,
+  "heuristic_all": 5.991761215420328
+ },
+ "83": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 83,
+    "max": 166,
+    "primitive": false
+   },
+   {
+    "n": 12,
+    "k": 7,
+    "min": 109,
+    "max": 2104,
+    "primitive": true
+   },
+   {
+    "n": 12,
+    "k": 7,
+    "min": 157,
+    "max": 1132,
+    "primitive": true
+   },
+   {
+    "n": 24,
+    "k": 14,
+    "min": 65,
+    "max": 3292,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 3,
+  "n_all": 4,
+  "heuristic_all": 8.162377711857115
+ },
+ "85": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 85,
+    "max": 170,
+    "primitive": false
+   },
+   {
+    "n": 3,
+    "k": 1,
+    "min": 17,
+    "max": 68,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 323,
+    "max": 1292,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 391,
+    "max": 986,
+    "primitive": false
+   },
+   {
+    "n": 7,
+    "k": 2,
+    "min": 5,
+    "max": 80,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 3179,
+    "max": 70754,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 5899,
+    "max": 86666,
+    "primitive": false
+   },
+   {
+    "n": 31,
+    "k": 18,
+    "min": 115,
+    "max": 1400,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 8,
+  "heuristic_all": 11.324834236501376
+ },
+ "89": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 89,
+    "max": 178,
+    "primitive": false
+   },
+   {
+    "n": 17,
+    "k": 8,
+    "min": 17,
+    "max": 532,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 2,
+  "heuristic_all": 5.95227608189854
+ },
+ "91": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 91,
+    "max": 182,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 1,
+    "min": 7,
+    "max": 56,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 2,
+    "min": 65,
+    "max": 260,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 1477,
+    "max": 11816,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 1589,
+    "max": 8414,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 1757,
+    "max": 7028,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 1813,
+    "max": 9548,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 1981,
+    "max": 6902,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 2009,
+    "max": 8036,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 2233,
+    "max": 5894,
+    "primitive": false
+   },
+   {
+    "n": 12,
+    "k": 6,
+    "min": 25,
+    "max": 800,
+    "primitive": true
+   },
+   {
+    "n": 12,
+    "k": 6,
+    "min": 59,
+    "max": 278,
+    "primitive": true
+   },
+   {
+    "n": 24,
+    "k": 15,
+    "min": 917,
+    "max": 19502,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 13,
+  "heuristic_all": 19.40185410918411
+ },
+ "95": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 95,
+    "max": 190,
+    "primitive": false
+   },
+   {
+    "n": 3,
+    "k": 1,
+    "min": 19,
+    "max": 76,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 361,
+    "max": 1444,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 437,
+    "max": 1102,
+    "primitive": false
+   },
+   {
+    "n": 11,
+    "k": 5,
+    "min": 17,
+    "max": 472,
+    "primitive": true
+   },
+   {
+    "n": 11,
+    "k": 5,
+    "min": 23,
+    "max": 364,
+    "primitive": true
+   },
+   {
+    "n": 11,
+    "k": 5,
+    "min": 25,
+    "max": 310,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 3553,
+    "max": 79078,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 6593,
+    "max": 96862,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 9,
+  "heuristic_all": 13.893657800343506
+ },
+ "97": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 97,
+    "max": 194,
+    "primitive": false
+   },
+   {
+    "n": 9,
+    "k": 3,
+    "min": 13,
+    "max": 104,
+    "primitive": true
+   },
+   {
+    "n": 18,
+    "k": 6,
+    "min": 1,
+    "max": 218,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 3,
+  "heuristic_all": 7.427235587142978
+ },
+ "101": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 101,
+    "max": 202,
+    "primitive": false
+   },
+   {
+    "n": 7,
+    "k": 3,
+    "min": 19,
+    "max": 304,
+    "primitive": true
+   },
+   {
+    "n": 7,
+    "k": 3,
+    "min": 23,
+    "max": 184,
+    "primitive": true
+   },
+   {
+    "n": 7,
+    "k": 3,
+    "min": 29,
+    "max": 232,
+    "primitive": true
+   },
+   {
+    "n": 7,
+    "k": 3,
+    "min": 31,
+    "max": 196,
+    "primitive": true
+   },
+   {
+    "n": 7,
+    "k": 3,
+    "min": 37,
+    "max": 148,
+    "primitive": true
+   },
+   {
+    "n": 14,
+    "k": 6,
+    "min": 7,
+    "max": 448,
+    "primitive": true
+   },
+   {
+    "n": 14,
+    "k": 6,
+    "min": 11,
+    "max": 466,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 7,
+  "n_all": 8,
+  "heuristic_all": 11.95621847058532
+ },
+ "103": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 103,
+    "max": 206,
+    "primitive": false
+   },
+   {
+    "n": 21,
+    "k": 8,
+    "min": 5,
+    "max": 320,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 2,
+  "heuristic_all": 5.742907158910106
+ },
+ "107": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 107,
+    "max": 214,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 1,
+  "heuristic_all": 5.526440569996823
+ },
+ "109": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 109,
+    "max": 218,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 1,
+  "heuristic_all": 5.0687218593841585
+ },
+ "113": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 113,
+    "max": 226,
+    "primitive": false
+   },
+   {
+    "n": 29,
+    "k": 12,
+    "min": 1,
+    "max": 2128,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 2,
+  "heuristic_all": 4.989632492078631
+ },
+ "115": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 115,
+    "max": 230,
+    "primitive": false
+   },
+   {
+    "n": 3,
+    "k": 1,
+    "min": 23,
+    "max": 92,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 2,
+    "min": 25,
+    "max": 200,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 2,
+    "min": 35,
+    "max": 140,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 437,
+    "max": 1748,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 529,
+    "max": 1334,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 13,
+    "min": 13,
+    "max": 2072,
+    "primitive": true
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 4301,
+    "max": 95726,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 7981,
+    "max": 117254,
+    "primitive": false
+   },
+   {
+    "n": 34,
+    "k": 18,
+    "min": 17,
+    "max": 1928,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 10,
+  "heuristic_all": 15.85387702074182
+ },
+ "119": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 119,
+    "max": 238,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 2,
+    "min": 85,
+    "max": 340,
+    "primitive": false
+   },
+   {
+    "n": 7,
+    "k": 2,
+    "min": 5,
+    "max": 160,
+    "primitive": true
+   },
+   {
+    "n": 7,
+    "k": 2,
+    "min": 7,
+    "max": 112,
+    "primitive": false
+   },
+   {
+    "n": 7,
+    "k": 2,
+    "min": 11,
+    "max": 88,
+    "primitive": true
+   },
+   {
+    "n": 25,
+    "k": 14,
+    "min": 125,
+    "max": 2392,
+    "primitive": true
+   },
+   {
+    "n": 31,
+    "k": 18,
+    "min": 161,
+    "max": 1960,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 3,
+  "n_all": 7,
+  "heuristic_all": 12.883875901296337
+ },
+ "121": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 121,
+    "max": 242,
+    "primitive": false
+   },
+   {
+    "n": 6,
+    "k": 2,
+    "min": 11,
+    "max": 176,
+    "primitive": false
+   },
+   {
+    "n": 14,
+    "k": 8,
+    "min": 143,
+    "max": 1364,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 3,
+  "heuristic_all": 7.1558481509633936
+ },
+ "125": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 125,
+    "max": 250,
+    "primitive": false
+   },
+   {
+    "n": 3,
+    "k": 1,
+    "min": 25,
+    "max": 100,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 475,
+    "max": 1900,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 575,
+    "max": 1450,
+    "primitive": false
+   },
+   {
+    "n": 7,
+    "k": 1,
+    "min": 1,
+    "max": 64,
+    "primitive": true
+   },
+   {
+    "n": 8,
+    "k": 4,
+    "min": 85,
+    "max": 370,
+    "primitive": false
+   },
+   {
+    "n": 16,
+    "k": 8,
+    "min": 35,
+    "max": 1090,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 4675,
+    "max": 104050,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 8675,
+    "max": 127450,
+    "primitive": false
+   },
+   {
+    "n": 33,
+    "k": 19,
+    "min": 47,
+    "max": 6436,
+    "primitive": true
+   },
+   {
+    "n": 33,
+    "k": 19,
+    "min": 143,
+    "max": 1954,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 3,
+  "n_all": 11,
+  "heuristic_all": 12.425225469157603
+ },
+ "127": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 127,
+    "max": 254,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 1,
+  "heuristic_all": 5.101625393504477
+ },
+ "131": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 131,
+    "max": 262,
+    "primitive": false
+   },
+   {
+    "n": 26,
+    "k": 13,
+    "min": 13,
+    "max": 760,
+    "primitive": true
+   },
+   {
+    "n": 26,
+    "k": 13,
+    "min": 17,
+    "max": 814,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 3,
+  "heuristic_all": 5.414103536468106
+ },
+ "133": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 133,
+    "max": 266,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 2,
+    "min": 95,
+    "max": 380,
+    "primitive": false
+   },
+   {
+    "n": 11,
+    "k": 5,
+    "min": 35,
+    "max": 434,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 3,
+  "heuristic_all": 9.443229589406712
+ },
+ "137": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 137,
+    "max": 274,
+    "primitive": false
+   },
+   {
+    "n": 14,
+    "k": 4,
+    "min": 1,
+    "max": 256,
+    "primitive": true
+   },
+   {
+    "n": 29,
+    "k": 18,
+    "min": 503,
+    "max": 160000,
+    "primitive": true
+   },
+   {
+    "n": 29,
+    "k": 18,
+    "min": 743,
+    "max": 13714,
+    "primitive": true
+   },
+   {
+    "n": 29,
+    "k": 18,
+    "min": 967,
+    "max": 26836,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 4,
+  "n_all": 5,
+  "heuristic_all": 6.298158592210374
+ },
+ "139": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 139,
+    "max": 278,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 1,
+  "heuristic_all": 4.573531063244434
+ },
+ "143": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 143,
+    "max": 286,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 1,
+    "min": 11,
+    "max": 88,
+    "primitive": false
+   },
+   {
+    "n": 6,
+    "k": 2,
+    "min": 13,
+    "max": 208,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 2321,
+    "max": 18568,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 2497,
+    "max": 13222,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 2761,
+    "max": 11044,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 2849,
+    "max": 15004,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 3113,
+    "max": 10846,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 3157,
+    "max": 12628,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 3509,
+    "max": 9262,
+    "primitive": false
+   },
+   {
+    "n": 14,
+    "k": 8,
+    "min": 169,
+    "max": 1612,
+    "primitive": false
+   },
+   {
+    "n": 16,
+    "k": 7,
+    "min": 17,
+    "max": 1072,
+    "primitive": true
+   },
+   {
+    "n": 16,
+    "k": 7,
+    "min": 29,
+    "max": 316,
+    "primitive": true
+   },
+   {
+    "n": 24,
+    "k": 15,
+    "min": 1441,
+    "max": 30646,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 14,
+  "heuristic_all": 18.854360283875117
+ },
+ "145": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 145,
+    "max": 290,
+    "primitive": false
+   },
+   {
+    "n": 3,
+    "k": 1,
+    "min": 29,
+    "max": 116,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 1,
+    "min": 5,
+    "max": 80,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 551,
+    "max": 2204,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 667,
+    "max": 1682,
+    "primitive": false
+   },
+   {
+    "n": 10,
+    "k": 2,
+    "min": 1,
+    "max": 128,
+    "primitive": true
+   },
+   {
+    "n": 17,
+    "k": 9,
+    "min": 55,
+    "max": 980,
+    "primitive": false
+   },
+   {
+    "n": 22,
+    "k": 10,
+    "min": 23,
+    "max": 656,
+    "primitive": true
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 5423,
+    "max": 120698,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 10063,
+    "max": 147842,
+    "primitive": false
+   },
+   {
+    "n": 34,
+    "k": 18,
+    "min": 47,
+    "max": 2042,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 3,
+  "n_all": 11,
+  "heuristic_all": 13.088361536558413
+ },
+ "149": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 149,
+    "max": 298,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 1,
+  "heuristic_all": 6.238832965602816
+ },
+ "151": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 151,
+    "max": 302,
+    "primitive": false
+   },
+   {
+    "n": 18,
+    "k": 10,
+    "min": 113,
+    "max": 1550,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 2,
+  "heuristic_all": 6.411629993703909
+ },
+ "155": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 155,
+    "max": 310,
+    "primitive": false
+   },
+   {
+    "n": 3,
+    "k": 1,
+    "min": 31,
+    "max": 124,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 589,
+    "max": 2356,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 713,
+    "max": 1798,
+    "primitive": false
+   },
+   {
+    "n": 23,
+    "k": 12,
+    "min": 65,
+    "max": 1060,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 5797,
+    "max": 129022,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 10757,
+    "max": 158038,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 7,
+  "heuristic_all": 12.268780501560299
+ },
+ "157": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 157,
+    "max": 314,
+    "primitive": false
+   },
+   {
+    "n": 28,
+    "k": 12,
+    "min": 13,
+    "max": 1346,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 2,
+  "heuristic_all": 5.2189623635148585
+ },
+ "161": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 161,
+    "max": 322,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 2,
+    "min": 115,
+    "max": 460,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 2,
+    "min": 35,
+    "max": 280,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 2,
+    "min": 49,
+    "max": 196,
+    "primitive": false
+   },
+   {
+    "n": 15,
+    "k": 6,
+    "min": 11,
+    "max": 352,
+    "primitive": true
+   },
+   {
+    "n": 15,
+    "k": 6,
+    "min": 19,
+    "max": 304,
+    "primitive": true
+   },
+   {
+    "n": 29,
+    "k": 16,
+    "min": 79,
+    "max": 3322,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 3,
+  "n_all": 7,
+  "heuristic_all": 14.808171210901527
+ },
+ "163": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 163,
+    "max": 326,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 1,
+  "heuristic_all": 4.761544683414178
+ },
+ "167": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 167,
+    "max": 334,
+    "primitive": false
+   },
+   {
+    "n": 17,
+    "k": 9,
+    "min": 95,
+    "max": 1084,
+    "primitive": true
+   },
+   {
+    "n": 17,
+    "k": 9,
+    "min": 127,
+    "max": 1372,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 3,
+  "heuristic_all": 7.748921886121149
+ },
+ "169": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 169,
+    "max": 338,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 1,
+    "min": 13,
+    "max": 104,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 2743,
+    "max": 21944,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 2951,
+    "max": 15626,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 3263,
+    "max": 13052,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 3367,
+    "max": 17732,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 3679,
+    "max": 12818,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 3731,
+    "max": 14924,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 5,
+    "min": 4147,
+    "max": 10946,
+    "primitive": false
+   },
+   {
+    "n": 24,
+    "k": 9,
+    "min": 11,
+    "max": 344,
+    "primitive": true
+   },
+   {
+    "n": 24,
+    "k": 15,
+    "min": 1703,
+    "max": 36218,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 1,
+  "n_all": 11,
+  "heuristic_all": 14.948664081886957
+ },
+ "173": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 173,
+    "max": 346,
+    "primitive": false
+   },
+   {
+    "n": 17,
+    "k": 7,
+    "min": 37,
+    "max": 376,
+    "primitive": true
+   },
+   {
+    "n": 34,
+    "k": 14,
+    "min": 7,
+    "max": 1042,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 3,
+  "heuristic_all": 6.5090431897783265
+ },
+ "175": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 175,
+    "max": 350,
+    "primitive": false
+   },
+   {
+    "n": 3,
+    "k": 1,
+    "min": 35,
+    "max": 140,
+    "primitive": false
+   },
+   {
+    "n": 4,
+    "k": 2,
+    "min": 125,
+    "max": 500,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 665,
+    "max": 2660,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 805,
+    "max": 2030,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 4,
+    "min": 65,
+    "max": 1040,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 4,
+    "min": 73,
+    "max": 662,
+    "primitive": true
+   },
+   {
+    "n": 8,
+    "k": 4,
+    "min": 85,
+    "max": 680,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 4,
+    "min": 89,
+    "max": 716,
+    "primitive": true
+   },
+   {
+    "n": 8,
+    "k": 4,
+    "min": 101,
+    "max": 446,
+    "primitive": true
+   },
+   {
+    "n": 8,
+    "k": 4,
+    "min": 103,
+    "max": 824,
+    "primitive": true
+   },
+   {
+    "n": 8,
+    "k": 4,
+    "min": 119,
+    "max": 518,
+    "primitive": false
+   },
+   {
+    "n": 8,
+    "k": 4,
+    "min": 143,
+    "max": 572,
+    "primitive": true
+   },
+   {
+    "n": 16,
+    "k": 8,
+    "min": 49,
+    "max": 1526,
+    "primitive": false
+   },
+   {
+    "n": 16,
+    "k": 8,
+    "min": 53,
+    "max": 1328,
+    "primitive": true
+   },
+   {
+    "n": 24,
+    "k": 12,
+    "min": 29,
+    "max": 2444,
+    "primitive": true
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 6545,
+    "max": 145670,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 12145,
+    "max": 178430,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 7,
+  "n_all": 18,
+  "heuristic_all": 24.691550029095858
+ },
+ "179": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 179,
+    "max": 358,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 1,
+  "heuristic_all": 4.572354823764722
+ },
+ "181": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 181,
+    "max": 362,
+    "primitive": false
+   },
+   {
+    "n": 20,
+    "k": 10,
+    "min": 23,
+    "max": 3464,
+    "primitive": true
+   },
+   {
+    "n": 20,
+    "k": 10,
+    "min": 55,
+    "max": 1520,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 3,
+  "heuristic_all": 6.254837468581669
+ },
+ "185": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 185,
+    "max": 370,
+    "primitive": false
+   },
+   {
+    "n": 3,
+    "k": 1,
+    "min": 37,
+    "max": 148,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 703,
+    "max": 2812,
+    "primitive": false
+   },
+   {
+    "n": 5,
+    "k": 3,
+    "min": 851,
+    "max": 2146,
+    "primitive": false
+   },
+   {
+    "n": 6,
+    "k": 3,
+    "min": 95,
+    "max": 760,
+    "primitive": false
+   },
+   {
+    "n": 6,
+    "k": 3,
+    "min": 115,
+    "max": 490,
+    "primitive": false
+   },
+   {
+    "n": 6,
+    "k": 3,
+    "min": 145,
+    "max": 580,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 6919,
+    "max": 153994,
+    "primitive": false
+   },
+   {
+    "n": 27,
+    "k": 17,
+    "min": 12839,
+    "max": 188626,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 9,
+  "heuristic_all": 14.812570647778825
+ },
+ "187": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 187,
+    "max": 374,
+    "primitive": false
+   },
+   {
+    "n": 6,
+    "k": 2,
+    "min": 17,
+    "max": 272,
+    "primitive": false
+   },
+   {
+    "n": 7,
+    "k": 2,
+    "min": 11,
+    "max": 176,
+    "primitive": false
+   },
+   {
+    "n": 14,
+    "k": 8,
+    "min": 221,
+    "max": 2108,
+    "primitive": false
+   },
+   {
+    "n": 26,
+    "k": 12,
+    "min": 5,
+    "max": 2000,
+    "primitive": true
+   },
+   {
+    "n": 26,
+    "k": 12,
+    "min": 43,
+    "max": 1028,
+    "primitive": true
+   },
+   {
+    "n": 31,
+    "k": 18,
+    "min": 253,
+    "max": 3080,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 7,
+  "heuristic_all": 8.92497157320958
+ },
+ "191": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 191,
+    "max": 382,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 1,
+  "heuristic_all": 6.416251493387036
+ },
+ "193": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 193,
+    "max": 386,
+    "primitive": false
+   },
+   {
+    "n": 18,
+    "k": 5,
+    "min": 5,
+    "max": 320,
+    "primitive": true
+   },
+   {
+    "n": 24,
+    "k": 12,
+    "min": 31,
+    "max": 1508,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 3,
+  "heuristic_all": 6.2524717441437465
+ },
+ "197": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 197,
+    "max": 394,
+    "primitive": false
+   }
+  ],
+  "n_primitive": 0,
+  "n_all": 1,
+  "heuristic_all": 4.821666014202925
+ },
+ "199": {
+  "nmax": 34,
+  "cycles": [
+   {
+    "n": 2,
+    "k": 1,
+    "min": 199,
+    "max": 398,
+    "primitive": false
+   },
+   {
+    "n": 15,
+    "k": 6,
+    "min": 13,
+    "max": 422,
+    "primitive": true
+   },
+   {
+    "n": 15,
+    "k": 6,
+    "min": 47,
+    "max": 440,
+    "primitive": true
+   }
+  ],
+  "n_primitive": 2,
+  "n_all": 3,
+  "heuristic_all": 7.162165893455052
+ }
+}

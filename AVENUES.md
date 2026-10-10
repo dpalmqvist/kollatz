@@ -6,6 +6,41 @@ technical state of the code and `RESULTS.md` for the certified results. A refere
 everything adjacent (cycle bounds, predecessor density, the long shots, formal verification) is in
 `reports/Collatz adjacent work and references.md` (2026-10-08, notes in `research_notes/`).
 
+## Strategic update 2026-10-10: Conjecture A is formally verified (Mazur)
+
+The ProofAtlas formalisation "Positive Lower Density of Collatz Predecessors" (L. Mazur, Sept 2026, AI-generated,
+unrefereed) was audited overnight. Details in `notes/m2_audit.md`; build tree in `~/devel/mazur_dl/m2/`.
+- Rebuilt cold from the published sources; the sha256 values match.
+- `leanchecker` and `leanchecker --fresh` pass.
+- Only the three standard axioms are used.
+- An independent restatement, with our own Collatz map and a `Finset` count, is derived in Lean
+  (`m2/audit/AuditMain.lean`, `AuditM2.conjectureA`); I re-ran it myself.
+- An **independent kernel** (nanoda 0.4.17, Rust) replayed the full exported closure: 43 862 declarations, no
+  errors (2026-10-10). This also rules out the pre-fix Lean kernel bug #14576 (addendum in `notes/m2_audit.md`).
+
+So, unless Lean's kernel is unsound: for every a ≢ 0 (mod 3), π_a(x) ≥ c_a·x for x ≥ X0(a), with c_a ineffective.
+Also formal (their Cor. 1.2): if any n fails to reach 1, the non-convergent starts have positive lower density.
+Hence Collatz ⇔ P(1) has upper density 1.
+
+Consequences for this document:
+- **Superseded as statements about π_a:** every x^γ bound (ours included) for each *fixed* a.
+- **Not superseded: uniformity in a.** Mazur's c_a depends on a in an ineffective way. K–L bounds are uniform:
+  φ_k^m(y) = inf over all a ≡ m (mod 3^k) of π*_a(2^y a) ≥ Δ c^m λ^y, so π_a(x) ≥ Δ (x/a)^γ for all a at once.
+  Whether the *uniform* exponent is 1, i.e. inf_a log π*_a(2^y a)/y → 1, is still open and is exactly what
+  λ_k → 2 would give (avenue 1). Applegate–Lagarias Conjectures B/C (uniform (4/3)^k tree counts) are of this
+  uniform type. Avenue 1 therefore keeps its meaning, as the uniform-in-a question.
+- **Avenue 6 (Wirsching):** its goal, positive predecessor density, is reached by a different route.
+- **Avenue 17:** its (A) is done. The three-statement decomposition collapses to the single statement
+  "P(1) has upper density 1". Cycles need not be excluded separately, because a cycle's predecessors would be
+  non-convergent with positive density.
+- **Still ours:**
+  - the structure theorem of avenue 22 (proved and machine-checked);
+  - explicit uniform-in-a bounds with small cutoffs (avenue 17: π_a(x) ≥ 0.7146·(x/a)^{0.848} for x ≥ 2^{6.25} a, 2026-10-10);
+  - effective c_a (Mazur's are ineffective for general a and tower-sized for a = 1);
+  - the cycle track.
+
+New avenues 23–25 below follow from this.
+
 ## Status board
 
 | # | Avenue | Kind of payoff | Status (2026-10-08) |
@@ -22,15 +57,22 @@ everything adjacent (cycle bounds, predecessor density, the long shots, formal v
 | 10 | Explicit constants in the predecessor bound | tables comparable with real counts | proposed 2026-10-08 |
 | 11 | 3x+d cycle census at scale | tests Belaga–Mignotte conjectures | proposed 2026-10-08 |
 | 12 | Terras's coefficient stopping time conjecture | compute upgrade | largely pre-empted: Rozier–Terracol 2026 reach 2.8·10^19 (lit. search 2026-10-08) |
-| 13 | m-cycle bounds with the 2^71 verified range | publishable increment on Hercher's m ≤ 91 | open in print; one unrefereed Lean repo claims m ≥ 102 (lit. search 2026-10-08) |
+| 13 | m-cycle bounds with the 2^71 verified range | publishable increment on Hercher's m ≤ 91 | DONE 2026-10-10 (`mcycles.py`, `notes/mcycles_2_71.md`): negative. X0 = 2^71 still gives exactly m ≤ 91; m = 92 needs X0 ≥ 2^73.87. Hercher and SdW reproduced, with two misprints found. The unrefereed m ≥ 102 claim rests on a new argument, not on the range; the unrefereed m ≥ 102 Lean repository AUDITED: formally valid given 2^71 + Rhin (leanchecker + nanoda; `notes/mcycles_102_audit.md`); EXTENDED to m ≤ 104 (≥ 105 local minima) in Lean, conditional on 2^71 + Rhin (`notes/mcycles_extension.md`) |
 | 14 | Matrix interpretations for the rewriting system | a success would be a proof; odds very low | proposed 2026-10-08 |
-| 15 | Applegate–Lagarias extremal trees to depth 45–50 | direct test of Conjectures C / C′ | proposed 2026-10-08 |
+| 15 | Applegate–Lagarias extremal trees to depth 45–50 | direct test of Conjectures C / C′ | DONE 2026-10-10 (`extremal_trees.py`, `notes/extremal_trees.md`): exact N^−(k) to k = 59, N^+(k) to 55; Thm 1.1 → (1.317329)^k … (1.346858)^k; residue-class certificate gives UNIFORM 0.2822·(1.3333119)^k ≤ N*_k(a) ≤ 3.556·(1.3333567)^k (independently re-checked at r = 13) |
 | 16 | Spectrum, gap and traces of the K–L transfer matrix | mixing rate vs k; cycle footprints | first results 2026-10-08 (`spectrum.py`, k ≤ 15): gap does NOT close, see §16 |
 | 17 | Three-statement decomposition: Conjecture A + density-1 boundedness + no cycles ⇒ Collatz | a full proof from three density/Diophantine statements | started 2026-10-09: minimal spread at fixed λ is bounded in k (`spread_iter.py`), t*_∞(λ) ~ (2 − λ)^{−2}; lifted base case (`base_lift.py`) removes most of the spread penalty: certified π_a(x) ≥ 0.865 (x/a)^{0.799} for x ≥ 64a; Conjecture A ⇐ λ_k → 2 + uniform base constant |
 | 18 | No divergence as an arithmetic property of the 2-adic parity map (Q(ℤ) ⊆ ℚ) | settles divergence for integers | first data run 2026-10-09 (`parity_stats.py`, n < 2^32, in progress); by Terras the local gap statistics carry no information, see §18 |
 | 19 | All cycles by equidistribution of numerators mod 2^n − 3^k | settles cycles for all m | first step done 2026-10-09 (`cycle_numerators.py`, n ≤ 32): equidistributed at random level exactly where m ≪ 2^n (the cycle regime); intrinsic bias for m ≈ 2^n |
 | 20 | Adelic ℤ₂ × ℤ₃ picture and a Furstenberg-type rigidity theorem | explains the difficulty and would kill divergent orbits | proposed 2026-10-09 |
 | 21 | Map the no-go theorems; termination with residue-labelled K–L orderings | delimits where a proof can live; one mechanical route | (i) done 2026-10-09: `notes/no_go_theorems.md` (Theorems 1–3 from Terras: no residue-class, bounded-lookahead or residue-monotone potential, violations of positive density); (ii) not started |
+| 22 | Structure theorems for L^NT_k: attainment, tightness, uniqueness, strict increase | first theorems of the project; settles K–L 2003's open problem and A–L 1995 Conj. 4.1 | PROVED and machine-checked 2026-10-10 (`notes/strict_monotonicity.md`, `monotone_check.py`, `lean_formal/KLMonotone/`, standard axioms only); quantitative version = avenue 1 |
+| 23 | Mazur's seed averaging vs the K–L minimum: an LP for a chosen seed class | effective Conjecture A | proposed 2026-10-10 |
+| 24 | Effective constants for Conjecture A (verification range 2^71 as input) | explicit c_a | proposed 2026-10-10 |
+| 25 | Density one of P(1), the single remaining statement (Mazur Cor. 1.2) | Collatz | proposed 2026-10-10 |
+| 26 | Generalise the two-rise bound (r-rise, LP over shapes) for formal m-cycle records | conditional formal m-cycle record | proposed 2026-10-10 |
+| 27 | Primitive-necklace heuristic with local factors for cycle counts (test on 3x+d) | falsifiable cycle model | proposed 2026-10-10 |
+| 28 | Depth K–L system: prove ρ_r → 1 (faster-mixing model of avenue 1) ⇒ Conjectures B, C′ | theorem; testbed for avenue 1 | certified bounds to r = 19; 2026-10-10: Perron vectors = marginals of one 3-adic stationary measure (p = 1/4; K–L = Tao's p = 1/2), rate 0.65 = √(3/7) explained, C′ reduced to continuity of its density (`syracuse_measure.py`) |
 | — | Scaling k further | +0.005 in γ per step | k = 22 certified 2026-10-08 (γ = 0.9251) plus upper certificate; k = 23 needs ~192 GB |
 
 ## 1. Prove that the Krasikov–Lagarias exponent tends to 1
@@ -558,6 +600,81 @@ since January 2025. Days.
 
 **Payoff.** A clean, publishable increment if it is still open.
 
+**Done 2026-10-10 (`mcycles.py`, `notes/mcycles_2_71.md`; reproduced by the main session).**
+
+The method was re-implemented from [H] and [SdW]: the K1/J2/K2 upper bounds, the generalised Crandall lemma, the
+lattice enumeration and Hercher's Theorem 16/23 bootstrap. `mcycles.py validate` (60 s) reproduces:
+- Hercher's Theorem 23 sequence and Table 1 exactly;
+- SdW's tables and both of their results (m ≤ 68 at 301·2^50, m ≤ 75 at 5·2^60).
+
+It also found two misprints:
+- Hercher Table 1 prints 4.68e18 for 4.64e18;
+- SdW v1.44 lists 12 candidates at m = 80, where there are 13.
+
+Neither changes a result.
+
+**Result at X0 = 2^71 (and at 2075·2^60): exactly m ≤ 91, no gain.**
+- For m = 92 the bootstrap stalls at K ≥ 2.0563·10^20 < K2(92) = 3.42·10^20. A genuine shape satisfies Hercher's
+  inequality there, and the lattice enumeration finds surviving shapes for every m = 92 … 101.
+- Excluding m = 92 by this method needs X0 ≥ 14948·2^60 ≈ 2^73.87; m ≤ 101 needs ≈ 2^76.07; m = 102 needs
+  ≈ 2^81.05.
+- By-product: improved K lower bounds at 2^71 (K ≥ 2.06·10^20 for 92 ≤ m ≤ 100).
+
+The unrefereed Lean repository claiming m ≥ 102 (justinalick, Sept 2026) assumes 2^71. It does not re-run Hercher:
+it excludes the surviving shapes with a new "two-rise"/"chain" argument. Its listed shapes agree with our survivors,
+but the new argument is unverified.
+
+So avenue 13 is closed as a pure re-run. The open item is that new argument (verify it, or find a counterexample
+shape), or verification to about 2^74 (Barina's campaign).
+
+**The m ≥ 102 repository audited (2026-10-10, `notes/mcycles_102_audit.md`; build in `~/devel/mazur_dl/m102/`).**
+
+Checks:
+- Plain declarative lakefile; no IO, meta code, `sorry`, `axiom` or `native_decide`; 431 `decide +kernel` calls.
+- Built from source (Lean v4.35.0-rc3, Mathlib at its tag). `#print axioms` shows the three standard axioms.
+- `leanchecker` passes on all 49 modules.
+- The independent Rust kernel **nanoda** accepts the whole exported closure (30 298 declarations).
+- An independent restatement with our own definitions (T map, minimal period, local minima, raw Rhin form)
+  is derived in Lean (`AuditM102.no_small_m_cycle`; I re-ran it).
+
+**So: every nontrivial T-cycle has ≥ 102 local minima, conditional on**
+- (i) every n ≤ 2^71 reaches 1 (Barina 2025);
+- (ii) Rhin's bound in the form of Simons–de Weger Lemma 12. Rhin's paper itself could not be obtained, so any
+  height threshold in it is unchecked.
+
+The new ingredients:
+- **Two-rise bound.** For odd n < 2^N, the first two ascents total ≤ B. It was recomputed independently by a 2-adic
+  search and is sharp, e.g. B = 84 for N = 72–77, attained by n = 3 603 960 565 806 965 719 039.
+- **Chain argument.** All 120 shape certificates were recomputed in exact arithmetic and pass. The worst case
+  reaches 0.798 of what a cycle needs (m = 101). Without the two-rise bound, 111 of them would survive.
+- The repository's shapes are a superset of our `mcycles.py survivors`.
+
+Caveats: unrefereed, AI-produced, and no human-readable proof. Extending past 101 needs a larger two-rise grid
+(about 2.6× kernel time per m).
+
+Correction to `notes/mcycles_2_71.md` §6: log δ = 0.4605607, so SdW's constant 0.46057 is safely rounded.
+
+**Extended to m ≤ 103 (2026-10-10, `notes/mcycles_extension.md`; build in `~/devel/mazur_dl/m102/extend/`).**
+- New two-rise grid points: N = 32 955 and 36 150 for m = 102; 52 248 and 57 314 for m = 103. B = N + 30, kernel
+  checked.
+- Chain certificates for 62 (m = 102) and 103 (m = 103) shapes, from our own generator. The generator reproduces the
+  repository's m = 92 and m = 101 data exactly.
+- `Collatz.no_103_cycle_2_71` holds, with standard axioms only; leanchecker passes per module on the post-fix Lean
+  v4.35.0-rc3.
+- An independent restatement `AuditExt.no_small_m_cycle` (re-run by the main session) states: given every
+  n ≤ 2^71 reaches 1 and Rhin's bound, **every nontrivial cycle has ≥ 104 local minima**.
+- nanoda passed the m ≤ 102 closure (30 290 declarations) and, re-run by the main session with more memory, the
+  **m ≤ 103 closure: 30 446 declarations, no errors** (20 min, 31 GB peak).
+- The repository is Apache-2.0, and this extension is attributed in the note.
+- **m = 104 certified too (05:45–06:30).** Grid points N = 87 660 and 90 960, plus 153 shapes (worst ratio 0.7988).
+  The data module took 842 s with a 27.7 GB peak; the kernel needed `maxHeartbeats 0`, a resource limit only.
+  `Collatz.no_104_cycle_2_71` and the restatement `AuditExt104` state **≥ 105 local minima**, with standard axioms
+  and per-module leanchecker.
+  - nanoda for m ≤ 104 is still to do (it needs about 45 GB).
+  - m = 105 would need grid points near N ≈ 139 000/144 000 and a data check of about 40–45 GB.
+- A useful finding for the original author: their checker's pattern width E1 = 16 makes some grid points about
+  100× slower; E1 = 32 fixes it.
+
 ## 14. Matrix interpretations for the rewriting system
 
 **Question.** Yolcu, Aaronson, Heule, "An automated approach to the Collatz conjecture", CADE-28, LNCS 12699 (2021);
@@ -596,6 +713,40 @@ test C′ (bounded ratio) against the branching-model prediction. Days.
 
 **Payoff.** Direct evidence on Conjectures C / C′; if the extremal ratio stays bounded, λ_k → 2 is the expected
 consequence and avenue 1 gains support from a second direction.
+
+**Done 2026-10-10 (background agent; `extremal_trees.py`, `extremal_trees_core.c`, `notes/extremal_trees.md`).**
+
+*Extremal counts.* A depth-first branch and bound over the 3-adic digits of a (chain decomposition, lazy subtree
+bounds from exhaustive tables at depth 18–19) gives exact N^−(k) to k = 59 and N^+(k) to k = 55.
+- Validated: it reproduces A–L's printed g^±(30) and γ*_30, brute force for k ≤ 13, unpruned enumeration for k ≤ 36
+  (Σ N*_k = 2·4^k), and witness residues.
+- From k = 25 on, (4/3)^k/N^−(k) ∈ [2.033, 2.048] and N^+(k)/(4/3)^k ∈ [1.738, 1.748]. That is strong evidence for
+  Conjecture C′ (bounded ratio), which the random branching models violate.
+- A–L Theorem 1.1 improves from (1.302053)^k ≤ n_k(a) ≤ (1.358386)^k to **(1.317329)^k … (1.346858)^k**.
+
+*Residue-class certificates (the stronger result).* Track the class mod 3^r of every node. Let φ_n(c) be the
+minimum of N*_n over b ≡ c. Then φ_{n+1} ≥ Φ(φ_n), with Φ(v)(c) = v(2c) + [c ≡ 2, 8 (9)]·min over lifts of
+v((2c−1)/3). This is the K–L method for depth counts, and it has no λ-dependent weights. A positive V with
+Φ(V) ≥ μV gives N*_n(a) ≥ (V_min/V_max) μ^n for **every** a and n; the upper bound uses max. Results:
+- Certified in exact integer arithmetic for r ≤ 19 (774 M classes): **0.2822·(1.3333119)^k ≤ N*_k(a) ≤
+  3.556·(1.3333567)^k**. Since n_k(a) ≥ N*_k(a) and n_k(a) ≤ (k+1) N*_k(a) [A–L §2], the uniform growth constant of
+  n_k(a) lies in [1.3333119, 1.3333567], within 3·10^{−5} of 4/3. A–L's Conjecture B asserts exactly 4/3.
+- My independent re-implementation reproduces r = 13 (μ ≥ 1.333075, μ′ ≤ 1.333637) and r = 16 (μ ≥ 1.333259,
+  μ′ ≤ 1.333416, 28.7 M classes), all certified in exact integer arithmetic.
+- The losses 4 − 3μ_r and 3μ′_r − 4 decay geometrically, with ratio ≈ 0.65 per digit. The K–L analogue 1 − ρ_k
+  decays only at 0.93 per digit.
+- The certificate spread V_max/V_min stays ≈ 3.5 at every r. If both persist, μ_r, μ′_r → 4/3 (Conjecture B,
+  uniformly) and the ratio stays bounded (Conjecture C′).
+
+**Formalised (2026-10-10, `lean_formal/PreimageBound/`).** `PreimageBound.preimage_count_lower_bound`:
+for every a ≢ 0 (mod 3) and every k, 0.2847·(1.3331664)^k ≤ #{n ∈ [1, 2^k a] : T^k(n) = a}. The r = 14 certificate is
+checked by the kernel itself (`decide +kernel`); standard axioms only, leanchecker passes, and nanoda passes.
+
+Literature check (2026-10-10, main session): the best published rigorous constants found are still A–L's
+1.302053/1.358386. One caveat: the unrefereed neljaouh/ConjectureA repository claims the growth-exponent conjecture
+for each fixed a from Mazur's M2. Our bounds differ in kind: explicit, uniform in a, valid for every k.
+
+**Next:** see avenue 28.
 
 ## 16. Spectrum, spectral gap and traces of the K–L transfer matrix
 
@@ -801,6 +952,18 @@ level, i.e. like t^{−1/2} instead of t^{−1}). **Certified explicit bound:** 
   π_a(x) ≥ 0.865 · (x/a)^{0.7991}   for all x ≥ 2^6 a,
 
 which beats (x/a)^{0.848}/77.4 (k = 14) up to x/a ≈ 10^{37} and the k = 22 Perron bound up to x/a ≈ 10^{40}.
+**CORRECTED and IMPROVED 2026-10-10 (`base_lift_chunked.py`).** The 0.865 was the minimum at 0.25-grid points only.
+The rigorous infimum over the window uses L(y_i)/(cλ^{y_{i+1}}), which gives Δ = 0.8435 on a 1/64 grid (x ≥ 2^4 a).
+The certified k = 14, λ = 1.80 vector with base window Y = 8.25 gives
+
+  π_a(x) ≥ 0.7146 · (x/a)^{0.848}   for x ≥ 2^{6.25} a   (a ≡ 2 mod 3; a ≡ 1: divide by 1.8, x ≥ 2^{7.25} a),
+
+the best explicit bound for 2^{6.25} ≤ x/a ≤ 2^{20.8}. The certified k = 15, λ = 1.82 vector
+(`certs/spread_k15_1.82/`) gives π_a(x) ≥ 0.5681 (x/a)^{0.8639} for x ≥ 2^{6.25} a, which is best for
+2^{20.8} ≤ x/a ≤ 2^{251}, above which k = 22 takes over. **k = 16, λ = 1.83** (certified,
+`certs/spread_k16_1.83`): 0.5514 (x/a)^{0.8718} for x ≥ 2^{6.25} a. It dominates k = 15 everywhere and k = 14 from
+2^{15.7}, and is best up to 2^{288}. A k = 17, λ = 1.84 vector was started the same night. Δ_Y for this vector peaks at
+Y ≈ 8–9 (0.66–0.71), with the argmin moving from dense classes (Y ≤ 8) to the capped class c = 17.8 (Y ≥ 9).
 
 **Empirical densities (`pred_density.py`, n < 2^32, 68 min on the GPU).** π_a(X)/X for a < 3^8 is converged to
 three decimals between X = 2^20 and 2^32 (a = 5: 0.9378 → 0.9379; 7: 0.1916 → 0.1912; 11: 0.4440 → 0.4458;
@@ -910,6 +1073,86 @@ convergent-type approximation of log₂ 3, the numerators are equidistributed mo
 **Next:** push n to 40 at k near k_max only (binom(40, 25) = 4·10^{10}, GPU hours), and test the dependence of the
 error on the quality of n/k as an approximation to log₂ 3.
 
+**Step 2 (2026-10-10, `cycle_numerators_k.py` → `cycle_numerators_k.json`).**
+
+A GPU kernel enumerates only weight-k parity vectors: each thread unranks a combination in colex order, then steps
+with Gosper's hack. N(v) mod m is built from a term table 3^cnt 2^i mod m, and h·N mod m is exact in uint64. It agrees
+with the all-vector run of step 1 for n ≤ 24 (zeros identical, Weyl sums to 5·10^{−8}), at about 1.5·10^9
+vectors/s.
+
+Results:
+- n = 25 … 40 for k = k_max, k_max − 1, k_max − 2, and n = 41 … 45 for k = k_max. That is up to binom(45, 28) ≈
+  1.1·10^{12} vectors per (n, k).
+- **No nontrivial zero** anywhere. The expected counts binom/m are 0.07–1.7 per (n, k).
+- **Weyl sums at k_max are governed by m/2^n:**
+  - when m/2^n ≲ 0.3, |S_h|·√binom stays at the random level: 0.99 (n = 35, m/2^n = 0.087), 1.70 (n = 27, 0.038),
+    1.72 (n = 43, 0.133), 3.5 (n = 40, 0.23);
+  - when m/2^n ≈ 0.35–0.66 it grows with n: 6.9 (n = 30), 15 (n = 36), 55 (n = 38), 86 (n = 41), 139 (n = 44,
+    0.567), 17 (n = 45, 0.350);
+  - at k_max − 1 and k_max − 2 (m/2^n ≈ 0.7–0.96) it grows much faster (up to ~10^3 at n = 38).
+- The bias is the low-frequency one identified in step 1: N(v)/m is dominated by the top bits when m is comparable
+  to 2^n.
+- Large cycles need n/k close to log₂ 3, i.e. m/2^n small. That is exactly the regime where the data stay at the
+  random level, and it now holds to n = 45.
+
+**What this does and does not show.** It supports the heuristic count binom(n, k)/m in the cycle-relevant regime.
+The quantity a proof needs is a fine-scale (all h ≤ m) equidistribution statement uniformly in n; small-h Weyl sums
+only probe large scales. **Next:**
+- (a) probe fine scales: zero counts in residue classes modulo divisors of m, or the distribution of N(v) mod m in
+  short windows;
+- (b) restrict to the convergent-type pairs (n, k) = (q_j-multiples) where m/2^n is smallest;
+- (c) the theory side: the exponential-sum statement for the family of parity vectors.
+
+**Step 3 (2026-10-10, `cycle_numerators_fine.py` → `cycle_numerators_fine.json`; validated exactly against brute
+force at n = 24).**
+
+Fine-scale tests at k_max, n = 24 … 40. Two kinds of count:
+- **Windows next to 0:** #{v : N(v) mod m < m/2^{10j}} and just below m, for j = 1, 2, 3. These are at the random
+  level everywhere (|z| ≲ 3).
+- **Divisibility by prime factors p | m:** #{v : N(v) ≡ 0 (mod p)}. This is often far from binom/p:
+  - ×11.4 for p = 186793 at n = 24 (m = 13·p);
+  - ×4.4 for p = 14753 at n = 26 (m = 1631·p);
+  - ×1.77 for p = 24917 at n = 32 (m = 32435·p);
+  - small but highly significant deviations for p = 5 (−0.25 % at n = 37, +0.7 % at n = 32).
+
+Explanation (checked by brute force at n = 24: the 80 zeros mod 186793 are 7 rotation orbits of size 8 plus one
+of size 24):
+- **(1) Algebraic factors from periodic vectors — the large anomalies.** If d = gcd(n, k) > 1 then
+  2^n − 3^k = (2^{n/d} − 3^{k/d}) · Φ with Φ = Σ_{t<d} 2^{(n/d)t} 3^{(k/d)(d−1−t)}. Every d-periodic parity vector
+  v = w^d has N(v) = N(w)·Φ, so it is ≡ 0 modulo every prime factor of Φ. Examples:
+  - n = 24, k = 15: Φ = 2^16 + 2^8 3^5 + 3^10 = 186793 = p, and the 7 necklaces of w (length 8, weight 5) give the
+    excess.
+  - n = 26, k = 16: Φ = 2^13 + 3^8 = 14753 = p, and the binom(13, 8) = 1287 periodic vectors explain
+    1599 ≈ 360 + 1287.
+  - n = 32, k = 20: the biased primes 499 = 2^8 + 3^5 and 24917 | 2^16 + 3^10 = 5·24917 come from the factorisation
+    (2^8 − 3^5)(2^8 + 3^5)(2^16 + 3^10).
+
+  Periodic vectors only repeat a shorter pattern, so they never produce a new cycle (x₀ = N(w)/(2^{n/d} − 3^{k/d})).
+- **(2) Small primes with small orders.** For example p = 5 with ord₅2 = ord₅3 = 4, even at gcd(n, k) = 1 (n = 27).
+  N mod p is then a sum over a short Markov chain and is slightly non-uniform. The deviation decays with n:
+  −2 % at n = 27, −0.25 % at n = 37.
+- **(3) Rotation clustering (variance).** For p | m, rotating v multiplies N(v) by a unit mod p, so zeros mod p come
+  in whole rotation orbits. The Poisson z-scores therefore overstate significance by up to √n.
+
+Equivalently, in Fourier terms: #{N ≡ 0 mod p}/(binom/p) − 1 = Σ_{j=1}^{p−1} S_{j·m/p}, i.e. the Weyl sums at
+frequencies (m/p)ℤ. These are low frequencies exactly when the cofactor m/p is small.
+
+**Check with periodic vectors removed** (`cycle_numerators_fine.py … --aperiodic` → `cycle_numerators_fine_aper.json`,
+n = 24 … 40; the expected count uses the Möbius count of aperiodic vectors):
+- Every large anomaly disappears. At n = 26, p = 14753 goes from ×4.4 to ×0.87 (z = −0.5 per necklace). At
+  n = 24, p = 186793 leaves a single genuine rotation orbit (one necklace against 0.29 expected).
+- The only remaining deviations with |z| > 4 per necklace are:
+  - p = 5 (ord 4 for both 2 and 3): ×0.98 … ×1.008 at n = 25, 27, 30, 32, 37, shrinking with n;
+  - p = 499 = 2^8 + 3^5 at n = 32: ×1.035. 499 divides 2^16 − 3^10, so this is likely the same algebra one level
+    finer.
+
+**Consequence for the heuristic.** For the cycle count, the periodic vectors must be removed: they belong to
+(n/d, k/d). After that, the only local corrections are mild small-prime effects. Under that reading, the
+equidistribution heuristic for primitive parity vectors survives every fine-scale test to n = 40. The aggregate near 0, which is what a cycle needs, is
+consistent with uniform at the scales tested (down to m/2^{30}). The open question for a proof is the full
+zero-frequency aggregate (all h). That is a statement about Σ_{h mod m} S_h, i.e. it again needs the fine-scale
+exponential sum bound.
+
 ## 20. The adelic picture: ℤ₂ × ℤ₃ and a Furstenberg-type rigidity theorem
 
 **Claim.** The forward dynamics is a 2-adic object (parity, Q on ℤ₂), the backward branching a 3-adic one (the
@@ -954,6 +1197,277 @@ own LP over the labelled rules; the expected outcome is a precise statement of w
 Weeks.
 
 **Payoff.** A map of the negative space, and the only avenue where compute alone could produce a proof.
+
+## 22. Structure theorems for L^NT_k: attainment, tightness, uniqueness, strict increase (PROVED 2026-10-09)
+
+**Statement** (`notes/strict_monotonicity.md`). For every k ≥ 2, with λ_k := sup{λ ∈ [1, 2] : L^NT_k(λ) feasible}:
+(i) the supremum is attained and 1 < λ_k < 2;
+(ii) every feasible point at λ_k satisfies all principal inequalities with equality, and it is unique up to scaling;
+(iii) λ_k < λ_{k+1}.
+Consequences:
+- c·λ_k^y is an exact positive monotone solution of Krasikov's I_k, so no exponent above log₂ λ_k can be extracted
+  from I_k. This was K–L's stated belief after their Theorem 2.2.
+- Every Applegate–Lagarias splitting/truncation LP has λ* ≤ λ_k ([AL2, Conjecture 4.1]).
+
+**Literature status.**
+- [AL2] (1995) called (iii) "easy to prove", with a sketch that shows only that the lifted solution has a strict
+  inequality somewhere.
+- [KL] (2003) writes "It remains an open problem to show that the values λ_k are strictly increasing in k", and
+  calls (i), (ii) "likely … but this may be difficult to prove".
+
+**Key idea.** m ↦ 4m is a single cycle of length 3^{k−1} on the principal classes (lifting the exponent:
+v₃(4^n − 1) = 1 + v₃(n)), and every row contains λ^{−2} c_{4m} without a minimum. So the monotone, homogeneous,
+superadditive map F_λ is irreducible:
+- slack in one row spreads backwards to all rows in N steps (Lemma 3);
+- zeros spread forwards (Lemma 7, uniqueness).
+
+Tightness then follows from maximality plus continuity in λ. Strict increase follows because the tiled solution
+gains slack exactly where it is not constant across its top digit, and a tight fixed point never is (the A–L descent
+argument).
+
+**Checks** (`monotone_check.py`, k ≤ 9): the gain is zero on class 5 and positive on 2/3 of classes 2 and 8; the
+Collatz–Wielandt vectors give r_{k+1}(λ_k) ≥ 1.104 … 1.0059; random starts converge to the same fixed point.
+Observed but unproved: r_k(λ) is decreasing on [1, 2], and L^NT_k is infeasible for λ ∈ [4, 1000] (k ≤ 7).
+
+**What it does not give: a rate.** Slack travels along the ×4 cycle with factor λ^{−2} per step, so the δ in
+λ_{k+1} ≥ λ_k + δ is exponentially small in k. The quantitative form λ_{k+1} − λ_k ≥ κ(2 − λ_k), with κ
+independent of k, is equivalent to geometric convergence λ_k → 2 (by tightness, 2 − λ_k ≍ 1 − ρ_k). That is avenue 1
+in a sharper form. The gain must be spread by the auxiliary (expanding, mixing) branch, whose min-switching is
+exactly the alignment question of §1.
+
+**Corollary (2026-10-10, Lean `rho_eq`, `rho_strictMono`).** ρ_k = 3(λ_k − 1)/λ_k^α exactly, and 1 − ρ_k is
+strictly decreasing in k. So the ρ_k table of §1 is an exact reparametrisation of λ_k.
+**Done 2026-10-10.** (a) Lean 4 formalisation: `lean_formal/KLMonotone/Basic.lean`, ≈1250 lines, 10 s, standard
+axioms only. It covers (i)–(iii), uniqueness, the exact solution of I_k, equivalence with K–L's literal (2.7)–(2.14),
+and residue-faithfulness of all index maps (`KLMono.KL_lambda_strictMono`). (b) Preprint §2.4 (draft 0.9).
+**Next.** (c) Try the quantitative version with a Poisson-equation test vector
+z = tile(c) + h: the superadditivity bound F(x + h) ≥ F(x) + F(h) needs h nearly constant over lifts, and the
+spectral gap of §16 does not close (|λ₂| ≈ 0.865), which is the input such an argument would need.
+
+## 23. Mazur's seed averaging versus the K–L minimum (proposed 2026-10-10)
+
+**Observation.** The entire finite-k loss of the K–L program is the minimum over the three lifts (1 − ρ_k).
+Mazur's positivity step does the opposite: it averages a backward mark over unit residues, *chooses* a residue class
+with mark ≥ 255/256, and only then picks a seed in that class (`notes/m2_audit.md` §7).
+
+**Question.** Is there a K–L-type linear system for one well-chosen seed class per level, with the minimum
+replaced by a choice? Such a system would certify exponent 1, or positive density, with explicit constants. A
+candidate: certify a lower bound only for a set of residue classes closed under the backward maps that the
+argument actually follows, rather than for all classes.
+
+**Why.** It would give an effective, explicit Conjecture A, which Mazur's proof does not provide.
+
+**First step.** Write down which inequalities of I_k remain valid when φ is replaced by the count for a fixed seed
+class, and whether the resulting system is still monotone and homogeneous (then avenue 22's machinery applies).
+
+## 24. Effective constants for Conjecture A (proposed 2026-10-10)
+
+Mazur's c_a is ineffective for general a. (The seed is bounded by the largest element of a hypothetical cycle
+through the odd part of a.) For a = 1 it is explicit but tower-sized. Questions:
+- Can verification to 2^71, which bounds any cycle's minimum, make c_a effective for all a < 2^71?
+- What is the best explicit c_1 obtainable by re-running his constants with modern numerical inputs (Tao's mixing
+  constant, the b = 2^80 scale)?
+
+Compare with the empirical d_a·a ≥ 0.67 (`pred_density.py`, a < 3^8, n < 2^32).
+
+## 25. Density one of P(1) (proposed 2026-10-10)
+
+By Mazur's Cor. 1.2 (formal), Collatz ⇔ upper density of P(1) = 1. Known nearby results:
+- Tao (log density): almost all orbits fall below any f(n) → ∞.
+- Mazur's base paper: positive density of n reaching 1 within 10.46 ln n steps.
+
+The precise gap is Tao's theorem with f constant (= 2^71) in natural, or even just lower logarithmic, density.
+Log density 0 of the non-convergent set forces lower natural density 0, which contradicts Cor. 1.2 unless there is
+no counterexample.
+
+**First step.** Read where Tao's argument needs f → ∞ (his remarks after Thm 1.3) and whether Mazur's seed-mass
+method could replace it for the fixed target set [1, 2^71]. Theory; months; long odds, but this is now *the*
+statement.
+
+## 26. Formal m-cycle bounds: generalise the "two-rise" bound (proposed 2026-10-10)
+
+**Background.** The audited repository (avenue 13, `notes/mcycles_102_audit.md`) gets past Hercher's bootstrap with
+two elementary ingredients:
+- the **two-rise bound**: for odd n < 2^N, the first two ascents total ≤ B(N), with B sharp, computed by a 2-adic
+  search;
+- a chain argument over the local minima of a candidate shape.
+
+Both are kernel-checked as certificates. It stops at m = 101 only for compute reasons.
+
+**Questions.**
+- (a) r-rise bounds for r ≥ 3: the first r ascents total ≤ B_r(N). These are again 2-adic searches, cheap on the GPU
+  (our `cycle_dip.py` / `cycle_lp.py` machinery already enumerates residue classes with exact linear forms).
+- (b) Do r-rise bounds push m much further than larger two-rise grids do?
+- (c) Can the chain argument be phrased as an LP over shapes, like our `cycle_lp.py`, so that one certificate covers
+  many m?
+
+**Payoff.** A formally verified, conditional record on m-cycles, with our existing tools. It is also a bridge between
+the cycle track and certificate checking at scale (avenue 5's Lean machinery). Days.
+
+## 27. Primitive-necklace heuristic for cycle counts (proposed 2026-10-10)
+
+**Observation** (avenue 19, step 3). When g = gcd(n, k) > 1, 2^n − 3^k factors cyclotomically, and every periodic
+parity vector w^d has N(w^d) = N(w)·Φ_d. These vectors produce all the large divisibility anomalies, but never a new
+cycle.
+
+**Proposal.** State the cycle heuristic for **primitive necklaces**: count aperiodic vectors up to rotation, with
+local factors only at the small primes where 2 and 3 have small order. Test it as a prediction:
+- the number of 3x+d cycles for small d (avenue 11 data, `cycles_d.py`), where many (n, k) admit cycles;
+- the 3x+13 cluster of seven 8-cycles (avenue 3).
+
+**Payoff.** A sharper, falsifiable model for cycle counts across the 3x+d family, which is the testbed any cycle
+argument must pass.
+
+**First data (2026-10-10, `cycles_by_length.py` → `cycles_by_length.json`).** This is an exact census of all cycles
+of T_d of length ≤ 34, for all 67 d < 200 with gcd(d, 6) = 1. The GPU enumerates every parity vector, and a cycle
+exists iff (2^n − 3^k) | d·N(v), since the 2-adic parity map is a bijection on periodic points. It finds cycles
+whatever the size of their elements, about 10 s per d.
+- **Validation.** It reproduces `cycles_d.py`'s brute-force lists exactly for d ≤ 29 at length ≤ 24, and recovers the
+  27-step 3x+5 cycles through 187 and 347.
+- **Long cycles.** 72 cycles of length ≥ 22, e.g.:
+  - five 27-step cycles for d = 71, because 71 | 2^27 − 3^17 = 5·71·14303; the necklace model predicts 4.4;
+  - a 34-step cycle for d = 173 with minimum 7;
+  - 29-step cycles for d = 137 (three of them).
+- **Clusters are algebraic.** The seven 8-cycles of 3x+13 are all 7 necklaces of (8, 5), because
+  2^8 − 3^5 = 13 = d, so every parity vector gives an integer x₀.
+- **Uniform necklace model** E = Σ (aperiodic necklaces)·gcd(m, d)/m. It overestimates the totals:
+  - lengths 10…34: observed 127 vs 280 (ratio 0.45, χ²/dof = 1.6);
+  - lengths 16…34: 92 vs 182 (0.50, χ²/dof = 1.05);
+  - lengths 22…34: 72 vs 110 (0.65, χ²/dof = 0.70).
+
+  The deficit shrinks with length. A likely cause: for small k/n, N(v) ranges over less than one period of m, so
+  "uniform mod m" overcounts; the right model conditions on the range of N(v)/m.
+
+Where the deficit sits (all d, lengths 10–34, observed/expected by k/n):
+
+| k/n | < 0.40 | 0.40–0.50 | 0.50–0.56 | 0.56–0.60 | 0.60–0.62 | 0.62–log₃2 |
+|---|---|---|---|---|---|---|
+| observed / expected | 11 / 37.8 | 23 / 72.0 | 27 / 75.4 | 19 / 31.1 | 8 / 35.8 | **39 / 27.8** |
+
+- At small k/n the model fails (ratio 0.2–0.6). There m ≈ 2^n and N(v) mostly doesn't wrap modulo m (the top-bit
+  bias of avenue 19), so "uniform mod m" is the wrong model.
+- In the cycle-relevant regime k/n → log₃ 2, where m ≪ 2^n, it is roughly right (ratio 1.4). The excess there
+  includes algebraic clusters such as d | 2^n − 3^k.
+
+That is consistent with the Weyl-sum picture: equidistribution holds where large cycles would have to live.
+
+Extended to length ≤ 38 for d ∈ {5, 7, 11, 13, 17, 19, 23, 25, 29, 71} (`cycles_by_length_n38.json`, about 160 s
+per d): **no cycles of length 35–38**. The cycle lists of these d are complete up to length 38, whatever the size
+of the elements.
+
+**Next.** Model the small-k/n regime by the actual distribution of N(v)/m instead of a uniform one.
+
+## 28. The depth K–L system: a faster-mixing model of avenue 1, and a route to Conjectures B / C′ (proposed 2026-10-10)
+
+The residue-class system for pruned-tree depth counts (avenue 15) is the K–L construction without the ×4 drift:
+Φ(v)(c) = v(2c) + β(c) min_t v(l_t(c)) on classes mod 3^r. Summing gives μ_r = 1 + ρ_r/3 exactly, the analogue of
+K–L's summed inequality, so μ_r → 4/3 ⇔ ρ_r → 1. Its loss decays at ≈ 0.65 per digit (K–L: ≈ 0.93), and its
+certificate spread stays bounded (≈ 3.5; K–L: ∝ 1.52^k).
+
+Questions:
+- (a) Prove ρ_r → 1 here, a strictly easier instance of avenue 1. The avenue 22 machinery (single-cycle
+  irreducibility via the doubling map c ↦ 2c, tightness, uniqueness, strict monotonicity in r) should transfer
+  verbatim. The quantitative step is the open one.
+- (b) Explain why the decay is 0.65 here and 0.93 for K–L. The difference is the ×4 transport: K–L's isometric
+  branch carries top-digit information with weight 1/4, while here the doubling edge has weight 1 but the depth
+  index advances.
+- (c) A bounded spread of the extremal certificates would give Conjecture C′, uniform in r.
+- (d) The limit object is the 3-adic operator L v(c) = v(2c) + [c ≡ 2, 8 (9)] v((2c−1)/3) on ℤ₃^×. It sums over the
+  T-preimages; T acts 3-adically as an isometry on the even branch and as a 1/3-contraction on the odd one.
+  Integrating against Haar measure gives eigenvalue 4/3. The bounded certificate spread and the 0.65-per-digit decay
+  suggest a continuous, Hölder eigenfunction with exponent ≈ −log₃ 0.65 ≈ 0.39; the K–L limit object has
+  0.04–0.09 and is unbounded. Proving such an eigenfunction exists, with a quantitative modulus, would give
+  ρ_r → 1 at a geometric rate. Since 2 is a primitive root mod 3^r, c ↦ 2c is a single cycle, so the avenue 22
+  machinery (irreducibility, tightness, uniqueness, strict monotonicity in r) transfers verbatim.
+
+**Results 2026-10-10 (morning): one limit measure, and why 0.65** (`depth_system.py`, `syracuse_measure.py`).
+
+1. *Consistency (exact, proved).* Let A_r be the min-free operator, A_r v(c) = v(2c) + β(c)·mean_u v(l_u(c)), and E_{r−1}
+   the average over the top digit. Then E_{r−1}A_r = A_{r−1}E_{r−1} for r ≥ 3:
+   - the doubling term commutes with E because ×2 maps fibres onto fibres;
+   - in the aux term β depends on c mod 9, and the three top-digit lifts of c send (2c−1)/3 mod 3^{r−1} to the three
+     lifts of (2s−1)/3 mod 3^{r−2}.
+
+   Haar is a positive left eigenvector with eigenvalue 4/3. A_r is primitive: c ↦ 2c is a single cycle, and c = −1
+   has a self-loop, since (2·(−1)−1)/3 = −1. So the Perron vectors h_r (mean 1) satisfy E_{r−1}h_r = h_{r−1} exactly
+   (checked to 3e-15 for r ≤ 17). By Kolmogorov they are the level-r densities of a single probability measure ν on
+   ℤ₃^×. The eigen-equation says that ν is the stationary law of the random walk
+     x ↦ x/2 with probability 1 − p,   x ↦ (3x+1)/2 with probability p,   p = 1/4,
+   i.e. the law of X = Σ_{j≥1} 3^{j−1} 2^{−(a_1+…+a_j)} with a_j i.i.d., P(a = m) = p(1−p)^{m−1}.
+
+   **p = 1/2 is Tao's Syracuse random variable** (Forum Math. Pi 10 (2022) e12, Remark 1.13 identifies it as the
+   stationary measure of x ↦ (3x+1)/2^a). The level-r marginals obey h_r = (1−p)·h_r∘(×2) + 3p·β·h_{r−1}∘σ, solved
+   along the doubling cycle. No power iteration is needed; r = 17 takes 35 s.
+
+2. *The K–L system is the p = 1/2 case.* K–L's operator at λ = 2, with min replaced by mean, has as Perron vector
+   exactly Tao's Syracuse density restricted to m ≡ 2 (mod 3). Use h(2c) = h(4c)/2 for c ≡ 2 (mod 3), and for
+   c ≡ 2 (mod 9) the aux class (2c−1)/3 ≡ 1 (mod 3) has h = h((4c−2)/3)/2, which gives weights 1/4, 3/4, 3/2.
+   Checked to 1e-15 for k ≤ 12. So K–L size-counting is the fair-coin walk (Tao), and depth-counting is the p = 1/4
+   walk. The actual c_k (at λ_k, with min) differs from Tao's density: TV 0.14 and log-correlation 0.987 at k = 12.
+
+3. *The L² law (diagonal term exact).* Write δ_r = h_r − h_{r−1}∘proj (martingale difference). Then
+   δ_r(c) = Σ_{j≥0} 3p(1−p)^j β(2^j c)·δ_{r−1}(σ(2^j c)). The diagonal part of E[δ_r²] is exactly
+   (3p/(2−p))·E[δ_{r−1}²]. The cross terms are correlations E[δ_{r−1}(y)·δ_{r−1}(S_d y)] with
+   S_d(y) = 2^d(y + 1/3) − 1/3, d even. Numerically they vanish, and the L² ratios converge to √(3p/(2−p)):
+
+   | p | √(3p/(2−p)) | L² ratio r = 15 | L¹ ratio r = 15 |
+   |---|---|---|---|
+   | 1/4 | 0.6547 | 0.6503 | 0.6501 |
+   | 1/3 | 0.7746 | 0.7722 | 0.7656 |
+   | 0.4 | 0.8660 | 0.8652 | 0.8435 |
+   | 1/2 | 1 | 1.0006 | 0.9279 |
+
+   **This explains the depth loss rate 0.65 = √(3/7)** (4 − 3μ_r ratios 0.652–0.656; question (b) answered). It also
+   puts K–L/Tao at the critical point. At p = 1/2 the diagonal factor is exactly 1, the density is (numerically) not
+   in L², and all L¹ decay comes from cancellation. The L¹ ratio creeps up, 0.926 (r = 14), 0.928, 0.929, 0.931
+   (r = 17), at the same pace as K–L's 1 − ρ_k ratios (0.919 at k = 14 … 0.933 at k = 22). Tao proves this L¹ decay
+   is faster than any power (Prop. 1.14, Osc_{m,n} ≪_A m^{−A}; he predicts exp(−cm), Remark 1.15). That is the
+   linear analogue of ρ_k → 1, and it implies ν_{1/2} is absolutely continuous.
+
+4. *Threshold p = 1/3 for a bounded density.* −1 is the fixed point of x ↦ (3x+1)/2 (the trivial negative cycle),
+   which contracts by 1/3. So the density at −1 is multiplied by 3p per level: measured 1.21 at p = 0.4 and 1.50 at
+   p = 1/2, and argmax h = −1 for p ≥ 0.4. Spread at r = 13:
+
+   | p | 0.2 | 0.25 | 0.3 | 1/3 | 0.36 | 0.4 | 0.5 |
+   |---|---|---|---|---|---|---|---|
+   | spread | 2.30 | 3.53 | 7.3 | 15 | 31 | 114 | 5678 |
+
+   The spread is bounded for p < 1/3 and grows ~1.6^r at p = 1/2. That growth is the origin of K–L's
+   C_max ~ 1.52^k. The min over the top digit removes the spike at −1 itself (argmax c_k ≠ −1), but not the growth.
+
+5. *p = 1/4: the density looks continuous.*
+   - Sup top-digit oscillation ratio ≈ 0.76 (Hölder exponent ≈ 0.25).
+   - L^q ratios at r = 17: 0.6525 (q = 4), 0.658 (q = 6), 0.668 (q = 8), all below 3^{−1/q} (0.760, 0.833, 0.872),
+     so Σ_r 3^{r/q}‖δ_r‖_q converges. Kurtosis is stable near 6.8.
+   - Spread 3.5445 at r = 17, still rising (→ ≈ 3.552).
+   - 1/min h_r = 2.03874 and max h_r = 1.73859 at r = 17, still rising. The exact extremal counts give
+     (4/3)^k/N^−(k) → 2.0390–2.0395 (k = 48–59) and N^+(k)/(4/3)^k → 1.7420 (k = 48–55).
+
+   So the extremal trees are, to about 2·10^{−4}, the min and max of one continuous function on ℤ₃^×. The
+   normalised counts (3/4)^k N*_k converge to ν weakly: class-wise averages tend to h_r. This is a theorem, because
+   E_r[(3/4)^k N*_k] = ((3/4)A_r)^k 1 → h_r by primitivity.
+
+6. *Conditional theorem.* If ν_{1/4} has a continuous density (equivalently Σ_r ‖δ_r‖_∞ < ∞, or uniform convergence
+   of h_r), then Conjecture C′ holds.
+   - A continuous solution is positive: h ≥ (3/4)·h∘(×2), so a zero would propagate along the dense orbit 2^j x.
+   - Collatz–Wielandt with V = h_r gives μ_r ≥ 4/3 − δ*_r, where δ*_r = max_c β(c)(mean − min over lifts)/h_r(c)
+     ≤ ‖δ_r‖_∞/min h. Also V_min/V_max = 1/spread.
+   - For each k pick r with δ*_r ≤ 1/k. Then N*_k(b) ≥ e^{−3/4}(4/3)^k/spread for all b and k, and symmetrically
+     with max.
+
+   The data suggest the sharp constants are min h and max h.
+
+   **Proof programme:** a moment recursion. The diagonal coefficients are exact (for q = 2: 3p/(2−p)). What needs
+   bounding is the decorrelation of the top-digit triples of δ_{r−1} under y ↦ 2^d(y + 1/3) − 1/3. A bound giving
+   ‖δ_r‖_4 ≤ Cθ^r with θ < 3^{−1/4} proves C′. The same scheme at p = 1/2 is critical. There the min-system question
+   (ρ_k → 1) asks for more than Tao's L¹ statement, but the obstacle is now located: cancellation at a critical
+   point, not a missing estimate.
+
+   **Check first (novelty):** Wirsching, LNM 1681 (1998), studies a 3-adic Markov process for the inverse map
+   (Tao's footnote 5). The identification in item 1 may be in his framework.
+
+Payoff: a publishable improvement now (A–L Theorem 1.1 from 1.302/1.358 to within 3·10^{−5} of 4/3), and a cleaner
+testbed for the λ_k → 2 problem.
 
 ## Not avenues
 

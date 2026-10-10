@@ -1,0 +1,34 @@
+{
+ "format": "krasikov-lagarias-LNT-certificate/2",
+ "reference": "I. Krasikov, J. C. Lagarias, Bounds for the 3x+1 problem using difference inequalities, Acta Arith. 109 (2003) 237-258, arXiv:math/0205002, Thm 2.2",
+ "claim": "L^NT_17(lambda) is feasible for lambda = 1.84, hence pi_a(x) >= x^gamma for every gamma < log2(lambda) and x >= x0(a, gamma)",
+ "k": 17,
+ "N": 43046721,
+ "lambda": "1.84",
+ "lambda_P": 46,
+ "lambda_Q": 25,
+ "log2_lambda": 0.8797057662822881,
+ "D": 2147483648,
+ "q": 634299281,
+ "L2": 1667326061,
+ "L1": 3067879953,
+ "b": 23,
+ "check": "The integer vector is C[i] = c[i] * 2^b, c read from c_f32.npy (float32); every C[i] must be an exact integer >= 1. Index i in [0, N) is the residue m = 3i+2 mod 3^k, n3 = N/3. For every i, with j, t = divmod(i, 3), cbar(r) = min(C[r], C[r+n3], C[r+2n3]): C[i]*D <= q*C[(4i+2) mod N] + L*cbar(r), where L = L2, r = 4j mod n3 if t = 0; L = 0 if t = 1; L = L1, r = (2j+1) mod n3 if t = 2. Requires q/D <= lambda^-2, L2/D <= lambda^(alpha-2), L1/D <= lambda^(alpha-1), alpha = log2(3).",
+ "c_file": "c_f32.npy",
+ "c_dtype": "<f4",
+ "c_sha256_data": "5441fe9aad677732172e4f5bce4522becb4bb1b39366612378e62655289e43ac",
+ "c_file_sha256": "896a56b45fab91cdec6c496e71060feb3d4e0395023297f933229f724829f9a7",
+ "C_min": 8388961,
+ "C_max": 283869184,
+ "min_relative_slack": 9.886951884315646e-06,
+ "verified_with": [
+  "numpy"
+ ],
+ "created": "2026-10-10T00:47:36+00:00",
+ "software": {
+  "python": "3.14.3",
+  "numpy": "2.5.3",
+  "mpmath": "1.4.1",
+  "mlx": "0.32.3"
+ }
+}

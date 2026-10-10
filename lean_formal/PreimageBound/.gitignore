@@ -1,0 +1,5 @@
+# Large regenerable files: `python gen_cert.py r --from-json` rewrites the Lean data modules from certs/cert_r{r}.json(.gz)
+certs/cert_r13.json
+certs/cert_r14.json
+PreimageBound/Generated/*/Part*.lean
+certs/cert_r12.json

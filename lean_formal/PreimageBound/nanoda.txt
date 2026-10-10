@@ -1,0 +1,120 @@
+=== nanoda: small (2 thread(s))
+theorem PreimageBound.preimage_count_lower_bound_R4' (a : Nat) (ha : LT.lt (OfNat.ofNat 0) a)
+  (ha3 : Ne (HMod.hMod a (OfNat.ofNat 3)) (OfNat.ofNat 0)) (k : Nat) :
+  LE.le
+    (HMul.hMul (HDiv.hDiv (OfNat.ofNat 3567) (OfNat.ofNat 10000))
+      (HPow.hPow (HDiv.hDiv (OfNat.ofNat 13215671) (OfNat.ofNat 10000000)) k))
+    (Nat.cast
+      (Finset.card
+        (Finset.filter
+          (fun (n : Nat) =>
+          Eq
+            (Nat.iterate
+              (fun (n : Nat) =>
+              ite (Eq (HMod.hMod n (OfNat.ofNat 2)) (OfNat.ofNat 0)) (HDiv.hDiv n (OfNat.ofNat 2))
+                (HDiv.hDiv (HAdd.hAdd (HMul.hMul (OfNat.ofNat 3) n) (OfNat.ofNat 1)) (OfNat.ofNat 2))) k n) a)
+          (Finset.Icc (OfNat.ofNat 1) (HMul.hMul (HPow.hPow (OfNat.ofNat 2) k) a))))) :=
+  _
+
+theorem PreimageBound.preimage_count_lower_bound_R8' (a : Nat) (ha : LT.lt (OfNat.ofNat 0) a)
+  (ha3 : Ne (HMod.hMod a (OfNat.ofNat 3)) (OfNat.ofNat 0)) (k : Nat) :
+  LE.le
+    (HMul.hMul (HDiv.hDiv (OfNat.ofNat 3002) (OfNat.ofNat 10000))
+      (HPow.hPow (HDiv.hDiv (OfNat.ofNat 13312914) (OfNat.ofNat 10000000)) k))
+    (Nat.cast
+      (Finset.card
+        (Finset.filter
+          (fun (n : Nat) =>
+          Eq
+            (Nat.iterate
+              (fun (n : Nat) =>
+              ite (Eq (HMod.hMod n (OfNat.ofNat 2)) (OfNat.ofNat 0)) (HDiv.hDiv n (OfNat.ofNat 2))
+                (HDiv.hDiv (HAdd.hAdd (HMul.hMul (OfNat.ofNat 3) n) (OfNat.ofNat 1)) (OfNat.ofNat 2))) k n) a)
+          (Finset.Icc (OfNat.ofNat 1) (HMul.hMul (HPow.hPow (OfNat.ofNat 2) k) a))))) :=
+  _
+
+axiom propext {a b : Sort 0} : Iff a b → Eq a b
+
+axiom Quot.sound.{u} {α : Sort u} {r : α → α → Sort 0} {a b : α} :
+  r a b → Eq (Quot.mk r a) (Quot.mk r b)
+
+axiom Classical.choice.{u} {α : Sort u} : Nonempty α → α
+
+Checked 9868 declarations with no errors
+       75.25 real       144.99 user         2.95 sys
+          7002341376  maximum resident set size
+=== nanoda: r13 (1 thread(s))
+theorem PreimageBound.preimage_count_lower_bound_R13' (a : Nat) (ha : LT.lt (OfNat.ofNat 0) a)
+  (ha3 : Ne (HMod.hMod a (OfNat.ofNat 3)) (OfNat.ofNat 0)) (k : Nat) :
+  LE.le
+    (HMul.hMul (HDiv.hDiv (OfNat.ofNat 2859) (OfNat.ofNat 10000))
+      (HPow.hPow (HDiv.hDiv (OfNat.ofNat 13330772) (OfNat.ofNat 10000000)) k))
+    (Nat.cast
+      (Finset.card
+        (Finset.filter
+          (fun (n : Nat) =>
+          Eq
+            (Nat.iterate
+              (fun (n : Nat) =>
+              ite (Eq (HMod.hMod n (OfNat.ofNat 2)) (OfNat.ofNat 0)) (HDiv.hDiv n (OfNat.ofNat 2))
+                (HDiv.hDiv (HAdd.hAdd (HMul.hMul (OfNat.ofNat 3) n) (OfNat.ofNat 1)) (OfNat.ofNat 2))) k n) a)
+          (Finset.Icc (OfNat.ofNat 1) (HMul.hMul (HPow.hPow (OfNat.ofNat 2) k) a))))) :=
+  _
+
+def PreimageBound.T (n : Nat) : Nat :=
+  ite (Eq (HMod.hMod n (OfNat.ofNat 2)) (OfNat.ofNat 0)) (HDiv.hDiv n (OfNat.ofNat 2))
+    (HDiv.hDiv (HAdd.hAdd (HMul.hMul (OfNat.ofNat 3) n) (OfNat.ofNat 1)) (OfNat.ofNat 2))
+
+axiom propext {a b : Sort 0} : Iff a b → Eq a b
+
+axiom Quot.sound.{u} {α : Sort u} {r : α → α → Sort 0} {a b : α} :
+  r a b → Eq (Quot.mk r a) (Quot.mk r b)
+
+axiom Classical.choice.{u} {α : Sort u} : Nonempty α → α
+
+Checked 13046 declarations with no errors
+      661.68 real       654.19 user         7.22 sys
+          2916712448  maximum resident set size
+=== nanoda: main (1 thread(s))
+theorem PreimageBound.preimage_count_lower_bound (a : Nat) (ha : LT.lt (OfNat.ofNat 0) a)
+  (ha3 : Ne (HMod.hMod a (OfNat.ofNat 3)) (OfNat.ofNat 0)) (k : Nat) :
+  LE.le
+    (HMul.hMul (HDiv.hDiv (OfNat.ofNat 2847) (OfNat.ofNat 10000))
+      (HPow.hPow (HDiv.hDiv (OfNat.ofNat 13331664) (OfNat.ofNat 10000000)) k))
+    (Nat.cast
+      (Finset.card
+        (Finset.filter
+          (fun (n : Nat) =>
+          Eq
+            (Nat.iterate
+              (fun (n : Nat) =>
+              ite (Eq (HMod.hMod n (OfNat.ofNat 2)) (OfNat.ofNat 0)) (HDiv.hDiv n (OfNat.ofNat 2))
+                (HDiv.hDiv (HAdd.hAdd (HMul.hMul (OfNat.ofNat 3) n) (OfNat.ofNat 1)) (OfNat.ofNat 2))) k n) a)
+          (Finset.Icc (OfNat.ofNat 1) (HMul.hMul (HPow.hPow (OfNat.ofNat 2) k) a))))) :=
+  _
+
+theorem PreimageBound.preimage_count_ge_pow (a : Nat) (ha : LT.lt (OfNat.ofNat 0) a)
+  (ha3 : Ne (HMod.hMod a (OfNat.ofNat 3)) (OfNat.ofNat 0)) (k : Nat) (hk : LE.le (OfNat.ofNat 20200) k) :
+  LE.le (HPow.hPow (HDiv.hDiv (OfNat.ofNat 1333) (OfNat.ofNat 1000)) k)
+    (Nat.cast
+      (Finset.card
+        (Finset.filter
+          (fun (n : Nat) =>
+          Eq
+            (Nat.iterate
+              (fun (n : Nat) =>
+              ite (Eq (HMod.hMod n (OfNat.ofNat 2)) (OfNat.ofNat 0)) (HDiv.hDiv n (OfNat.ofNat 2))
+                (HDiv.hDiv (HAdd.hAdd (HMul.hMul (OfNat.ofNat 3) n) (OfNat.ofNat 1)) (OfNat.ofNat 2))) k n) a)
+          (Finset.Icc (OfNat.ofNat 1) (HMul.hMul (HPow.hPow (OfNat.ofNat 2) k) a))))) :=
+  _
+
+axiom propext {a b : Sort 0} : Iff a b → Eq a b
+
+axiom Quot.sound.{u} {α : Sort u} {r : α → α → Sort 0} {a b : α} :
+  r a b → Eq (Quot.mk r a) (Quot.mk r b)
+
+axiom Classical.choice.{u} {α : Sort u} : Nonempty α → α
+
+Checked 23481 declarations with no errors
+     2568.12 real      2540.83 user        27.00 sys
+          3612917760  maximum resident set size

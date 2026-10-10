@@ -1,0 +1,292 @@
+# The Krasikov–Lagarias exponents for the 3x+1 problem are attained and strictly increasing
+
+*Daniel Palmqvist, with Claude (Anthropic). Draft 0.1, 2026-10-10.*
+
+## Abstract
+
+Krasikov and Lagarias obtained lower bounds π_a(x) ≥ x^γ for the number of integers below x whose 3x+1 orbit
+contains a. They did this through a family of linear programs L^NT_k(λ) on the residue classes modulo 3^k, with
+γ = log₂ λ_k and λ_k the largest feasible parameter. They state as an open problem whether λ_k is strictly
+increasing in k. They also ask whether the supremum is attained with all inequalities tight, which would make
+L^NT_k optimal for the underlying difference inequalities.
+
+We prove all three statements for every k ≥ 2:
+- λ_k is attained, and 1 < λ_k < 2;
+- every feasible point at λ_k is tight and unique up to scaling;
+- λ_k < λ_{k+1}.
+
+As a consequence, c_m λ_k^y is an exact solution of Krasikov's inequalities, so no larger exponent can be derived
+from them. This also settles Conjecture 4.1 of Applegate and Lagarias. Moreover, the mean loss from the minimum over
+lifts satisfies ρ_k = 3(λ_k − 1)/λ_k^{log₂ 3} exactly, and 1 − ρ_k is strictly decreasing.
+
+The proof rests on one arithmetic fact: multiplication by 4 permutes the principal residue classes modulo 3^k in a
+single cycle. That makes the right-hand side an irreducible monotone, homogeneous, superadditive map. All results
+are formalised in Lean 4 with Mathlib, using only the standard axioms.
+
+## 1. Introduction
+
+Let T(n) = n/2 for even n and T(n) = (3n + 1)/2 for odd n, and for a ≢ 0 (mod 3) let
+π_a(x) = #{n ≤ x : T^j(n) = a for some j ≥ 0}. Krasikov [Kr] introduced difference inequalities for the
+functions φ^m_k(y) = inf{π*_a(2^y a) : a ≡ m (mod 3^k)}, where π*_a counts predecessors whose orbit stays below the
+cutoff. Applegate and Lagarias [AL] turned these into linear programs, and Krasikov and Lagarias [KL] found the
+program L^NT_k(λ) (recalled in §2). A feasible point at λ ≤ 2 yields π_a(x) ≥ x^γ for every γ < log₂ λ and large x
+[KL, Thm 2.2]; with k = 11 this gave γ = 0.84. The computation has since been carried to k = 22 (γ = 0.9251)
+[P].
+
+The best exponent obtainable at level k is log₂ λ_k, with λ_k = sup{λ : L^NT_k(λ) feasible}. Lifting a solution
+to the next level shows λ_k ≤ λ_{k+1} [KL, §6]. Three natural questions about these constants have remained open:
+
+1. **Strict increase.** [AL, §4] states that λ_k is strictly increasing and "easy to prove". The sketch shows that
+   the lifted solution satisfies some inequality strictly, and concludes that it is "not optimal". For a parametric
+   linear program, slack in one row does not by itself allow the parameter to increase. In [KL, §6], with Lagarias
+   as co-author, the question is listed as open: *"It remains an open problem to show that the values λ_k are
+   strictly increasing in k."*
+2. **Attainment and tightness.** [KL, §6] asks whether (1) the supremum λ_k is attained and (2) at λ_k there is a
+   feasible point with all principal inequalities holding with equality. The authors write: *"We think it likely
+   that properties (1), (2) hold for all k ≥ 2, but this may be difficult to prove."* [AL, §4] asserts (2) without
+   proof.
+3. **Optimality.** After their Theorem 2.2, [KL] state: *"We believe, although we have no proof, that this result
+   gives the largest exponential-type lower bound that can be extracted from the difference inequalities I_k."*
+   They note that (1) and (2) imply it. [AL, Conjecture 4.1] states the analogous comparison with every linear
+   program obtained from Krasikov's inequalities by splitting and truncation.
+
+**Theorem A.** For every k ≥ 2:
+(i) λ_k is attained, and 1 < λ_k < 2;
+(ii) every feasible point of L^NT_k(λ_k) satisfies all principal inequalities with equality, and it is unique up
+to a positive factor;
+(iii) λ_k < λ_{k+1}.
+
+**Corollary B.** For every k ≥ 2, φ^m(y) = c^m λ_k^y (c the solution in (ii), scaled to min c ≥ 1) is a positive,
+nondecreasing solution of Krasikov's system I_k, with equality for all y. Hence:
+- no bound φ^m_k(y) ≥ C λ^y with λ > λ_k follows from I_k;
+- every linear program obtained from I_k by splitting and truncation in the sense of [AL] has λ* ≤ λ_k, which is
+  [AL, Conjecture 4.1].
+
+Theorem A, the first part of Corollary B, Corollary C (§4) and the equivalence of our formulation with
+[KL, (2.7)–(2.14)] are formalised in Lean 4 with Mathlib (§6). Everything rests only on the three standard axioms.
+
+The proof is short once the right structure is visible. Write F_λ for the right-hand side of the principal
+inequalities. Feasibility means c ≤ F_λ(c) for some positive c. F_λ is monotone, positively homogeneous and
+superadditive (a minimum of linear forms), and every row contains the term λ^{−2} c_{4m} without a minimum. The
+arithmetic input is that m ↦ 4m permutes the principal classes modulo 3^k as **one** cycle (Lemma 2). Hence slack
+in a single row spreads backwards to every row (Lemma 3), and zeros spread forwards (Lemma 7). Everything else
+follows from continuity in λ, compactness, and a descent argument already present in a footnote of [AL]. In the
+language of nonlinear Perron–Frobenius theory [GG, LN], F_λ is irreducible because its dependency graph contains a
+Hamiltonian cycle with positive weights.
+
+Theorem A does not touch the main open question about the method, whether λ_k → 2 (equivalently
+π_a(x) ≥ x^{1−ε} from these inequalities). The argument gives no rate: the slack it propagates decays like λ^{−2}
+per step along a cycle of length 3^{k−1}. We comment on this in §5.
+
+## 2. The program
+
+Fix k ≥ 2 and put N = 3^{k−1}, α = log₂ 3. The principal classes are [3^k] = {m mod 3^k : m ≡ 2 (mod 3)}. We index
+them by i ∈ ℤ/N via m = 3i + 2, so that:
+- 4m has index ν(i) = 4i + 2 (mod N);
+- m ≡ 2, 5, 8 (mod 9) iff i ≡ 0, 1, 2 (mod 3).
+
+The auxiliary classes [3^{k−1}] are indexed by s ∈ ℤ/(N/3) in the same way. The class (4m − 2)/3 of a row
+i = 3j is a(i) = 4j (mod N/3), and the class (2m − 1)/3 of a row i = 3j + 2 is b(i) = 2j + 1 (mod N/3). The three
+classes r + u·3^{k−1} (u = 0, 1, 2) above an auxiliary class r have indices s + uN/3.
+
+For c ∈ ℝ^N, c ≥ 0, put c̄_s = min_u c_{s+uN/3} and
+
+  F_λ(c)_i = λ^{−2} c_{ν(i)} + λ^{α−2} c̄_{a(i)} [i ≡ 0],   λ^{−2} c_{ν(i)} [i ≡ 1],   λ^{−2} c_{ν(i)} + λ^{α−1} c̄_{b(i)} [i ≡ 2],
+
+with the congruences taken mod 3. The program L^NT_k(λ) of [KL, (2.7)–(2.14)] has:
+- principal variables 1 ≤ c ≤ C^max;
+- auxiliary variables bounded above by each of the three lifts;
+- the principal inequalities c ≤ F_λ(c) with the auxiliary variables in place of c̄.
+
+(The printed (2.13)–(2.14) have 3^k where 3^{k−1} is meant.) Raising the auxiliary variables to c̄ and rescaling
+shows that L^NT_k(λ) is feasible iff some c > 0 satisfies c ≤ F_λ(c) [KL, §2, §6]. We set
+
+  Λ_k = {λ ∈ [1, 2] : L^NT_k(λ) is feasible},   λ_k = sup Λ_k.
+
+The interval [1, 2] is the range of [KL, Thm 2.2]. Summing the inequalities shows Λ_k contains no λ ∈ (2, 4)
+(Lemma 6). Numerically the program is infeasible on [4, 1000] as well, and r(F_λ) is decreasing on [1, 2], but we
+neither need nor prove either fact.
+
+## 3. Lemmas
+
+**Lemma 1.** For λ > 0, F_λ is monotone, positively 1-homogeneous and superadditive on ℝ^N_{≥0}, and jointly
+continuous in (λ, c). Moreover F_λ(x)_i ≥ λ^{−2} x_{ν(i)} for x ≥ 0.
+
+*Proof.* Each component is a nonnegative combination of coordinates and of minima of coordinates, and
+min(x + y) ≥ min x + min y. ∎
+
+**Lemma 2.** ν is a cyclic permutation of ℤ/N.
+
+*Proof.* ν corresponds to m ↦ 4m on the units m ≡ 2 (mod 3) of ℤ/3^k. The order of 4 = 1 + 3 modulo 3^k is
+3^{k−1} (e.g. by lifting the exponent, v₃(4^n − 1) = 1 + v₃(n)). So every orbit has 3^{k−1} = N elements. ∎
+
+**Lemma 3 (slack spreads).** Fix λ > 0. If x > 0, F_λ(x) ≥ x and F_λ(x) ≠ x, then there is z > 0 with F_λ(z) > z
+in every component.
+
+*Proof.* The iterates y_n = F^n(x) increase. Let S_n = {i : (y_n)_i > x_i}, so S_1 ≠ ∅. If i ∈ S_n and
+ν(i′) = i, then
+
+  (y_{n+1})_{i′} ≥ λ^{−2}(y_n)_i + A_{i′}(y_n) > λ^{−2}x_i + A_{i′}(x) = F(x)_{i′} ≥ x_{i′},
+
+where A_{i′} is the monotone auxiliary part of row i′. So S_{n+1} ⊇ S_n ∪ ν^{−1}(S_n), and S_N = ℤ/N by Lemma 2.
+Let z = Σ_{n<N} y_n. Superadditivity gives
+
+  F(z) ≥ Σ_{n<N} F(y_n) = z − x + y_N > z. ∎
+
+**Lemma 4 (positivity).** If x ≥ 0, x ≠ 0 and F_λ(x) ≥ x, then y = F_λ^N(x) > 0 and F_λ(y) ≥ y.
+
+*Proof.* F(x)_{i′} ≥ λ^{−2} x_{ν(i′)} spreads the support backwards along the cycle, and the iterates increase. ∎
+
+**Lemma 5 (openness).** If z > 0 and F_{λ₀}(z) > z, then F_λ(z) > z for all λ near λ₀.
+
+*Proof.* Lemma 1 (continuity), applied to finitely many components. ∎
+
+**Lemma 6 (summation).** For c ≥ 0,
+
+  Σ_i F_λ(c)_i = λ^{−2} Σ_i c_i + (λ^{α−2} + λ^{α−1}) Σ_s c̄_s,   and   3 Σ_s c̄_s ≤ Σ_i c_i,
+
+with equality in the second relation iff c is constant on each triple of lifts ("top-digit invariant").
+
+*Proof.* The maps ν, i = 3j ↦ 4j and i = 3j + 2 ↦ 2j + 1 are bijections onto their ranges ℤ/N and ℤ/(N/3), since
+4 and 2 are units modulo powers of 3. Moreover c̄_s is at most the mean of its triple. ∎
+
+At λ = 2 the coefficients are 1/4, 3/4 and 3/2, so a feasible point there would satisfy
+Σ c ≤ Σ F_2(c) ≤ (1/4 + 3/4) Σ c. On (2, 4) the same computation is strictly contradictory.
+
+**Lemma 7 (uniqueness).** If c, c′ > 0 are fixed points of F_λ, then c′ = t c for some t > 0.
+
+*Proof.* Take t = min c′/c, attained at i₀, and d = c′ − tc ≥ 0. Superadditivity gives c′ ≥ t c + F(d), so
+F(d) ≤ d. At i₀ this gives λ^{−2} d_{ν(i₀)} ≤ 0. Iterating along the cycle gives d = 0. ∎
+
+**Lemma 8 (descent; cf. [AL, p. 15, footnote]).** Suppose the rows i ≡ 0 (mod 3) of c ≤ F_λ(c) are equalities
+and c is top-digit invariant. Then c is constant.
+
+*Proof.* Let D(d) be the statement that c_i depends only on i mod 3^d; top-digit invariance is D(k − 2). Assume
+D(d) with 1 ≤ d ≤ k − 2. Then c̄_s = c_s = f(s mod 3^d). Row 3j reads
+
+  c_{3j} = λ^{−2} c_{12j+2} + λ^{α−2} f(4j).
+
+Replacing j by j + 3^{d−1} changes neither the left side nor the first term modulo 3^d. Hence
+f(4j) = f(4j + 3^{d−1}), and since 4 is a unit, f is invariant under t ↦ t + 3^{d−1}. That is D(d − 1). ∎
+
+**Lemma 9 (tiling).** Let c be a vector at level k and tile(c) its threefold repetition at level k + 1. Then
+F^{(k+1)}_λ(tile c) ≥ tile(F^{(k)}_λ(c)). The total excess equals (λ^{α−2} + λ^{α−1})(Σ c − 3 Σ c̄), so it is
+nonzero iff c is not top-digit invariant.
+
+*Proof.* At level k + 1 the ×4 term of row i + tN is c_{ν(i)}, and the auxiliary minimum of the tiled vector is
+c_ℓ for a lift ℓ of the level-k auxiliary class. That value is ≥ c̄ of the class. The total follows from Lemma 6
+at both levels. ∎
+
+## 4. Proof of Theorem A and Corollary B
+
+*λ_k > 1.* At λ = 1 the constant vector satisfies c ≤ F_1(c), with strict inequality in the rows i ≡ 0. Lemmas 3
+and 5 give feasibility on [1, 1 + δ).
+
+*2 ∉ Λ_k.* By Lemma 6, a feasible c at λ = 2 is tight and top-digit invariant, hence constant by Lemma 8. Then
+the rows i ≡ 1 read c = c/4, which is impossible.
+
+*Attainment.* Take λ_n ∈ Λ_k increasing to λ_k, with feasible c_n normalised by Σ c_n = 1. A subsequence converges
+to some x ≥ 0 with Σ x = 1, and F_{λ_k}(x) ≥ x by continuity. Lemma 4 makes this positive, so λ_k ∈ Λ_k. Together
+with the previous step, 1 < λ_k < 2.
+
+*Tightness.* If some feasible c at λ_k had slack, Lemmas 3 and 5 would make some λ ∈ (λ_k, 2] feasible. Uniqueness
+is Lemma 7.
+
+*Strict increase.* The tight c at λ_k is not top-digit invariant: otherwise it would be constant by Lemma 8, and
+the rows i ≡ 1 would force λ_k = 1. By Lemma 9, x = tile(c) satisfies x ≤ F^{(k+1)}_{λ_k}(x) with strict inequality
+somewhere. Lemmas 2, 3 and 5 at level k + 1 give some λ > λ_k in Λ_{k+1}. ∎
+
+*Corollary B.* Dividing (D1)–(D3) of [KL] by λ_k^y turns them into the rows of c = F_{λ_k}(c). For lower levels,
+the minima over lifts of a solution of I_k satisfy I_j, j < k: minimise each inequality over the lifts of its
+left-hand class. Now let (L) be a program derived from I_k (and the I_j) by splitting and truncation.
+- The exponential family satisfies (L)'s inequalities, because truncation only uses monotonicity.
+- The proof of [AL, Thm 2.1] uses only those inequalities, the minimisation relations and φ ≥ 1, so it gives
+  c^m λ_k^y ≥ a c′^m λ*(L)^y for all y.
+- Letting y → ∞ forces λ*(L) ≤ λ_k. ∎
+
+**Corollary C (the mean loss).** Let c be the solution at λ_k and ρ_k = 3Σ_s c̄_s / Σ_i c_i the mean loss from the
+minimum over lifts [KL, §6]. Then ρ_k = 3(λ_k − 1)/λ_k^α, and ρ_k is strictly increasing in k.
+
+*Proof.* At λ_k every row is tight, so Lemma 6 gives (1 − λ_k^{−2}) Σ c = (λ_k^{α−2} + λ_k^{α−1}) Σ c̄. Using
+λ^{α−2} + λ^{α−1} = λ^α(1 + λ)/λ² this simplifies to the stated formula. The function R(x) = 3(x − 1)x^{−α} has
+R′(x) = 3x^{−α−1}(α − (α − 1)x) > 0 for x < α/(α − 1) ≈ 2.71, so R is increasing on [1, 2]. Apply Theorem A(iii). ∎
+
+Thus the quantity K–L single out in §6, whose convergence to 1 is equivalent to λ_k → 2, is an exact increasing
+function of λ_k. (Formalised as `rho_eq`, `rho_strictMono`.)
+
+## 5. Remarks
+
+**What is not proved: a rate.** Lemma 3 moves slack only along the ×4 cycle, with factor λ^{−2} per step. The
+tiling excess vanishes on the class m ≡ 5 and on the rows whose lift is the minimising one, so typically on 5/9 of
+the rows. Gain-free runs of length ≍ k occur along the cycle, and the increment δ in λ_{k+1} ≥ λ_k + δ that the
+argument yields is exponentially small in k.
+
+By Corollary C, 1 − ρ_k = R(2) − R(λ_k), which behaves like R′(2)(2 − λ_k) = ((2 − α)/2)(2 − λ_k) as λ_k → 2. So a
+uniform version
+λ_{k+1} − λ_k ≥ κ(2 − λ_k), with κ > 0 independent of k, would give λ_k → 2 geometrically. Numerically
+(2 − λ_{k+1})/(2 − λ_k) stays near 0.934–0.936 for k = 12…15 and then rises steadily to 0.941 at k = 21. The
+corresponding ratio for 1 − ρ_k behaves the same way [P]. Any proof must control the auxiliary branch, which mixes
+across residues, rather than the isometric ×4 branch used here.
+
+**Numerical checks.** For k ≤ 9, at the computed fixed points:
+- the tiling excess is zero on the class m ≡ 5 and positive on exactly two thirds of the classes m ≡ 2 and m ≡ 8;
+- random positive starts all converge to the same fixed point, to machine precision;
+- the vector z of Lemma 3 certifies r_{k+1}(λ_k) ≥ 1.104 (k = 2) down to 1.0059 (k = 9).
+
+Certified brackets [λ_cert, λ_upper] for k ≤ 22 [P] independently confirm λ_k < λ_{k+1} at those levels.
+
+**Other systems.** The proof uses only three ingredients:
+- the doubling-return map is a single cycle on the principal classes;
+- every row contains its term;
+- the descent.
+
+For the analogous 5x+1 system the return map is m ↦ 16m on classes m ≡ 3 (mod 5). Since v₅(16 − 1) = 1, 16
+generates 1 + 5ℤ₅, so this map is again a single cycle.
+- The four auxiliary maps are unit multiples of j = ⌊i/5⌋ plus constants, so the summation and tiling lemmas hold.
+- The descent uses the rows with auxiliary map (2i − 2)/5 = 2j.
+- The ceiling 2 is replaced by the Malthus root λ* = 1.5701677 of the summed identity, which is also where
+  feasibility ends.
+
+So Theorem A holds verbatim for 5x+1: attained, tight, unique, and strictly increasing below λ*. Details are in
+the accompanying notes. Numerically:
+- ×16 is one cycle for k ≤ 9;
+- tiling gains on exactly 16/25 of the rows;
+- r_{k+1}(λ_k) > 1 for k ≤ 6.
+
+For a px+1 analogue built the same way, the return map is m ↦ 2^d m with d = ord_p(2). It is a single cycle on the
+principal classes iff v_p(2^d − 1) = 1, i.e. iff p is not a Wieferich prime.
+
+**Context.** Mazur's Lean formalisation (2026) of positive lower density of predecessors makes π_a(x) ≥ c_a x a
+theorem, with ineffective c_a [M]. That supersedes all x^γ bounds as statements about π_a. Theorem A is about the
+method. It shows that the Krasikov–Lagarias exponents form a strictly increasing sequence of exact optima,
+log₂ λ_k ↑ γ∞ ≤ 1. Whether γ∞ = 1, i.e. whether these finite difference inequalities ultimately see the true
+exponent, remains open. The certificates also still give the best explicit bounds at realistic heights:
+π_a(x) ≥ (x/a)^{0.9251}/(4 C_max) for all x ≥ a, with C_max = 9851 at k = 22 [P].
+
+## 6. Formalisation
+
+The development `lean_formal/KLMonotone/Basic.lean` (about 1340 lines, Lean 4 v4.30.0-rc2 with Mathlib) contains:
+- `KLFeasible`: the program exactly as [KL, (2.7)–(2.14)];
+- `klFeasible_iff`: its equivalence with ∃ c > 0, c ≤ F_λ(c);
+- the residue meaning of every index map: ×4, (4m − 2)/3, (2m − 1)/3, the lifts r + u·3^{k−1};
+- `KL_lambda_strictMono`: (n ↦ sup Λ_{n+2}) is strictly monotone, and each supremum is attained and lies in (1, 2);
+- `tight`, `unique`, and `exact_solution` (Corollary B for I_k);
+- `rho_eq` and `rho_strictMono` (Corollary C).
+
+Lemma 2 uses Mathlib's `ZMod.orderOf_one_add_prime`. There is no `sorry`, no `native_decide` and no certificate.
+`#print axioms` reports only `propext`, `Classical.choice` and `Quot.sound`, and the file checks in about 10 seconds.
+
+## References
+
+- [AL] D. Applegate, J. C. Lagarias, Density bounds for the 3x+1 problem II. Krasikov inequalities, Math. Comp. 64
+  (1995) 427–438.
+- [GG] S. Gaubert, J. Gunawardena, The Perron–Frobenius theorem for homogeneous, monotone functions, Trans. AMS 356
+  (2004) 4931–4950.
+- [Kr] I. Krasikov, How many numbers satisfy the 3x+1 conjecture?, Internat. J. Math. Math. Sci. 12 (1989)
+  791–796.
+- [KL] I. Krasikov, J. C. Lagarias, Bounds for the 3x+1 problem using difference inequalities, Acta Arith. 109 (2003)
+  237–258; arXiv:math/0205002.
+- [LN] B. Lemmens, R. Nussbaum, Nonlinear Perron–Frobenius Theory, Cambridge University Press, 2012.
+- [M] L. Mazur, Positive lower density of Collatz predecessors, ProofAtlas formalisation (Lean 4), September 2026.
+- [P] D. Palmqvist, Certified Krasikov–Lagarias predecessor bounds for the 3x+1 problem to k = 22, preprint draft,
+  2026.
