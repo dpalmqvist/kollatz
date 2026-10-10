@@ -205,6 +205,14 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
 - `fourier_majorant.py`, `fourier_majorant3.py` (spår 28 steg 4, 2026-10-10): Taos betingning som positiv
   Fourier-majorant över ALLA karaktärer. Par: 0.78/0.85 per nivå (gränsfall); tripplar: 0.72–0.75 per nivå för
   n ≤ 17 (< 0.84). Kvar för absolutkontinuitet: likformighet i n (Taos svarta trianglar, exponentiellt).
+- `cond_collision.py`, `cond_collision_mlx.py`, `notes/conditional_collision.md` (spår 28 steg 7, 2026-10-10 natt):
+  NY VÄG utan kancellation. Betinga på blocksummor (ℓ gap/block) ⇒ μ_C faltning av oberoende block, Jensen
+  ‖ν_m‖² ≤ Γ_m = E_C[3^m coll] (positivt). Exakt: R-massan i reell koordinat följer en cirkeloperator 𝓛 med Lebesgue
+  som egenmått, egenvärde κ₀ = (3p)^ℓ/p (2-adiskt injektivitetslemma: N_V mod 2^c bestämmer kompositionen) ⇒ vägen
+  kräver p < 1/3. 𝓛^† kontraherar Hölder-täthet (Lasota–Yorke, rigoröst). Numeriskt: blockkvot → κ₀ (ℓ = 5–8, j ≤ 16),
+  R-massan ekvidistribuerad ned till skala 1e-6 vid 0 och 1/2; spikar = rena 2-potenskaraktärer med försvinnande
+  massandel. Kvar: överföra den kontinuerliga kontraktionen till de diskreta R-massorna (Lyapunovfunktion med
+  singulariteter i dyadiska trädet; "anti-svarta" återkomster). `python cond_collision_mlx.py L MMAX`.
 - `mcycles.py` (spår 13, 2026-10-10): Hercher/SdW m-cykelmetod, `validate` reproducerar båda; vid 2^71 fortfarande
   m ≤ 91 (m = 92 kräver 2^73.87). Se `notes/mcycles_2_71.md`; det orefereegranskade m ≥ 102 (Lean) granskat i
   `notes/mcycles_102_audit.md` (giltigt givet 2^71 + Rhin; leanchecker + nanoda). UTVIDGAT 2026-10-10 till m ≤ 104

@@ -1505,6 +1505,18 @@ Questions:
      which is borderline. The remaining lemma for absolute continuity of ν_{1/4} is to make this decay uniform in n
      (Tao's black-triangle analysis, made exponential with explicit constants).
 
+**Step 7 (2026-10-10, night): conditional collision, a positive route** (`notes/conditional_collision.md`,
+`cond_collision_mlx.py`).
+- **Reduction.** Conditioning on block sums makes the L² problem positive, with no cancellation. ν_p ∈ L² follows
+  from geometric decay of the R-mass M_j.
+- **Exact structure.** The R-mass moves by an explicit circle operator 𝓛. Lebesgue measure is an exact eigenmeasure
+  with eigenvalue κ₀ = (3p)^ℓ/p, by 2-adic injectivity of block values. So the route needs p < 1/3.
+- **Continuous version (rigorous).** 𝓛^† contracts Hölder densities (Lasota–Yorke).
+- **Numerics.** Decay at exactly κ₀ per block for ℓ = 5–8. The mass is equidistributed even near the bad points 0
+  and 1/2.
+- **Remaining.** The discrete R-masses: show that no mass accumulates near the dyadic tree, including the
+  anti-black returns.
+
 Payoff: a publishable improvement now (A–L Theorem 1.1 from 1.302/1.358 to within 3·10^{−5} of 4/3), and a cleaner
 testbed for the λ_k → 2 problem.
 
