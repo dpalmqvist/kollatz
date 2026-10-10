@@ -261,3 +261,39 @@ weights tend to 1. A proof needs one of:
 
 Either would give absolute continuity of the Applegate–Lagarias limit measure. Continuity, which is what C′ needs,
 is a further step beyond that.
+
+## Step 6: weighted L² certificate, first attempt (2026-10-10, night) — negative (`weighted_majorant_norm.py`)
+
+Weighted ℓ² norm of the positive triple-majorant operator, level n−3 → level n:
+
+| n | 8 | 9 | 10 | 11 | 12 |
+|---|---|---|---|---|---|
+| unweighted (λ = 1) | 0.963 | 0.975 | 0.979 | 1.010 | 1.032 |
+| λ = 0.95 | 0.946 | 0.945 | 0.981 | 1.012 | 1.031 |
+| λ = 0.9 | 0.949 | 0.958 | 1.051 | 1.113 | 1.193 |
+| λ = 0.8 | 1.018 | 1.134 | 1.377 | 1.557 | 1.918 |
+
+The weights are w = λ^{L_eff}, where L_eff is the remaining 2-adic budget of the best representation k ≡ 2^L u.
+
+**Diagnosis.** At n = 12 the top singular vectors live on the pure 2-power chain:
+- 50 % of the right vector sits on 11 sources, −2^j/3^9 with j = 0 … 6;
+- the left vector sits on targets −2^L/3^{12} with L = 10 … 17.
+
+Making chain sources cheap, as the chain monotonicity requires, lets their 26 far lifts per step blow up. Those
+lifts have real part ≈ m/27, and their cosine factors |Ψ_c| are fixed numbers on the 27th roots of unity, about
+0.3–0.5, not small.
+
+This contamination is real: the far lifts of near-identity characters do carry elevated |ν̂|. A working weight must
+therefore track a contamination generation as well as the budget, i.e. "lift of a near-identity character within
+the last g steps". That is a design problem with several more parameters, and the remaining margin is thin (the
+majorant's L² rate is 0.94 per level).
+
+**Assessment.** Four certificate designs have now failed for identified structural reasons:
+- sup norm;
+- distance bins;
+- unweighted ℓ²;
+- budget-weighted ℓ².
+
+A successful proof of absolute continuity probably needs either a sharper majorant than triples (longer blocks or
+the exact Fourier recursion, recovering the true typical rate 0.38 against 0.56 for the majorant), or the
+analytic digit-budget/Baker argument. This is genuine research beyond a quick certificate; parking it here.
