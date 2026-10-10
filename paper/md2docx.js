@@ -1,4 +1,4 @@
-// Convert paper/draft.md (a regular Markdown subset) to a publication-styled .docx.
+// Convert a paper (paper/*.md, a regular Markdown subset) to a publication-styled .docx.
 // usage: node md2docx.js in.md out.docx
 const fs = require("fs");
 const {
@@ -16,7 +16,7 @@ const PAGE_W = 11906, PAGE_H = 16838, MARGIN = 1418;   // A4, 2.5 cm
 const TEXT_W = PAGE_W - 2 * MARGIN;
 
 // ---------- inline parsing -> TextRun[] ----------
-const SUP_BARE = /^\^([A-Za-zα-ωΑ-Ω0-9∞]+(?:\.[0-9]+)?)/u;
+const SUP_BARE = /^\^([±×+−]|[A-Za-zα-ωΑ-Ω0-9∞]+(?:\.[0-9]+)?)/u;
 const SUB_BARE = /^_([A-Za-z0-9∞′*α-ωΑ-Ω]+)/u;
 
 function runs(text, base = {}) {
@@ -35,7 +35,7 @@ function runs(text, base = {}) {
       const j = rest.indexOf("**", 2);
       if (j > 0) { flush(); out.push(...runs(rest.slice(2, j), { ...base, bold: true })); i += j + 2; continue; }
     }
-    if (rest.startsWith("*") && !rest.startsWith("**")) {
+    if (rest.startsWith("*") && !rest.startsWith("**") && (i === 0 || !/[A-Za-z0-9)α-ωΑ-Ω]/u.test(text[i - 1]))) {   // N*_k stays literal
       const j = rest.indexOf("*", 1);
       if (j > 0 && !/\s/.test(rest[1])) { flush(); out.push(...runs(rest.slice(1, j), { ...base, italics: true })); i += j + 1; continue; }
     }
@@ -52,7 +52,7 @@ function runs(text, base = {}) {
       if (t.endsWith(".") ) { t = t.slice(0, -1); adv -= 1; }
       push(t, { superScript: true }); i += adv; continue;
     }
-    if ((m = SUB_BARE.exec(rest)) && i > 0 && /[A-Za-zα-ωΑ-Ω)\]̄′]/u.test(text[i - 1])) {
+    if ((m = SUB_BARE.exec(rest)) && i > 0 && /[A-Za-zα-ωΑ-Ω)\]̄′*‖|]/u.test(text[i - 1])) {
       push(m[1], { subScript: true }); i += m[0].length; continue;
     }
     buf += text[i]; i += 1;
@@ -77,6 +77,12 @@ let inRefs = false;
 while (i < src.length) {
   const line = src[i];
   if (line.trim() === "") { i++; continue; }
+  if (line.startsWith("```")) {      // fenced code block, kept verbatim
+    const lines = []; i++;
+    while (i < src.length && !src[i].startsWith("```")) { lines.push(src[i]); i++; }
+    i++;
+    blocks.push({ type: "code", lines }); continue;
+  }
   if (/^#{1,3} /.test(line)) {
     const level = line.match(/^#+/)[0].length;
     const text = line.replace(/^#+ /, "");
@@ -98,22 +104,33 @@ while (i < src.length) {
     }
     blocks.push({ type: inRefs ? "ref" : "li", text }); continue;
   }
+  if (line.startsWith("  - ")) {     // nested bullet (continuation lines indented by 4)
+    let text = line.slice(4); i++;
+    while (i < src.length && /^    \S/.test(src[i])) { text += " " + src[i].trim(); i++; }
+    blocks.push({ type: "li2", text }); continue;
+  }
+  if (/^[0-9]+\. /.test(line)) {     // numbered item (continuation lines indented by 3)
+    let text = line; i++;
+    while (i < src.length && /^   \S/.test(src[i])) { text += " " + src[i].trim(); i++; }
+    blocks.push({ type: "num", text }); continue;
+  }
   if (/^  \S/.test(line)) {           // display line
     blocks.push({ type: "display", text: line.trim() }); i++; continue;
   }
-  if (line.startsWith("*Draft") && blocks.length <= 1) {   // draft note under the title (may span lines)
+  if (line.startsWith("*") && !line.startsWith("**") && blocks.length <= 1) {   // italic note under the title (may span lines)
     let text = line; i++;
     while (i < src.length && src[i].trim() !== "") { text += " " + src[i].trim(); i++; }
     blocks.push({ type: "note", text: text.replace(/^\*/, "").replace(/\*$/, "") }); continue;
   }
   let text = line.trim(); i++;
-  while (i < src.length && src[i].trim() !== "" && !/^(#|\||- |  \S)/.test(src[i])) { text += " " + src[i].trim(); i++; }
+  while (i < src.length && src[i].trim() !== "" && !/^(#|\||- |  \S|```|[0-9]+\. )/.test(src[i])) { text += " " + src[i].trim(); i++; }
   blocks.push({ type: "p", text });
 }
 
 // ---------- build document ----------
 const children = [];
 let titleDone = false;
+const noteHasAuthor = blocks.some(b => b.type === "note" && /Palmqvist/.test(b.text));
 const H = { 1: HeadingLevel.HEADING_1, 2: HeadingLevel.HEADING_2, 3: HeadingLevel.HEADING_3 };
 
 for (const b of blocks) {
@@ -121,7 +138,7 @@ for (const b of blocks) {
     titleDone = true;
     children.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { before: 1200, after: 240 },
       children: [new TextRun({ text: b.text, font: BODY_FONT, size: 34, bold: true })] }));
-    children.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 60 },
+    if (!noteHasAuthor) children.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 60 },
       children: [new TextRun({ text: "Daniel Palmqvist", font: BODY_FONT, size: 24 })] }));
     children.push(new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 360 },
       children: [new TextRun({ text: "October 2026", font: BODY_FONT, size: 22 })] }));
@@ -147,6 +164,25 @@ for (const b of blocks) {
   if (b.type === "li") {
     children.push(new Paragraph({ numbering: { reference: "bullets", level: 0 }, alignment: AlignmentType.JUSTIFIED,
       spacing: { after: 80, line: 264 }, children: runs(b.text) }));
+    continue;
+  }
+  if (b.type === "li2") {
+    children.push(new Paragraph({ numbering: { reference: "bullets", level: 1 }, alignment: AlignmentType.JUSTIFIED,
+      spacing: { after: 60, line: 264 }, children: runs(b.text) }));
+    continue;
+  }
+  if (b.type === "num") {
+    const m = b.text.match(/^([0-9]+\.) (.*)$/);
+    children.push(new Paragraph({ indent: { left: 567, hanging: 340 }, alignment: AlignmentType.JUSTIFIED,
+      spacing: { after: 100, line: 264 }, tabStops: [{ type: TabStopType.LEFT, position: 567 }],
+      children: [new TextRun({ text: m[1] + "\t", font: BODY_FONT, size: BODY_SIZE }), ...runs(m[2])] }));
+    continue;
+  }
+  if (b.type === "code") {
+    b.lines.forEach((ln, k) => children.push(new Paragraph({
+      indent: { left: 340 }, spacing: { before: k === 0 ? 80 : 0, after: k === b.lines.length - 1 ? 160 : 0 },
+      shading: { type: ShadingType.CLEAR, fill: "F3F3F3", color: "auto" },
+      children: [new TextRun({ text: ln.replace(/ /g, "\u00A0"), font: CODE_FONT, size: 16 })] })));
     continue;
   }
   if (b.type === "ref") {
@@ -203,8 +239,11 @@ const doc = new Document({
         run: { font: BODY_FONT, size: 23, bold: true, italics: true }, paragraph: { spacing: { before: 240, after: 100 }, keepNext: true, outlineLevel: 2 } },
     ],
   },
-  numbering: { config: [{ reference: "bullets", levels: [{ level: 0, format: LevelFormat.BULLET, text: "•", alignment: AlignmentType.LEFT,
-    style: { paragraph: { indent: { left: 567, hanging: 283 } } } }] }] },
+  numbering: { config: [{ reference: "bullets", levels: [
+    { level: 0, format: LevelFormat.BULLET, text: "•", alignment: AlignmentType.LEFT,
+      style: { paragraph: { indent: { left: 567, hanging: 283 } } } },
+    { level: 1, format: LevelFormat.BULLET, text: "–", alignment: AlignmentType.LEFT,
+      style: { paragraph: { indent: { left: 1134, hanging: 283 } } } }] }] },
   sections: [{
     properties: { page: { size: { width: PAGE_W, height: PAGE_H }, margin: { top: MARGIN, bottom: MARGIN, left: MARGIN, right: MARGIN } } },
     footers: { default: new Footer({ children: [new Paragraph({ alignment: AlignmentType.CENTER,

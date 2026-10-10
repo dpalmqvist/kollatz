@@ -1,7 +1,8 @@
 # Certified Krasikov–Lagarias predecessor bounds for the 3x+1 problem to k = 22: two-sided brackets, machine-checked instances, and the finite-level loss
 
-*Draft 0.9, 2026-10-10. All numbers are taken from `RESULTS.md`, `certs/*/cert.json`, `AVENUES.md`,
-`spectrum.json`, `kl5.json` and the literature survey `reports/Collatz adjacent work and references.md`.*
+*Draft 0.10, 2026-10-10. Daniel Palmqvist, with Claude (Anthropic). All numbers are taken from `RESULTS.md`,
+`certs/*/cert.json`, `AVENUES.md`, `spectrum.json`, `kl5.json`, `syracuse_measure.json` and the literature survey
+`reports/Collatz adjacent work and references.md`.*
 
 ## Abstract
 
@@ -37,6 +38,18 @@ The same construction on 5x+1 has the branching-walk exponent 0.6509 of Kontorov
 poses the same question. The data to k = 22 are consistent with λ_k → 2 but do not establish it; we state what a
 proof would need.
 
+Two developments of 2026 frame these results.
+- Mazur's formal proof of positive lower density, π_a(x) ≥ c_a x for every a ≢ 0 (mod 3) (Conjecture A of
+  Applegate–Lagarias), supersedes every bound of the form x^γ for a fixed a. We re-checked that proof independently.
+  Its constants are ineffective and not uniform in a.
+- With the minimum replaced by the mean, the Perron vector of the λ = 2 operator is exactly the density of Tao's
+  Syracuse random variable. Its level-to-level corrections do not shrink in L²: the diagonal contraction factor is
+  exactly 1. So the question λ_k → 2 sits at a critical point. We propose this as the reason for the slow, drifting decay of 1 − ρ_k (§6.8).
+
+The Krasikov–Lagarias bounds are uniform over residue classes and, at moderate k, fully explicit. Certified points of
+bounded spread with a lifted base case give π_a(x) ≥ 0.7146 (x/a)^{0.848} for all x ≥ 2^{6.25} a, for every
+a ≡ 2 (mod 3) not on a cycle, and an explicit envelope up to the k = 22 exponent (§4.4).
+
 ## 1. Introduction
 
 The 3x+1 map is T(n) = n/2 for even n and (3n+1)/2 for odd n. The Collatz conjecture asserts that every orbit
@@ -49,7 +62,7 @@ Lower bounds of the form π_a(x) ≥ x^γ have a forty-year history. Crandall (1
 a nonlinear program on about 20 000 variables; and Krasikov and Lagarias (2003) 0.84, from a linear program
 with 3^{10} principal variables. Lagarias's 2010 overview lists 0.84 as the record and states as open that
 π_1(x) > c(ε) x^{1−ε} for every ε > 0. Krasikov and Lagarias observe in their §6 that their constants λ_k satisfy
-λ_k ≤ λ_{k+1} and that λ_k → 2 would give the x^{1−ε} bound; no progress on that has appeared.
+λ_k ≤ λ_{k+1} and that λ_k → 2 would give the x^{1−ε} bound; no progress on that had appeared before 2026.
 
 Three things changed between 2003 and 2026, and this paper uses all three.
 
@@ -67,6 +80,21 @@ number.
 by a second finite certificate, an "adaptive forced potential" on the same residue classes, and checks both
 certificates by compiled evaluation (`native_decide`), so that the statement for a given k is a Lean theorem.
 We feed our certificates through that development for k = 18, 19 and 20.
+
+*Positive density.* In September 2026 Mazur released a Lean formalisation of positive lower density:
+π_a(x) ≥ c_a x for every a ≢ 0 (mod 3) and all large x. This is Conjecture A of Applegate and Lagarias, and in
+particular it answers the x^{1−ε} question for each fixed a. The method differs from ours: a weighted backward-tree
+mass from one seed, with an explicit-constant form of Tao's fine-scale mixing as the analytic input (see §6.8 for how
+that mixing relates to the present system). We rebuilt it from source and replayed every module through Lean's own
+kernel and through the independent kernel nanoda. The statement is faithful, and the axioms are the standard three.
+The work is not refereed.
+
+For a fixed a it supersedes every bound of the form x^γ, including those of this paper. What it does not give is
+uniformity and explicitness. Its constant c_a is ineffective for general a, while a feasible point of L^NT_k bounds
+π_a for all a in a residue class at once, with a computable constant. This paper therefore addresses three questions:
+- explicit uniform bounds (§4.4);
+- the exact structure and capacity of the method (Theorem 1 and §6);
+- certified computation at scale (§§3–5).
 
 Related work, 2024–2026. Several AI-assisted Lean projects pursue the same program; none is refereed. msharpe248
 obtains π_1(x) = Ω(x^{0.8676}) at k = 14 with a kernel-checked certificate (29 h, 37 GB) and 0.895 at k = 17
@@ -163,8 +191,14 @@ The proof rests on one arithmetic fact and some elementary nonlinear Perron–Fr
 Uniqueness: zeros of c′ − t c propagate forwards along the cycle.
 
 The complete argument is in `notes/strict_monotonicity.md`. It is formalised in Lean 4 with Mathlib
-(`lean_formal/KLMonotone/`, about 1250 lines, no certificates, only the three standard axioms), including the
-equivalence with the program exactly as printed in Krasikov–Lagarias (2.7)–(2.14) and the residue form of all index maps.
+(`lean_formal/KLMonotone/`, about 1340 lines, no certificates, only the three standard axioms). The formalisation
+includes the equivalence with the program exactly as printed in Krasikov–Lagarias (2.7)–(2.14) and the residue form
+of all index maps. A corollary gives the loss of §6.1 in closed form, ρ_k = 3(λ_k − 1)/λ_k^α, and shows that
+1 − ρ_k is strictly decreasing.
+
+The development builds standalone and passes `leanchecker`. It was also replayed in the independent kernel nanoda:
+29 202 declarations on Lean v4.30, and 30 006 declarations, Mathlib included, after a port to v4.35. The v4.35
+toolchain postdates the fix of kernel bug #14576 (§5.4).
 
 The theorem gives no rate. The slack travels with factor λ^{−2} per step along the ×4 cycle, so the increment it
 certifies is exponentially small in k. A uniform version, λ_{k+1} − λ_k ≥ κ(2 − λ_k), is equivalent to geometric
@@ -287,6 +321,58 @@ regenerated by the scripts or available on request. Minimal relative slacks are 
 (19), 1.4·10^{−6} (20), 1.1·10^{−5} (21), 2.4·10^{−5} (22); slack of order 10^{−7} is the float32 limit, so k ≥ 23
 would need float64 polishing or a λ_cert further below λ_k.
 
+### 4.4 Explicit bounds valid for all x
+
+Theorem 2.2 of Krasikov–Lagarias holds for every y ≥ 0, not only asymptotically. A feasible point with 1 ≤ c ≤ t at
+level k and parameter λ gives φ_m(y) ≥ c_m λ^y/(4t). Hence, with no threshold,
+
+  π_a(x) ≥ (x/a)^{log₂ λ}/(4t)   for all x ≥ a and every a ≢ 0 (mod 3) not on a cycle.
+
+The Perron vectors of §3 have spread ≈ 1.52^k, which makes this constant useless at large k. But Krasikov and
+Lagarias's own linear program (their (2.7)) minimises the spread. The minimal spread t*(k, λ) is non-increasing in k
+(lifting) and converges at fixed λ, whereas the Perron spread does not:
+
+| k \ λ | 1.60 | 1.65 | 1.70 | 1.75 | 1.78 | 1.80 |
+|---|---|---|---|---|---|---|
+| 9 | 4.448 | – | 7.752 | – | – | – |
+| 11 | 4.448 | 5.551 | 7.613 | 11.707 | 18.193 | – |
+| 13 | 4.448 | 5.543 | 7.580 | 11.157 | 15.416 | 20.883 |
+| 14 | 4.448 | 5.542 | 7.571 | 11.017 | 15.000 | 19.347 |
+| 16 | 4.448 | 5.539 | 7.556 | 10.850 | 14.547 | 18.164 |
+
+At λ = 1.80 the Perron spread is 1594 at k = 16. The values were computed by an LP (HiGHS) for k ≤ 9 and by the
+monotone iteration c ← min(t, F(c)) with bisection on t to k = 16. The two agree to four decimals. Extrapolating
+the decrements gives t*_∞ ≈ 4.45, 5.54, 7.55, 10.7, 14.3, 17.6 for λ = 1.60 … 1.80. This fits C(2 − λ)^{−a} with
+a = 2.0–2.1, though the local exponents drift slightly upward.
+
+The constant 1/(4t) improves by a factor of 40–60 if the Krasikov–Lagarias induction (their Theorem 5.1) is started
+at a higher base window [Y − 2, Y]. In that window φ_m(y) is bounded below by exactly enumerating each class's
+*guaranteed* predecessor tree: 2n always, and (2n − 1)/3 when n ≡ 2 (mod 3), which is decidable for ≤ k odd steps.
+The base constant is
+
+  Δ = min over grid cells [y_i, y_{i+1}] of L(y_i)/(c λ^{y_{i+1}}).
+
+Here the counts L(y) are exact integers. The float64 path heights stay at least 2.5·10^{−5} from every grid point, so
+no node is misplaced. Certified bounded-spread points are checked like §4.1 and by `verify_cert.py`. With them, for
+a ≡ 2 (mod 3) not on a cycle:
+
+| range of x/a | bound | certificate |
+|---|---|---|
+| 2^{6.25} … 2^{15.7} | 0.7146 (x/a)^{0.8480} | k = 14, λ = 1.80, spread 19.35 |
+| 2^{15.7} … 2^{18.3} | 0.5514 (x/a)^{0.8718} | k = 16, λ = 1.83, spread 29.49 |
+| 2^{18.3} … 2^{335} | 0.4987 (x/a)^{0.8797} | k = 17, λ = 1.84, spread 33.84 |
+| ≥ 2^{335} | (x/a)^{0.92509}·C_min/(4λC_max), C_max/C_min = 9840.7 | k = 22 Perron certificate |
+
+Each lifted bound holds for all x ≥ 2^{6.25} a. For a ≡ 1 (mod 3) use π_a ≥ π_{2a}: divide the constant by λ and
+require x ≥ 2^{7.25} a. The lifting costs are:
+- k = 14: 1.6·10^6 trees, 4·10^9 nodes, 3 min;
+- k = 17: 1.7·10^{11} nodes, 2.4 h, on one core.
+
+An earlier value of 0.865 for k = 8 took the minimum only at grid points; the rigorous value is 0.8435. Mazur's
+positive-density constants are ineffective for general a, so these are the best lower bounds for π_a(x) that can be
+written down at any height. If t*_∞(λ) ∝ (2 − λ)^{−2} continued to λ = 2, which is unproved, it would give
+π_a(x) ≫ x/(log x)², uniformly in a.
+
 ## 5. Formal verification
 
 ### 5.1 Mazur's development
@@ -349,7 +435,8 @@ and k = 20 potentials (645 700 815 and 1 937 102 445 inequalities).
 `native_decide` places the Lean compiler in the trust base. A kernel soundness bug (Lean issue #14576, July 2026,
 fixed in 4.32.2) was exposed by an AI-assisted "disproof" of the Collatz conjecture; we therefore report the axiom
 audit of every theorem, keep both external verifiers in the loop, and recommend re-running the builds on a
-toolchain at or above 4.32.2. The memory of `native_decide` scales linearly with N (about 8–24 bytes per class),
+toolchain at or above 4.32.2. Theorem 1 (§2.4) is not affected: it uses no `native_decide`, and it was replayed by
+nanoda on v4.35. The memory of `native_decide` scales linearly with N (about 8–24 bytes per class),
 so k = 21 and 22 (estimated 90 and 270 GiB) are out of reach of this route on 64 GB; a streamed verified checker
 in the style of cake_lpr or lrat-catcher, proved once and run natively in constant memory, is the natural next
 step and would also move the compiled code out of the trust base of each individual certificate.
@@ -409,7 +496,7 @@ comparable in the limit measure.
 ### 6.4 The limit object
 
 The total variation between the level-j marginals of the normalised solutions at consecutive k decays
-geometrically (ratio ≈ 0.92), so a limit measure on Z₃ exists. It is singular: C_max/C_min grows like 1.52^k
+geometrically (ratio ≈ 0.92), so a limit measure on Z₃ exists. It is not bounded: C_max/C_min grows like 1.52^k
 (147 at k = 12, 9851 at k = 22), the mass in the top 1 % of classes rises from 6.5 % to over 9 %, and the Hölder
 exponent of the digit profile on coarse scales falls from 0.14 (k = 12) to 0.085 (k = 19), extrapolating to
 0.04–0.09, possibly 0. The boundary layer is universal: the Hölder exponent at distance d from the top digit is
@@ -574,6 +661,64 @@ predecessor exponent is provably below its Malthusian root; we know of none. (No
 exponent for 5x+1 exists in the literature; π_a(x) ≥ x^{0.516} numerically at k = 14 appears to be the first,
 pending the same certification.)
 
+### 6.8 The linear limit is Tao's Syracuse measure
+
+Replace the minimum over lifts in F₂ by the mean. The resulting linear operator has Haar measure as a left
+eigenvector with eigenvalue 1, and its Perron vector h_k can be identified exactly.
+
+**Proposition.** For k ≥ 3, h_k(m) is proportional to the average density, on the ball m + 3^k Z₃, of Tao's
+Syracuse random variable
+
+  Syrac(Z₃) = Σ_{j≥1} 3^{j−1} 2^{−S(j)},   S(j) = a_1 + ⋯ + a_j,   a_j i.i.d. with P(a_j = m) = 2^{−m}.
+
+This is the stationary law of the 3-adic walk x ↦ x/2, x ↦ (3x+1)/2 with probability 1/2 each (Tao, Remark 1.13).
+
+*Proof.*
+- At every level the stationary density satisfies h(x) = (1/2)h(2x) + (3/2)[x ≡ 2, 8 (9)]·h((2x − 1)/3), where the
+  last term is taken one level coarser.
+- For x ≡ 2 (mod 3), 2x ≡ 1 (mod 3) has no odd predecessor, so h(2x) = h(4x)/2.
+- For x ≡ 2 (mod 9), (2x − 1)/3 ≡ 1 (mod 3), so likewise h((2x − 1)/3) = h((4x − 2)/3)/2.
+- Substituting gives h(x) = (1/4)h(4x) + (3/4)[x ≡ 2 (9)]h((4x − 2)/3) + (3/2)[x ≡ 8 (9)]h((2x − 1)/3). This is
+  L^NT_k at λ = 2 (λ^{−2} = 1/4, λ^{α−2} = 3/4, λ^{α−1} = 3/2), with the mean over lifts as the coarser average. ∎
+
+We checked the identification numerically to 10^{−15} for k ≤ 12. Consequently 1 − ρ_k has an exact linear
+counterpart: the top-digit oscillation of Syrac. Tao proves (his Prop. 1.14) that its L¹ size,
+Osc_{k−1,k}, is O_A(k^{−A}) for every A. This is the linear analogue of ρ_k → 1, and it is a theorem.
+
+**A critical point.** Generalise to odd-step probability p, and let δ_k = h_k − h_{k−1} be the martingale difference
+of the level densities. The difference obeys
+
+  δ_k(c) = Σ_{j≥0} 3p(1 − p)^j [2^j c ≡ 2, 8 (9)] δ_{k−1}((2^{j+1}c − 1)/3).
+
+The diagonal part of E[δ_k²] is exactly (3p/(2 − p))·E[δ_{k−1}²]. The off-diagonal part is a correlation between
+δ_{k−1}(y) and δ_{k−1}(2^d(y + 1/3) − 1/3), and it is numerically negligible: the measured ratios of ‖δ_k‖₂ converge
+to the diagonal prediction (`syracuse_measure.py`, exact marginals to k = 17).
+
+| p | √(3p/(2 − p)) | ‖δ_k‖₂ ratio, k = 15 | ‖δ_k‖₁ ratio, k = 15 |
+|---|---|---|---|
+| 1/4 | 0.6547 | 0.6503 | 0.6501 |
+| 1/3 | 0.7746 | 0.7722 | 0.7656 |
+| 0.4 | 0.8660 | 0.8652 | 0.8435 |
+| 1/2 | 1 | 1.0006 | 0.9279 |
+
+At p = 1/2, the case of this paper, the factor is exactly 1.
+- The density is (numerically) not square-integrable.
+- The L¹ decay that Tao proves comes entirely from cancellation. Its per-level ratio is 0.926, 0.928, 0.929, 0.931
+  for k = 14 … 17, rising at the same pace as the ratio of 1 − ρ_k (0.919 … 0.924 over the same k, 0.933 at k = 22).
+
+A second effect sets the spread. The fixed point −1 of x ↦ (3x + 1)/2 (the trivial negative cycle) multiplies the
+density near −1 by 3p per level. For p = 1/2 the density therefore grows like 1.5^k at −1, and like (1/2)^j·1.5^k at
+its images −2^{−j}, which are dense. So it is unbounded on every ball, and its spread grows like 1.6^k. This is the
+origin of the C_max ∝ 1.52^k of §6.4. The minimum over the top digit removes the spike at −1 itself (c_k does not
+peak there) but not the growth. The min-system vector stays close to h_k without equalling it: total variation 0.14
+and log-correlation 0.987 at k = 12.
+
+Counting by depth instead of by size gives p = 1/4 (companion paper). There the factor is √(3/7) = 0.655, the spread
+stays bounded (≈ 3.55), all L^q norms decay fast enough for a continuous density, and the loss of the minimum-system
+decays at that rate, 0.65 per digit. The size-counting problem of this paper is thus the critical member of a
+one-parameter family whose subcritical members behave well. Heuristically, λ_k → 2 asks for a min-version of Tao's
+fine-scale mixing at the critical point. That would explain why 1 − ρ_k decays neither geometrically nor fast.
+
 ## 7. What is and is not established
 
 All results here are density statements, and even the limit γ → 1 would exclude neither a nontrivial cycle nor a
@@ -584,6 +729,13 @@ undecidability result for maps linear on residue classes implies that any proof 
 3 specifically; the Krasikov–Lagarias system does, but only through the branching rule mod 3 and the size factors
 2 and 3/2, which is why it yields exponents and not individual orbits.
 
+Since September 2026, positive density for every fixed a is a formally verified theorem (Mazur; §1). By its
+Corollary 1.2, the Collatz conjecture is equivalent to the set of integers whose orbit reaches 1 having upper
+density 1. The results here are of a different type:
+- uniform and explicit bounds (§4.4);
+- the structure of the method (Theorem 1);
+- its capacity (§6).
+
 Within the method, what is now proved is structural: λ_k is attained, tight, unique and strictly increasing
 (Theorem 1, machine-checked), so the exponents of §3 approximate a well-defined increasing sequence whose
 limit is the method's exact capacity. The open mathematical problem is λ_k → 2 ⇔ ρ_k → 1. §6 reduces it to two statements about the
@@ -591,7 +743,9 @@ limit object: that the fine top-digit alignments act as independent, which the s
 2·10^{−3} in λ, and that the distribution of the ×4 weight converges, which the data to k = 21 support with
 geometrically shrinking increments; together they would give a contraction estimate for the loss and hence λ_k → 2.
 The same reduction holds for 5x+1 with ceiling 0.6509 in place of 1, so a proof cannot rest on the contracting drift
-of 3x+1. We regard the data to k = 22 as consistent with that limit and not as evidence for it.
+of 3x+1. We regard the data to k = 22 as consistent with that limit and not as evidence for it. §6.8 adds a
+precise linear counterpart: with mean in place of minimum, ρ_k → 1 becomes Tao's fine-scale mixing, which is proved.
+The difficulty therefore lies in the minimum, at a point where the linear problem is exactly critical.
 
 ## Data and code availability
 
@@ -599,7 +753,9 @@ Repository: github.com/dpalmqvist/kollatz (MIT). Certificates `certs/k{k}_{λ}/c
 with sha256 of the vectors; independent verifier `verify_cert.py`; the search (`kl.py`, `kl_mlx.py`, `kl_split.py`);
 Lean modules, manifests and verifier reports in `lean_formal/`; measurements in `rho.py`, `holder.py`,
 `rF2_fit.py`, `renorm.py`, `renorm2.py`, `spectrum.py`, `boundary_layer.py`, `defect.py`, `meanfield.py`, `weights.py`,
-`popdyn.py`, `kl5.py`, `kl5_mlx.py`; the literature survey in `reports/`.
+`popdyn.py`, `kl5.py`, `kl5_mlx.py`, `syracuse_measure.py`; explicit bounds in `spread_lp.py`, `spread_iter.py`,
+`certify_spread.py`, `base_lift_chunked.py` and `certs/spread_k*/`; Theorem 1 in `monotone_check.py`,
+`notes/strict_monotonicity.md` and `lean_formal/KLMonotone/`; the literature survey in `reports/`.
 
 ## References
 
@@ -616,6 +772,9 @@ Lean modules, manifests and verifier reports in `lean_formal/`; measurements in 
 - J. C. Lagarias, The 3x+1 problem: an overview, in The Ultimate Challenge, AMS 2010; arXiv:2111.02635.
 - J. C. Lagarias, D. Weiss, The 3x+1 problem: two stochastic models, Ann. Appl. Probab. 2 (1992) 229–261.
 - L. Mazur, Collatz predecessor 0.90 (Lean 4 development), ProofAtlas, July 2026, commit 5f76a170.
+- L. Mazur, Positive lower density of Collatz predecessors, v1.0, 6 Sep 2026, with Lean 4 formalisation, ProofAtlas.
+- D. Palmqvist, The Krasikov–Lagarias exponents for the 3x+1 problem are attained and strictly increasing, draft, 2026.
+- D. Palmqvist, Uniform exponential bounds for the number of 3x+1 preimages, draft, 2026.
 - J. W. Sander, On the (3N+1)-conjecture, Acta Arith. 55 (1990) 241–248.
 - J. Simons, B. de Weger, Theoretical and computational bounds for m-cycles of the 3n+1 problem, Acta Arith. 117 (2005) 51–70.
 - T. Tao, Almost all orbits of the Collatz map attain almost bounded values, Forum Math. Pi 10 (2022) e12; arXiv:1909.03562.

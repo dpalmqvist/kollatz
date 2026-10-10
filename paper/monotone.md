@@ -1,6 +1,6 @@
 # The Krasikov–Lagarias exponents for the 3x+1 problem are attained and strictly increasing
 
-*Daniel Palmqvist, with Claude (Anthropic). Draft 0.1, 2026-10-10.*
+*Daniel Palmqvist, with Claude (Anthropic). Draft 0.2, 2026-10-10.*
 
 ## Abstract
 
@@ -260,8 +260,9 @@ principal classes iff v_p(2^d − 1) = 1, i.e. iff p is not a Wieferich prime.
 theorem, with ineffective c_a [M]. That supersedes all x^γ bounds as statements about π_a. Theorem A is about the
 method. It shows that the Krasikov–Lagarias exponents form a strictly increasing sequence of exact optima,
 log₂ λ_k ↑ γ∞ ≤ 1. Whether γ∞ = 1, i.e. whether these finite difference inequalities ultimately see the true
-exponent, remains open. The certificates also still give the best explicit bounds at realistic heights:
-π_a(x) ≥ (x/a)^{0.9251}/(4 C_max) for all x ≥ a, with C_max = 9851 at k = 22 [P].
+exponent, remains open. The certificates of [P] also give the best explicit bounds at realistic heights. For
+example, π_a(x) ≥ 0.7146 (x/a)^{0.848} for all x ≥ 2^{6.25} a, for every a ≡ 2 (mod 3) not on a cycle, and an
+explicit envelope up to the k = 22 exponent [P, §4.4].
 
 ## 6. Formalisation
 
@@ -275,6 +276,10 @@ The development `lean_formal/KLMonotone/Basic.lean` (about 1340 lines, Lean 4 v4
 
 Lemma 2 uses Mathlib's `ZMod.orderOf_one_add_prime`. There is no `sorry`, no `native_decide` and no certificate.
 `#print axioms` reports only `propext`, `Classical.choice` and `Quot.sound`, and the file checks in about 10 seconds.
+The development builds as a standalone Lake project with `autoImplicit = false` and passes `leanchecker`. It was
+also exported and replayed in the independent kernel nanoda: 29 202 declarations on v4.30, and 30 006 declarations,
+Mathlib included, after a port to Lean v4.35. That toolchain postdates the fix of kernel bug #14576. The port needed
+three small version-robust tactic changes.
 
 ## References
 

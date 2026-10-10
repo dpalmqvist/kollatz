@@ -1,6 +1,6 @@
 # Uniform exponential bounds for the number of 3x+1 preimages
 
-*Daniel Palmqvist, with Claude (Anthropic). Draft 0.1, 2026-10-10.*
+*Daniel Palmqvist, with Claude (Anthropic). Draft 0.2, 2026-10-10.*
 
 ## Abstract
 
@@ -239,16 +239,15 @@ the Perron vector of A_r, normalised to mean 1 over the classes.
 - (b) There is a unique probability measure ν on ℤ₃^× whose density, relative to normalised Haar measure, has
   average h_r(c) on every ball c + 3^r ℤ₃. ν is the stationary law of the Markov chain on ℤ₃^× that maps x to x/2
   with probability 3/4 and to (3x+1)/2 with probability 1/4. Equivalently, ν is the law of
-  X = Σ_{j≥1} 3^{j−1} 2^{−(a_1+⋯+a_j)}, with a_j i.i.d. and P(a_j = m) = (1/4)(3/4)^{m−1}.
+  X = Σ_{j≥1} 3^{j−1} 2^{−S(j)}, with S(j) = a_1 + ⋯ + a_j, a_j i.i.d. and P(a_j = m) = (1/4)(3/4)^{m−1}.
 - (c) For every class c mod 3^r, the average of (3/4)^k N*_k(b) over the classes b mod 3^{k+1} with b ≡ c (mod 3^r)
   tends to h_r(c) as k → ∞.
 
 *Proof.*
-- (a) Summing A_r v over all classes gives (4/3)Σ_c v(c), as in the summed identity of §3. So the all-ones row
-  vector is a positive left eigenvector. The cycle c ↦ 2c makes A_r irreducible. The class c ≡ −1 has a self-loop,
-  because (2·(−1)−1)/3 = −1, so A_r is primitive and its Perron root is 4/3.
-
-  Averaging over the top digit commutes with A_r. The doubling term maps the fibres of reduction mod 3^{r−1} onto
+- (a), Perron root. Summing A_r v over all classes gives (4/3)Σ_c v(c), as in the summed identity of §3. So the
+  all-ones row vector is a positive left eigenvector. The cycle c ↦ 2c makes A_r irreducible. The class c ≡ −1 has a
+  self-loop, because (2·(−1)−1)/3 = −1, so A_r is primitive and its Perron root is 4/3.
+- (a), consistency. Averaging over the top digit commutes with A_r. The doubling term maps the fibres of reduction mod 3^{r−1} onto
   fibres, and β depends only on c mod 9. As the top digit of c runs through 0, 1, 2, the class (2c−1)/3 mod 3^{r−1}
   runs through the three lifts of (2s−1)/3 mod 3^{r−2}, where s ≡ c (mod 3^{r−1}). So the top-digit average of h_r
   is a positive eigenvector of A_{r−1}, and by uniqueness it equals h_{r−1}.
@@ -299,7 +298,7 @@ So, numerically, N^±(k)(3/4)^k → max h and min h, and the Conjecture C′ con
 continuous function on ℤ₃^×.
 
 **Relation to the Syracuse random variable.** For general p the chain x ↦ x/2 (probability 1 − p),
-x ↦ (3x+1)/2 (probability p) has the stationary law X_p = Σ_{j≥1} 3^{j−1}2^{−(a_1+⋯+a_j)}, P(a = m) = p(1−p)^{m−1}.
+x ↦ (3x+1)/2 (probability p) has the stationary law X_p = Σ_{j≥1} 3^{j−1}2^{−S(j)}, with S(j) = a_1 + ⋯ + a_j and P(a = m) = p(1−p)^{m−1}.
 - p = 1/2 is Tao's Syracuse random variable Syrac(ℤ₃) [T, Remark 1.13].
 - The Krasikov–Lagarias system at λ = 2 with min replaced by mean has as Perron vector exactly the density of X_{1/2}
   on the classes ≡ 2 (mod 3). So counting by size [KL] is the case p = 1/2, and counting by depth is p = 1/4.

@@ -26,7 +26,7 @@ a { color: var(--accent); text-decoration: none; } a:hover { text-decoration: un
 </style></head>
 <body>
 <h1>The Krasikov–Lagarias exponents for the 3x+1 problem are attained and strictly increasing</h1>
-<p><em>Daniel Palmqvist, with Claude (Anthropic). Draft 0.1, 2026-10-10.</em></p>
+<p><em>Daniel Palmqvist, with Claude (Anthropic). Draft 0.2, 2026-10-10.</em></p>
 <h2>Abstract</h2>
 <p>Krasikov and Lagarias obtained lower bounds π_a(x) ≥ x^γ for the number of integers below x whose 3x+1 orbit
 contains a. They did this through a family of linear programs L^NT_k(λ) on the residue classes modulo 3^k, with
@@ -218,8 +218,9 @@ principal classes iff v_p(2^d − 1) = 1, i.e. iff p is not a Wieferich prime.</
 theorem, with ineffective c_a [M]. That supersedes all x^γ bounds as statements about π_a. Theorem A is about the
 method. It shows that the Krasikov–Lagarias exponents form a strictly increasing sequence of exact optima,
 log₂ λ_k ↑ γ∞ ≤ 1. Whether γ∞ = 1, i.e. whether these finite difference inequalities ultimately see the true
-exponent, remains open. The certificates also still give the best explicit bounds at realistic heights:
-π_a(x) ≥ (x/a)^{0.9251}/(4 C_max) for all x ≥ a, with C_max = 9851 at k = 22 [P].</p>
+exponent, remains open. The certificates of [P] also give the best explicit bounds at realistic heights. For
+example, π_a(x) ≥ 0.7146 (x/a)^{0.848} for all x ≥ 2^{6.25} a, for every a ≡ 2 (mod 3) not on a cycle, and an
+explicit envelope up to the k = 22 exponent [P, §4.4].</p>
 <h2>6. Formalisation</h2>
 <p>The development <code>lean_formal/KLMonotone/Basic.lean</code> (about 1340 lines, Lean 4 v4.30.0-rc2 with Mathlib) contains:
 - <code>KLFeasible</code>: the program exactly as [KL, (2.7)–(2.14)];
@@ -229,7 +230,11 @@ exponent, remains open. The certificates also still give the best explicit bound
 - <code>tight</code>, <code>unique</code>, and <code>exact_solution</code> (Corollary B for I_k);
 - <code>rho_eq</code> and <code>rho_strictMono</code> (Corollary C).</p>
 <p>Lemma 2 uses Mathlib&rsquo;s <code>ZMod.orderOf_one_add_prime</code>. There is no <code>sorry</code>, no <code>native_decide</code> and no certificate.
-<code>#print axioms</code> reports only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>, and the file checks in about 10 seconds.</p>
+<code>#print axioms</code> reports only <code>propext</code>, <code>Classical.choice</code> and <code>Quot.sound</code>, and the file checks in about 10 seconds.
+The development builds as a standalone Lake project with <code>autoImplicit = false</code> and passes <code>leanchecker</code>. It was
+also exported and replayed in the independent kernel nanoda: 29 202 declarations on v4.30, and 30 006 declarations,
+Mathlib included, after a port to Lean v4.35. That toolchain postdates the fix of kernel bug #14576. The port needed
+three small version-robust tactic changes.</p>
 <h2>References</h2>
 <ul>
 <li>[AL] D. Applegate, J. C. Lagarias, Density bounds for the 3x+1 problem II. Krasikov inequalities, Math. Comp. 64
