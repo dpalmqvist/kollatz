@@ -297,3 +297,32 @@ majorant's L² rate is 0.94 per level).
 A successful proof of absolute continuity probably needs either a sharper majorant than triples (longer blocks or
 the exact Fourier recursion, recovering the true typical rate 0.38 against 0.56 for the majorant), or the
 analytic digit-budget/Baker argument. This is genuine research beyond a quick certificate; parking it here.
+
+## Aside: Tao's measure ν_{1/2} has no exponential Fourier decay in the computable range (2026-10-10, late; `syracuse_fourier.py`)
+
+Motivation: AVENUES §30 (an explicit density bound for non-convergent integers) needs the Fourier decay of Tao's
+Syracuse measure, p = 1/2. Same computation as for ν_{1/4}: max |ν̂(ξ)| over primitive ξ mod 3^n, the maximiser, and
+local slopes of log max|ν̂| over the window [n − 4, n] against n, log n and √n.
+
+| n | 6 | 8 | 10 | 12 | 14 | 16 | 17 |
+|---|---|---|---|---|---|---|---|
+| max \|ν̂_{1/2}\| | 9.61e-2 | 6.09e-2 | 3.83e-2 | 2.65e-2 | 1.91e-2 | 1.44e-2 | 1.25e-2 |
+| slope per level | −0.342 | −0.267 | −0.230 | −0.208 | −0.173 | −0.152 | −0.142 |
+| local power exponent | 1.25 | 1.54 | 1.80 | 2.06 | 2.06 | 2.11 | 2.11 |
+| slope against √n | −1.32 | −1.29 | −1.29 | −1.31 | −1.20 | −1.13 | −1.10 |
+
+- **Not exponential in this range.** The slope per level keeps shrinking. For ν_{1/4} it settles at −0.45 (ratio
+  0.64, as before).
+- **Locally a power law.** Over n = 12–17 the local exponent is steady at 2.1. Tao's Prop. 1.17 gives O_A(n^{−A}) for
+  every A, so the exponent must grow eventually, but the asymptotic regime starts beyond n = 17. (A first fit
+  through n = 4, 9, 16 suggested exp(−1.25√n); the local √n slope drifts, so that fit is withdrawn.)
+- **Maximiser.** Always a pure 2-power, ξ = ±2^L with 2^L/3^n between 1/64 and 1/24 (p = 1/4: about 1/10). This is
+  the pure 2-power chain near the identity that defeated every majorant in steps 4–6. At p = 1/2 its effect is much
+  stronger.
+
+Consequences:
+- For §28 nothing changes. ν_{1/4} decays exponentially, and the chain mechanism is p-dependent in strength.
+- For §30, the savings available from Tao's Fourier input in the computable range are polynomial in the 3-adic level.
+  An explicit ε from the 2^71 range will therefore be modest unless the asymptotic regime sets in early.
+- Next: the single-character recursion in AVENUES §30, step 2 (O(A²n²) per coefficient) tests the 2-power
+  characters up to n = 50–100.

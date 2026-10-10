@@ -73,10 +73,12 @@ New avenues 23–25 below follow from this.
 | 22 | Structure theorems for L^NT_k: attainment, tightness, uniqueness, strict increase | first theorems of the project; settles K–L 2003's open problem and A–L 1995 Conj. 4.1 | PROVED and machine-checked 2026-10-10 (`notes/strict_monotonicity.md`, `monotone_check.py`, `lean_formal/KLMonotone/`, standard axioms only); quantitative version = avenue 1 |
 | 23 | Mazur's seed averaging vs the K–L minimum: an LP for a chosen seed class | effective Conjecture A | proposed 2026-10-10 |
 | 24 | Effective constants for Conjecture A (verification range 2^71 as input) | explicit c_a | proposed 2026-10-10 |
-| 25 | Density one of P(1), the single remaining statement (Mazur Cor. 1.2) | Collatz | proposed 2026-10-10 |
+| 25 | Density one of P(1), the single remaining statement (Mazur Cor. 1.2) | Collatz | proposed 2026-10-10; DOWNGRADED the same day: averaging methods would need error o(1/a) at scale a (§29) |
 | 26 | Generalise the two-rise bound (r-rise, LP over shapes) for formal m-cycle records | conditional formal m-cycle record | proposed 2026-10-10 |
 | 27 | Primitive-necklace heuristic with local factors for cycle counts (test on 3x+d) | falsifiable cycle model | proposed 2026-10-10 |
 | 28 | Depth K–L system: prove ρ_r → 1 (faster-mixing model of avenue 1) ⇒ Conjectures B, C′ | theorem; testbed for avenue 1 | certified bounds to r = 19; 2026-10-10: Perron vectors = marginals of one 3-adic stationary measure (p = 1/4; K–L = Tao's p = 1/2), rate 0.65 = √(3/7) explained, C′ reduced to continuity of its density (`syracuse_measure.py`) |
+| 29 | The 0.05-bit wall: a no-go theorem for counting methods | delimits where a proof can live; makes §25's odds explicit | proposed 2026-10-10 |
+| 30 | Explicit upper bound on the density of non-convergent integers (Tao made explicit + the 2^71 range) | explicit theorem; with Mazur, a counterexample's component has density in (0, ε) | proposed 2026-10-10; first data: the worst Fourier coefficient of Tao's measure is not exponentially small for n ≤ 17 (`syracuse_fourier.py`) |
 | — | Scaling k further | +0.005 in γ per step | k = 22 certified 2026-10-08 (γ = 0.9251) plus upper certificate; k = 23 needs ~192 GB |
 
 ## 1. Prove that the Krasikov–Lagarias exponent tends to 1
@@ -1288,6 +1290,11 @@ no counterexample.
 method could replace it for the fixed target set [1, 2^71]. Theory; months; long odds, but this is now *the*
 statement.
 
+**Downgraded (2026-10-10, late; see §29).** A counterexample's component has density only ≈ c/a, where a is its
+least element. Tao-type mixing bounds the set of n whose orbit never drops below a by a power of 1/log a. So an
+averaging argument would need error o(1/a), i.e. it would have to decide individual integers. Keep this avenue only
+if an ingredient that is not an average turns up. The explicit version of what averaging *can* give is §30.
+
 ## 26. Formal m-cycle bounds: generalise the "two-rise" bound (proposed 2026-10-10)
 
 **Background.** The audited repository (avenue 13, `notes/mcycles_102_audit.md`) gets past Hercher's bootstrap with
@@ -1519,6 +1526,82 @@ Questions:
 
 Payoff: a publishable improvement now (A–L Theorem 1.1 from 1.302/1.358 to within 3·10^{−5} of 4/3), and a cleaner
 testbed for the λ_k → 2 problem.
+
+## 29. The 0.05-bit wall: a no-go theorem for counting methods (proposed 2026-10-10)
+
+**Observation.** Every route to the full conjecture meets the same constant
+η = 1 − H(log 2/log 3) ≈ 0.0501 bits per step, where H is the binary entropy (H(0.6309) = 0.9499):
+- **Cycles.** Parity vectors of length n with k ≈ n·log_3 2 odd steps number ≈ 2^{0.95n}, against the modulus
+  2^n − 3^k ≈ 2^n. The expected number of cycles of length n is ≈ 2^{−0.05n} (§19).
+- **Divergence.** A divergent orbit must keep its odd-step density ≥ log 2/log 3 ≈ 0.631. In the random model this
+  has probability ≈ 2^{−0.05j} after j steps.
+- **Density one (§25).** By Mazur, a counterexample produces a T-invariant set of non-convergent integers with
+  positive lower density. But that density is only ≈ c/a, where a is the set's least element (heuristic;
+  empirically d_a·a ≥ 0.67 for a < 3^8, `pred_density.py`). Tao-type mixing bounds the set of n whose orbit never
+  drops below a by a power of 1/log a. A density argument needs error o(1/a), i.e. it must decide individual
+  integers.
+
+Counting, mixing and LP methods all produce "main term + error". None of them can show that a count whose main
+term is already below 1 is zero. In §19, even square-root cancellation in every exponential sum leaves an error of
+≈ 2^{0.47n} where an error below 1 is needed. The only tools that see single integers are:
+- Baker-type bounds, which work only for cycles with few local minima (§13, §26);
+- hypothetically, 2-adic or adelic rigidity (§18, §20), for which nobody has a foothold.
+
+**Statement to prove.** Add a Theorem 4 to `notes/no_go_theorems.md`: an argument that controls the non-convergent
+set only through scale and residue statistics (mod 2^a 3^b), with error ≥ c/a at scale a, cannot exclude a
+non-convergent component. Ingredients to check:
+1. Tao's stability of the first-passage law under a change of starting scale seems to imply that every union of
+   grand orbits has asymptotically scale-invariant logarithmic density. Iterate over the scales y, y^α, y^{α²}, …;
+   the errors log^{−c}(y^{α^j}) are summable. Check the exact statement in Tao §1.3/§3, and whether this
+   corollary is already known.
+2. The residue profile of a component mod 3^k is that of its backward tree, and the backward branching is the same
+   for every component (the A–L limit function). Check how much of this is provable.
+3. The 0.05-bit counts for cycles and divergence above, made exact.
+
+**Payoff.** A precise map of the negative space, extending §21 from potentials to counting arguments. It makes the
+odds of §25 explicit and frames the paper and the contact with Lagarias. Days.
+
+## 30. Explicit upper bound on the density of non-convergent integers (proposed 2026-10-10)
+
+**Target.** Make Tao's theorem explicit and feed it the verified range 2^71. The result would be: the set of n that
+do not reach 1 has upper logarithmic density ≤ ε, with ε explicit. Combined with Mazur (a counterexample's
+component has positive lower density, hence positive lower logarithmic density), any counterexample's component
+would have log density in (0, ε). As far as we know no explicit ε of this kind is published. Check the literature
+before calling it new (the lesson of `notes/assessment_2026-10-10.md` §7).
+
+**Why it fits.** It is explicit, rigorous and computer-assisted. The hard input is the Fourier decay of Tao's
+Syracuse measure ν_{1/2} (his Prop. 1.17: O_A(n^{−A}) for 3 ∤ ξ). That is the same kind of lemma §28 needs for
+ν_{1/4}.
+
+**First data (2026-10-10, `syracuse_fourier.py`, n ≤ 17).** In the computable range, the worst primitive
+coefficient of ν_{1/2} is not exponentially small, unlike that of ν_{1/4}:
+
+| n | 4 | 8 | 12 | 16 | 17 |
+|---|---|---|---|---|---|
+| max \|ν̂_{1/2}\| | 0.177 | 0.0609 | 0.0265 | 0.0144 | 0.0125 |
+| ratio to level n − 1 | 0.70 | 0.80 | 0.83 | 0.885 | 0.868 |
+| max \|ν̂_{1/4}\| | 1.7e-2 | 5.1e-4 | 6.1e-5 | 1.0e-5 | – |
+
+- **ν_{1/4}:** the ratio levels off at 0.62–0.64, i.e. exponential decay, as found in §28.
+- **ν_{1/2}:** the log slope per level shrinks steadily, from −0.34 at n = 6 to −0.14 at n = 17. Over n = 12–17 the
+  local power exponent is steady at 2.1 (max |ν̂| ≈ C n^{−2.1}). A three-point fit first suggested exp(−1.25√n),
+  but the local √n slope drifts (−1.31 → −1.10). Tao's bound forces the power exponent to grow eventually; it has
+  not grown by n = 17.
+- **Maximiser:** always a pure 2-power ξ = ±2^L, with 2^L/3^n between 1/64 and 1/24. This is the same 2-power-chain
+  mechanism that defeated the §28 majorants, and it is much stronger at p = 1/2.
+
+Consequence: in the computable range the savings are polynomial in the 3-adic level, i.e. powers of the log of the
+scale. So ε from 2^71 will be modest unless the asymptotic regime sets in early. Worth knowing before investing.
+
+**First steps.**
+1. Read Tao §3–§7 for the chain of constants (passage stability, the n^{−A} Fourier bound, the conversion to
+   f-bounds) and write down which of them are explicit.
+2. Extend the Fourier data far beyond n = 17. With X = 2^{−a_1}(1 + 3X′) one has
+   ν̂_n(ξ) = Σ_a p q^{a−1} e(ξ2^{−a}/3^n) ν̂_{n−1}(ξ2^{−a}), so at depth j only the characters ξ2^{−s} with
+   s = a_1 + … + a_j are needed. Truncating a ≤ A, one coefficient costs O(A²n²) with tail error ≈ n q^A. Scanning
+   the 2-power characters ±2^L near L ≈ 1.24n gives a lower bound for the maximum, which is enough to test
+   exponential decay at n = 50–100.
+3. Decide whether an honest explicit ε is worth a paper. Weeks to months.
 
 ## Not avenues
 

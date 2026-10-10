@@ -102,3 +102,17 @@ the certified record, `notes/limit_function.md` the latest research log.
   - "Proposition 5 appears new" was retracted once A–L 1995 §6 turned up.
 - **Lesson:** check the specific prior literature, here A–L 1995 *The distribution of 3x+1 trees*, before calling
   an identification new. The cheapest check (one paper) came after the write-up, not before.
+
+## Addendum (2026-10-10, late)
+
+- **Avenue 29 (new): the 0.05-bit wall.** Cycles, divergence and density one all fail at the same constant,
+  η = 1 − H(log 2/log 3) ≈ 0.050 bits per step. A counterexample lives where the random model predicts fewer than
+  one integer, and counting methods cannot prove that such a count is zero. To be written as Theorem 4 of
+  `notes/no_go_theorems.md`.
+- **Avenue 25 downgraded.** A counterexample's component has density ≈ c/a (a = its least element), so an averaging
+  proof of density one would need error o(1/a).
+- **Avenue 30 (new): explicit ε.** Make Tao explicit with the 2^71 range: the non-convergent set has log density
+  ≤ ε. First data (`syracuse_fourier.py`): the worst Fourier coefficient of Tao's ν_{1/2} is not exponentially
+  small for n ≤ 17 (locally ≈ n^{−2.1}, maximiser ±2^L), unlike ν_{1/4}. Expect a modest ε.
+- The recommended order (publish → Lagarias → avenue 28) is unchanged; avenue 30 is the natural proof-directed
+  project after that, since it shares its hard lemma with avenue 28.

@@ -205,6 +205,11 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
 - `fourier_majorant.py`, `fourier_majorant3.py` (spår 28 steg 4, 2026-10-10): Taos betingning som positiv
   Fourier-majorant över ALLA karaktärer. Par: 0.78/0.85 per nivå (gränsfall); tripplar: 0.72–0.75 per nivå för
   n ≤ 17 (< 0.84). Kvar för absolutkontinuitet: likformighet i n (Taos svarta trianglar, exponentiellt).
+- `syracuse_fourier.py NMAX [p ...]` (spår 30, 2026-10-10): värsta Fourier-koefficienten för ν_p per nivå,
+  maximeraren som ±2^L·s och lokala lutningar (mot n, log n, √n). p = 1/4: exponentiell (0.64/nivå). p = 1/2 (Taos
+  mått): INTE exponentiell för n ≤ 17 – kvoten stiger 0.66 → 0.87–0.89, lokal potens n^{−2.1} stabil för n = 12–17
+  (Tao ger O_A(n^{−A}), exponenten måste växa senare); maximeraren alltid ±2^L, 2^L/3^n ≈ 1/64–1/24. n = 17: 15 s,
+  23 GB. Se AVENUES §30 (explicit ε för täthet av icke-konvergenta tal) och §29 (0.05-bitarsväggen).
 - `cond_collision.py`, `cond_collision_mlx.py`, `notes/conditional_collision.md` (spår 28 steg 7, 2026-10-10 natt):
   NY VÄG utan kancellation. Betinga på blocksummor (ℓ gap/block) ⇒ μ_C faltning av oberoende block, Jensen
   ‖ν_m‖² ≤ Γ_m = E_C[3^m coll] (positivt). Exakt: R-massan i reell koordinat följer en cirkeloperator 𝓛 med Lebesgue
@@ -489,6 +494,10 @@ på en stor maskin. Ingen Lean-verktygskedja är installerad här (`elan`/`lake`
 - Conways oavgörbarhet för generaliserade Collatz-avbildningar: varje bevis måste använda 3x+1:s specifika
   aritmetik. Ekvivalenta omformuleringar utan dragkraft: Berg–Meinardus funktionalekvationer, Bernstein–Lagarias
   2-adiska konjugering, omskrivningsterminering (ovan).
+- Väggen (2026-10-10, AVENUES §29): båda motexempeltyperna lever där slumpmodellen förutsäger < 1 heltal. Marginalen
+  är η = 1 − H(log 2/log 3) ≈ 0.050 bit/steg för cykler (2^{−0.05n}) och divergens (2^{−0.05j}); en Mazur-komponent
+  med minsta element a har täthet ≈ c/a, så täthetsmetoder behöver fel o(1/a). Räkne-, blandnings- och LP-metoder kan
+  inte visa att ett antal med huvudterm < 1 är 0; bara Baker (få lokala minima) ser enskilda heltal. Spår 25 nedgraderat.
 - Inom ramen är det öppna matematiska målet λ_k → 2 ⇔ ρ_k → 1 (K–L §6). Det är en fråga om Perron-vektorns
   beroende av översta siffran – mer angripbar än LP:t i sig.
 
