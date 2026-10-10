@@ -1496,6 +1496,10 @@ Questions:
      leaves a collision-entropy deficit of 2^{0.30n}, so absolute continuity of ν would need *exponential* decay of
      ν̂ at rate < 2^{−1/4} ≈ 0.84 per level (numerically 0.64). That is the precise next lemma. Continuity, or at
      least boundedness plus control of the selection chains, then remains.
+   - **Step 4 (triples).** Tao's conditioning on triples, as a positive Fourier majorant over all characters, decays
+     at 0.72–0.75 per level for n ≤ 17 (`fourier_majorant3.py`), below the 0.84 needed. Pairs gave 0.78/0.85,
+     which is borderline. The remaining lemma for absolute continuity of ν_{1/4} is to make this decay uniform in n
+     (Tao's black-triangle analysis, made exponential with explicit constants).
 
 Payoff: a publishable improvement now (A–L Theorem 1.1 from 1.302/1.358 to within 3·10^{−5} of 4/3), and a cleaner
 testbed for the λ_k → 2 problem.

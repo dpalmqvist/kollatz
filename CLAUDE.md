@@ -202,6 +202,9 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   avklingningen är aritmetisk (Tao-typ). Taos §7 (Fourier, n^{−A}) är p-oberoende, men §6 (Fourier ⇒ blandning)
   kräver h(1/2) = 1 bit per 2-adisk enhet; för p = 1/4 saknas 2^{0.30n} ⇒ absolutkontinuitet kräver EXPONENTIELL
   Fourier-avklingning < 0.84/nivå (numeriskt 0.64). Det är nästa lemma.
+- `fourier_majorant.py`, `fourier_majorant3.py` (spår 28 steg 4, 2026-10-10): Taos betingning som positiv
+  Fourier-majorant över ALLA karaktärer. Par: 0.78/0.85 per nivå (gränsfall); tripplar: 0.72–0.75 per nivå för
+  n ≤ 17 (< 0.84). Kvar för absolutkontinuitet: likformighet i n (Taos svarta trianglar, exponentiellt).
 - `mcycles.py` (spår 13, 2026-10-10): Hercher/SdW m-cykelmetod, `validate` reproducerar båda; vid 2^71 fortfarande
   m ≤ 91 (m = 92 kräver 2^73.87). Se `notes/mcycles_2_71.md`; det orefereegranskade m ≥ 102 (Lean) granskat i
   `notes/mcycles_102_audit.md` (giltigt givet 2^71 + Rhin; leanchecker + nanoda). UTVIDGAT 2026-10-10 till m ≤ 104
