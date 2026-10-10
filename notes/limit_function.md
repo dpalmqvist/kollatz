@@ -167,3 +167,54 @@ too). We measured the Haar-normalised L² norm of K^m on all martingale differen
    decorrelation of δ_n under the affine maps above in a quantitative, higher-moment form. The exact recursion of
    step 2 is the bookkeeping. The missing input is an equidistribution estimate for pairs (and quadruples) of
    "Syracuse offsets", of the kind Tao proves for single offsets.
+
+## Step 5: toward uniform exponential Fourier decay (2026-10-10, evening)
+
+Goal: sup over all level-n characters ξ of |ν̂_{1/4}(ξ)| ≤ Cθⁿ with θ < 2^{−1/4} ≈ 0.84 (or < 0.81 for Tao's
+general split), for all n.
+
+**1. The extremisers are the pure 2-power characters.** At every n = 9 … 13, the six characters with the largest
+triple majorant are ξ = ±2^L/3^n (u = ±1 exactly), with L ≈ 0.87·n·log₂3. In Tao's picture they carry the one
+maximal black triangle. Their decay is explained quantitatively:
+- Such a character stays near the identity for about L/E[c] triple-steps (E[c] = 12).
+- Since L ≤ n log₂3, that is at most a fraction log₂3/4 ≈ 0.40 of the path.
+- On the rest it decays at the generic rate θ_g, so the worst rate is ≈ θ_g^{0.60}. With θ_g ≈ 0.6 this gives
+  0.74, matching the observed 0.72–0.75.
+- Requirement, in this model: θ_g < 0.84^{1/0.60} ≈ 0.75.
+
+**2. The right space is the 2-adic solenoid.** For ξ = k/3^n, the values ξ2^{−t} mod 1 = (c_t + k/3^n)/2^t, where
+c_t ∈ [0, 2^t) holds the first t binary digits of the 2-adic number −k·3^{−n}. So |Ψ_c(ξ)| is a continuous function
+of the point (k/3^n, −k/3^n) in 𝕋₂ = (ℝ × ℚ₂)/ℤ[1/2]. The step ξ ↦ 27ξ2^{−c} is the group automorphism ×27/2^c of
+𝕋₂.
+- The level-n characters are the torsion points of order 3^n.
+- The majorant is a positive transfer operator 𝒫 on C(𝕋₂), with 𝒫1(0) = 1 at the identity (the trivial
+  character).
+- The identity is a saddle: attracting in the real coordinate (×27/2^c contracts on average, E c = 12) and repelling
+  in the 2-adic one.
+- A character near the identity is "black", meaning k ≡ 2^L u with u small. It stays for about v₂(k)/12 steps,
+  and v₂(k) ≤ log₂|k| ≤ n log₂3. That is the 40 % budget.
+
+**3. One-step contraction away from the identity.** κ(ξ) = Σ_c P(c)|Ψ_c(ξ)| at n = 12:
+- mean 0.17 per triple step; maximum 0.90 near the identity;
+- maximum 0.53 (0.81 per level) over characters at 2-adic distance ≥ 10, where distance means
+  min_L log₂|centred(k·2^{−L})|.
+
+A binned majorant (bins = capped distance) is too lossy: 0.93 per level overall, 0.77 for the far block d ≥ 10.
+Pure 2-power characters map to pure 2-power characters, so the bins must also carry the remaining 2-adic budget.
+
+**4. Returns to the identity are a Baker-type question.** After a pure 2-power character escapes, its orbit is
+2^{−s}/3^m. It returns near the identity only if 2^{−s} ≡ u (mod 3^m) with u small. That means 2^s u − 3^m t = 1
+with small u and t, i.e. |s log 2 − m log 3| tiny with an exact unit relation. Baker's theorem rules this out
+beyond O(log m) scales. General u needs S-unit or Baker bounds on 3^m t − 2^s u.
+
+**Proof architecture (proposed, not done):**
+- (i) A finite, level-independent contraction certificate for 𝒫 on 𝕋₂ minus a neighbourhood U of the identity.
+  The state must include the real scale and the 2-adic budget, not just the distance. Target: θ_far below about
+  0.75 per level, i.e. 0.42 per triple step. The generic rate is about 0.22.
+- (ii) The budget near the identity: the first visit lasts at most v₂(k)/E[c] ≤ n log₂3/12 steps.
+- (iii) Baker bounds showing that later visits are short, O(log n).
+- (iv) A large-deviation bound for the renewal path c. Then |ν̂| ≤ Cθⁿ uniformly, and with §6 for p = 1/4,
+  ν_{1/4} is absolutely continuous and A–L's W_∞ is a density with E W_∞ = 1.
+
+Each piece is concrete. (i) is the main computational task: a Lyapunov function on a discretised solenoid with a
+Lipschitz error bound. Continuity (C′) remains a further step.
