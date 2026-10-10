@@ -6,6 +6,10 @@ technical state of the code and `RESULTS.md` for the certified results. A refere
 everything adjacent (cycle bounds, predecessor density, the long shots, formal verification) is in
 `reports/Collatz adjacent work and references.md` (2026-10-08, notes in `research_notes/`).
 
+**Overall assessment (2026-10-10, evening): `notes/assessment_2026-10-10.md`.** It covers what is proved, what is
+only numerical, the dead ends (with reasons), the open targets with realistic outlooks, and the recommended order:
+publish, then contact Lagarias, then avenue 28 as a longer project.
+
 ## Strategic update 2026-10-10: Conjecture A is formally verified (Mazur)
 
 The ProofAtlas formalisation "Positive Lower Density of Collatz Predecessors" (L. Mazur, Sept 2026, AI-generated,

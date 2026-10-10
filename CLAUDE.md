@@ -209,6 +209,9 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   m ≤ 91 (m = 92 kräver 2^73.87). Se `notes/mcycles_2_71.md`; det orefereegranskade m ≥ 102 (Lean) granskat i
   `notes/mcycles_102_audit.md` (giltigt givet 2^71 + Rhin; leanchecker + nanoda). UTVIDGAT 2026-10-10 till m ≤ 104
   (≥ 105 lokala minima; m ≤ 104 även nanoda: 30 580 deklarationer, 59 min, 49.8 GB, Lean v4.35, `notes/mcycles_extension.md`, bygg i `~/devel/mazur_dl/m102/extend/`).
+- `notes/assessment_2026-10-10.md` – SAMLAD BEDÖMNING (2026-10-10 kväll): bevisat / bara numeriskt / döda spår med
+  orsaker / öppna mål med realistiska utsikter / rekommenderad ordning (publicera → kontakta Lagarias → spår 28).
+  Läs denna först vid ny session.
 - `RESULTS.md` – fristående skrivelse (engelska) av resultatet med LP-definition, certifikatformat, sha256 för alla
   certifikat, oberoende kontroller och metodens status. Uppdatera vid nya k eller ny status (formalisering).
 - `AVENUES.md` – levande dokument över möjliga spår (7 st) med status, vad som gjorts och hur man plockar upp dem.
