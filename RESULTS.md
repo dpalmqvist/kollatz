@@ -239,7 +239,9 @@ extremal trees). This night's results (`notes/extremal_trees.md`, `extremal_tree
   μ′ ≤ 1.333637) and r = 16 (μ ≥ 1.333259, μ′ ≤ 1.333416), in agreement with the agent's values.
 - **The limit measure** (`syracuse_measure.py`, `paper/preimage.md` §7, 2026-10-10). With the minimum replaced by the
   mean, the Perron vectors h_r are exactly the level-r marginals of one probability measure ν on ℤ₃^× (proved: the
-  top-digit average commutes with the operator). ν is the stationary law of x ↦ x/2, x ↦ (3x+1)/2 with
+  top-digit average commutes with the operator). These h_r are the W[l mod 3^j] of Applegate–Lagarias, "The
+  distribution of 3x+1 trees" (1995, §6), who proved the martingale property and a.e. convergence and conjectured
+  that the limit W_∞ is continuous (Limit Function Conjecture). ν is the stationary law of x ↦ x/2, x ↦ (3x+1)/2 with
   probabilities 3/4, 1/4. Probability 1/2 gives Tao's Syracuse random variable, which is also exactly the
   Krasikov–Lagarias system at λ = 2 with mean instead of min.
   - The normalised counts (3/4)^k N*_k converge weakly to ν (proved).

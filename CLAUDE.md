@@ -192,7 +192,14 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
   0.65 = √(3/7); p = 1/2 är kritiskt (kvot 1, täthet ∉ L², L¹-kvot 0.931 vid r = 17 stigande som K–L:s 1 − ρ_k).
   Tröskel p = 1/3 för begränsad täthet (fixpunkten −1 ger faktor 3p/nivå ⇒ K–L:s C_max ~ 1.52^k). p = 1/4: L^q-kvoter
   < 3^{−1/q} ⇒ kontinuerlig täthet numeriskt; min/max h_17 ↔ (4/3)^k/N^−(k) → 2.039, N^+/(4/3)^k → 1.742 (2e-4).
-  Kontinuitet ⇒ Conjecture C′ (preimage.md Prop. 6). Kolla Wirsching LNM 1681 för prioritet. AVENUES §28.
+  Kontinuitet ⇒ Conjecture C′ (preimage.md Prop. 6). AVENUES §28.
+  PRIORITET (2026-10-10): h_r = W[l mod 3^j] i Applegate–Lagarias, "The distribution of 3x+1 trees", Exp. Math. 4
+  (1995) §6. Martingalen, a.e.-gränsen W_∞ och "Limit Function Conjecture" (W_∞ kontinuerlig) är deras. Nytt hos
+  oss: stationära måttet, att Prop. 6 ger C′ ur LFC ensam, L²-lagen och kopplingen till Tao/K–L.
+- `corr_recursion.py`, `md_operator_norms.py`, `notes/limit_function.md` (spår 28, steg 2–3, 2026-10-10): exakt
+  rekursion för tvåpunktskorrelationer G_n(d, u) (S_n-identiteten exakt), korstermer små. ‖K‖ på godtyckliga
+  martingaldifferenser är 1.0356 > 1, och m-stegsnormerna växer med nivån ⇒ inget operatornorm-certifikat;
+  avklingningen är aritmetisk (Tao-typ). Nästa: Taos §6–7 för p = 1/4 (ger absolutkontinuitet).
 - `mcycles.py` (spår 13, 2026-10-10): Hercher/SdW m-cykelmetod, `validate` reproducerar båda; vid 2^71 fortfarande
   m ≤ 91 (m = 92 kräver 2^73.87). Se `notes/mcycles_2_71.md`; det orefereegranskade m ≥ 102 (Lean) granskat i
   `notes/mcycles_102_audit.md` (giltigt givet 2^71 + Rhin; leanchecker + nanoda). UTVIDGAT 2026-10-10 till m ≤ 104

@@ -1463,8 +1463,38 @@ Questions:
    (ρ_k → 1) asks for more than Tao's L¹ statement, but the obstacle is now located: cancellation at a critical
    point, not a missing estimate.
 
-   **Check first (novelty):** Wirsching, LNM 1681 (1998), studies a 3-adic Markov process for the inverse map
-   (Tao's footnote 5). The identification in item 1 may be in his framework.
+   **Novelty check (done 2026-10-10 afternoon).** Applegate–Lagarias, "The distribution of 3x+1 trees", Experiment.
+   Math. 4 (1995) 193–209, §6, already has the object.
+   - Their W[l mod 3^j] is our h_j: W[1 mod 3] = 6/7 and W[2 mod 3] = 8/7, and their (6.8) gives the j = 2 values.
+   - They prove the martingale property (Thm 6.3, by the same (I − (3/4)P)A = 0 induction), the class-average
+     convergence (Thm 6.1, = item 5's convergence) and a.e. convergence to W_∞.
+   - They conjecture the *Limit Function Conjecture* (W_∞ continuous, nonzero, h_r → W_∞ everywhere) and the
+     *Extremal Limit Conjecture* ((3/4)^k N^±(k) → sup W_∞ and inf W_∞). Both together imply C′ (their "C#").
+   - Their Table 3 has W_11^− = 0.491 and W_11^+ = 1.721, equal to our h_11.
+
+   **Apparently new:**
+   - the identification of W_∞ as the density of the p = 1/4 stationary law, with the series formula;
+   - item 6 (the Limit Function Conjecture alone ⇒ C′, via the min/max certificates of §3 of the preimage paper);
+   - the √(3p/(2−p)) L² law, the p = 1/3 and p = 1/2 thresholds, and the link to Tao and K–L;
+   - the exact extremal data to k = 59, which support the Extremal Limit Conjecture to 2·10^{−4}.
+
+   Wirsching's chain (LNM 1681) is a different normalisation: a fixed number of odd steps, with a real-interval
+   density of Fabius type. A–L already note that its relation to W_∞ is unknown.
+
+   **Target, restated:** prove the A–L Limit Function Conjecture (1995). By item 6 it implies C′.
+
+   **Steps 2–3 (2026-10-10 afternoon; `notes/limit_function.md`, `corr_recursion.py`, `md_operator_norms.py`).**
+   - **Exact recursion.** The two-point correlations G_n(d, u) of δ_n under x ↦ 2^d(x + u) satisfy an exact linear
+     recursion over u ∈ ℤ[1/2], checked to all digits. The L² law is S_n = (3/7)[S_{n−1} + 2Σ_d q^d Re G_{n−1}(d, u_d)].
+     The cross terms are correlations under S_d = T₁^{−1}(×2^d)T₁, numerically tiny (ρ(2) = −0.019 at n = 13) and
+     shrinking.
+   - **No operator-norm certificate.** On *arbitrary* martingale differences ‖K‖ = 1.0356 > 1. The m-step norms are
+     below 1 at finite L but keep rising with L (m = 2: 0.919 at L = 13). The 0.65 decay is arithmetic
+     (Tao-type decorrelation), not a property of K.
+   - **Next step.** Tao's §6–7 look p-independent: uniform splits for any geometric law, NB(2, p) pair sums, slope
+     2/p > log 9/log 2. This would give L¹ fine-scale mixing for p = 1/4, hence absolute continuity of ν (A–L's W_∞
+     is a true density, closing a gap in their (6.15)). Continuity, or at least boundedness plus control of the
+     selection chains, then remains.
 
 Payoff: a publishable improvement now (A–L Theorem 1.1 from 1.302/1.358 to within 3·10^{−5} of 4/3), and a cleaner
 testbed for the λ_k → 2 problem.

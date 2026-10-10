@@ -43,10 +43,11 @@ size. It is a monotone, homogeneous recursion on the classes mod 3^r, and a sing
 certifies a bound valid for all a and all k. We also compute the exact extremal pruned-tree counts N^±(k) up to
 depth 59 (N^−) and 55 (N^+). They sharpen the tree-search constants to 1.317329 and 1.346858, and they show
 N^±(k)/(4/3)^k constant to within 0.7 % for k ≥ 25, as Conjecture C′ predicts and the random branching models do
-not. Finally, the Perron vectors of the averaged recursion are the marginals of one measure on ℤ₃^×: the stationary
+not. Finally, the Perron vectors of the averaged recursion are the marginals of one measure on ℤ₃^×, whose density
+is the limit function W_∞ of Applegate and Lagarias: the stationary
 law of the walk x ↦ x/2, (3x+1)/2 with probabilities 3/4, 1/4. Krasikov–Lagarias&rsquo;s size-counting system is the
-case 1/2, Tao&rsquo;s Syracuse random variable. Conjecture C′ follows if this measure has a continuous density, and the
-numerics indicate that it does.</p>
+case 1/2, Tao&rsquo;s Syracuse random variable. Conjecture C′ follows from Applegate and Lagarias&rsquo;s Limit Function
+Conjecture alone (that this density is continuous), and the numerics indicate that it is.</p>
 <h2>1. Introduction</h2>
 <p>Let T be the 3x+1 map above and a ≢ 0 (mod 3). (For 3 | a the predecessors are just {2^j a}.) Write
 n_k(a) = #{n ≥ 1 : T^k(n) = a} for the number of k-step preimages.</p>
@@ -362,7 +363,15 @@ Theorems 1 and 2 do not depend on Theorem 3.</p>
 <h2>7. The limit measure</h2>
 <p>Replace the minimum in Φ by the mean over the three lifts: A_r v(c) = v(2c) + β(c)·(1/3)Σ_u v(l_u(c)). Let h_r be
 the Perron vector of A_r, normalised to mean 1 over the classes.</p>
-<p><strong>Proposition 5.</strong> Let r ≥ 3.
+<p>These averages are not new. Applegate and Lagarias [AL2, §6] study exactly these class averages: their
+W[l mod 3^j] is h_j(l). They proved the martingale property in (a), the convergence (c), and the almost-everywhere
+convergence of h_r to a limit function W_∞ on ℤ₃^×. They then stated two conjectures:
+- the <em>Limit Function Conjecture</em>: W_∞ is continuous and nonzero, and h_r → W_∞ everywhere;
+- the <em>Extremal Limit Conjecture</em>: (3/4)^k N^±(k) tends to sup W_∞ and inf W_∞.</p>
+<p>They showed that the two conjectures together imply C′ (their &ldquo;Conjecture C#&rdquo;). Our additions are the
+identification (b), which yields a series formula, and Proposition 6 below, which derives C′ from the Limit
+Function Conjecture alone.</p>
+<p><strong>Proposition 5</strong> ((a) and (c) are [AL2, Thms 6.1, 6.3]; (b) appears to be new). Let r ≥ 3.
 - (a) A_r is primitive with Perron root 4/3. The mean of h_r over the three lifts of s (mod 3^{r−1}) is h_{r−1}(s).
 - (b) There is a unique probability measure ν on ℤ₃^× whose density, relative to normalised Haar measure, has
   average h_r(c) on every ball c + 3^r ℤ₃. ν is the stationary law of the Markov chain on ℤ₃^× that maps x to x/2
@@ -387,7 +396,7 @@ the Perron vector of A_r, normalised to mean 1 over the classes.</p>
   g_k → h_r, normalised by the left eigenvector. ∎</p>
 <p>So the normalised pruned counts (3/4)^k N*_k(b) converge weakly to the measure ν. Conjecture C′ asks for uniform
 control.</p>
-<p><strong>Proposition 6.</strong> Suppose h_r converges uniformly on ℤ₃^×, i.e. ν has a continuous density h. Let S = max h/min h.
+<p><strong>Proposition 6</strong> (the Limit Function Conjecture implies C′). Suppose h_r converges uniformly on ℤ₃^×, i.e. ν has a continuous density h. Let S = max h/min h.
 Then for every b ≢ 0 (mod 3) and k ≥ 1,</p>
 <p>(4S)^{−1}(4/3)^k ≤ N*_k(b) ≤ e^{3/4}S·(4/3)^k,</p>
 <p>so Conjecture C′ holds.</p>
@@ -412,8 +421,9 @@ difference). Then</p>
 - The sup ratio is ≈ 0.76, so the density appears Hölder continuous with exponent ≈ 0.25.
 - The extremes match the extremal trees of §6. At r = 17, 1/min h_17 = 2.0387 and max h_17 = 1.7386, both still
   rising slowly. Table 2 gives (4/3)^k/N^−(k) → 2.0390–2.0395 and N^+(k)/(4/3)^k → 1.7420.</p>
-<p>So, numerically, N^±(k)(3/4)^k → max h and min h, and the Conjecture C′ constants are the extremes of a single
-continuous function on ℤ₃^×.</p>
+<p>So, numerically, both conjectures of [AL2] hold: N^±(k)(3/4)^k → max h and min h, and the constants of
+Conjecture C′ are the extremes of a single continuous function on ℤ₃^×. [AL2] computed h_r to r = 11, where
+min h_11 = 0.491 and max h_11 = 1.721, in agreement with ours.</p>
 <p><strong>Relation to the Syracuse random variable.</strong> For general p the chain x ↦ x/2 (probability 1 − p),
 x ↦ (3x+1)/2 (probability p) has the stationary law X_p = Σ_{j≥1} 3^{j−1}2^{−S(j)}, with S(j) = a_1 + ⋯ + a_j and P(a = m) = p(1−p)^{m−1}.
 - p = 1/2 is Tao&rsquo;s Syracuse random variable Syrac(ℤ₃) [T, Remark 1.13].
@@ -427,25 +437,35 @@ x ↦ (3x+1)/2 (probability p) has the stationary law X_p = Σ_{j≥1} 3^{j−1}
 proves is faster than any power [T, Prop. 1.14], comes entirely from cancellation. Its ratio per level creeps up,
 0.926 … 0.931 for r = 14 … 17, like the ratio of 1 − ρ_k in [KL]&rsquo;s problem (0.919 at k = 14, 0.933 at k = 22 [P2]).
 The depth problem sits on the subcritical side, which is why it is so much better behaved.</p>
-<p>Wirsching [W] studies a 3-adic Markov process for the inverse 3x+1 map (cf. [T, footnote 5]). We have not checked
-whether Proposition 5 appears there.</p>
+<p>Wirsching [W] studies a different normalisation: paths with a fixed number of odd steps, whose invariant density
+lives on a real interval. [AL2] note that the relation between his functions and W_∞ is unknown, and we have not
+resolved it.</p>
 <h2>8. Remarks</h2>
 <ol>
 <li><strong>What would prove Conjecture B.</strong> Prove ρ_r → 1 for the system of §3, i.e. that the Perron vector becomes
    insensitive to its top digit. This is a cleaner instance of the Krasikov–Lagarias problem λ_k → 2 [KL, P1]. Here
    the loss decays 0.65 per digit instead of 0.93, and the spread stays bounded instead of growing exponentially.
-   By Proposition 6, Conjecture C′ (hence B) follows from continuity of the density of the stationary measure ν of
-   §7. One route is a moment recursion for the martingale differences δ_r: the diagonal coefficients are exact, and
-   a bound ‖δ_r‖<em>4 ≤ Cθ^r with θ &lt; 3^{−1/4} suffices. What must be controlled is the decorrelation of δ</em>{r−1} under
-   the maps y ↦ 2^d(y + 1/3) − 1/3.</li>
-<li><strong>Novelty.</strong> We have not found improvements of [AL1, Thm 1.1] in the literature. The surveys [L, KL2] still
-   state the tree-growth constant log(4/3) as conjectural. The residue-class system is the evident depth analogue of
-   Krasikov&rsquo;s inequalities, so special cases may exist; we would be glad to learn of them.</li>
+   By Proposition 6, Conjecture C′ (hence B) follows from the Limit Function Conjecture of [AL2]. Three facts locate
+   the difficulty:
+   - The correlations of δ_r under the affine maps x ↦ 2^d(x + u) satisfy an exact linear recursion. The L²
+     cross terms are correlations under the conjugated doubling maps T₁^{−1}(×2^d)T₁, and they are numerically tiny.
+   - On <em>arbitrary</em> martingale differences the map δ_{r−1} ↦ δ_r has L² norm 1.0356 &gt; 1. Its m-step norms are below
+     1 at each finite level but grow with the level. So the decay is arithmetic, not a contraction property, and no
+     finite operator-norm certificate can prove it.
+   - Tao&rsquo;s proof of fine-scale mixing for p = 1/2 [T, §§6–7] appears to use p only through constants. Given
+     a + a′ = b, the split is uniform for every geometric law. If it transfers, ν is absolutely continuous, so that
+     W_∞ is a genuine density with mean 1 (in [AL2, (6.15)] this is asserted without the needed uniform
+     integrability).</li>
 </ol>
+<p>Continuity then needs a sup-norm, or L^q with q &gt; 2.65, version of that mixing for pairs of Syracuse offsets.
+2. <strong>Novelty.</strong> We have not found improvements of [AL1, Thm 1.1] in the literature. The surveys [L, KL2] still
+   state the tree-growth constant log(4/3) as conjectural. The residue-class system is the evident depth analogue of
+   Krasikov&rsquo;s inequalities, so special cases may exist; we would be glad to learn of them.</p>
 <h2>References</h2>
 <ul>
 <li>[AL1] D. Applegate, J. C. Lagarias, Density bounds for the 3x+1 problem I. Tree-search method, Math. Comp. 64
   (1995) 411–426.</li>
+<li>[AL2] D. Applegate, J. C. Lagarias, The distribution of 3x+1 trees, Experiment. Math. 4 (1995) 193–209.</li>
 <li>[Kr] I. Krasikov, How many numbers satisfy the 3x+1 conjecture?, Internat. J. Math. Math. Sci. 12 (1989)
   791–796.</li>
 <li>[KL] I. Krasikov, J. C. Lagarias, Bounds for the 3x+1 problem using difference inequalities, Acta Arith. 109

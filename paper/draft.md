@@ -713,7 +713,9 @@ origin of the C_max ∝ 1.52^k of §6.4. The minimum over the top digit removes 
 peak there) but not the growth. The min-system vector stays close to h_k without equalling it: total variation 0.14
 and log-correlation 0.987 at k = 12.
 
-Counting by depth instead of by size gives p = 1/4 (companion paper). There the factor is √(3/7) = 0.655, the spread
+Counting by depth instead of by size gives p = 1/4. Its density is the 3-adic limit function W_∞ that Applegate and
+Lagarias (Experiment. Math. 4 (1995) 193–209, §6) obtained as a martingale limit; see the companion paper. There the
+factor is √(3/7) = 0.655, the spread
 stays bounded (≈ 3.55), all L^q norms decay fast enough for a continuous density, and the loss of the minimum-system
 decays at that rate, 0.65 per digit. The size-counting problem of this paper is thus the critical member of a
 one-parameter family whose subcritical members behave well. Heuristically, λ_k → 2 asks for a min-version of Tao's
@@ -760,6 +762,7 @@ Lean modules, manifests and verifier reports in `lean_formal/`; measurements in 
 ## References
 
 - D. Applegate, J. C. Lagarias, Density bounds for the 3x+1 problem I. Tree-search method; II. Krasikov inequalities, Math. Comp. 64 (1995) 411–426, 427–438.
+- D. Applegate, J. C. Lagarias, The distribution of 3x+1 trees, Experiment. Math. 4 (1995) 193–209.
 - D. Barina, Improved verification limit for the convergence of the Collatz conjecture, J. Supercomput. 81:810 (2025).
 - J. H. Conway, Unpredictable iterations, Proc. 1972 Number Theory Conf., Boulder, 49–52.
 - R. E. Crandall, On the "3x+1" problem, Math. Comp. 32 (1978) 1281–1292.
