@@ -57,7 +57,7 @@ New avenues 23–25 below follow from this.
 | 10 | Explicit constants in the predecessor bound | tables comparable with real counts | proposed 2026-10-08 |
 | 11 | 3x+d cycle census at scale | tests Belaga–Mignotte conjectures | proposed 2026-10-08 |
 | 12 | Terras's coefficient stopping time conjecture | compute upgrade | largely pre-empted: Rozier–Terracol 2026 reach 2.8·10^19 (lit. search 2026-10-08) |
-| 13 | m-cycle bounds with the 2^71 verified range | publishable increment on Hercher's m ≤ 91 | DONE 2026-10-10 (`mcycles.py`, `notes/mcycles_2_71.md`): negative. X0 = 2^71 still gives exactly m ≤ 91; m = 92 needs X0 ≥ 2^73.87. Hercher and SdW reproduced, with two misprints found. The unrefereed m ≥ 102 claim rests on a new argument, not on the range; the unrefereed m ≥ 102 Lean repository AUDITED: formally valid given 2^71 + Rhin (leanchecker + nanoda; `notes/mcycles_102_audit.md`); EXTENDED to m ≤ 104 (≥ 105 local minima) in Lean, conditional on 2^71 + Rhin (`notes/mcycles_extension.md`) |
+| 13 | m-cycle bounds with the 2^71 verified range | publishable increment on Hercher's m ≤ 91 | DONE 2026-10-10 (`mcycles.py`, `notes/mcycles_2_71.md`): negative. X0 = 2^71 still gives exactly m ≤ 91; m = 92 needs X0 ≥ 2^73.87. Hercher and SdW reproduced, with two misprints found. The unrefereed m ≥ 102 claim rests on a new argument, not on the range; the unrefereed m ≥ 102 Lean repository AUDITED: formally valid given 2^71 + Rhin (leanchecker + nanoda; `notes/mcycles_102_audit.md`); EXTENDED to m ≤ 104 (≥ 105 local minima) in Lean, conditional on 2^71 + Rhin, and replayed by nanoda (`notes/mcycles_extension.md`) |
 | 14 | Matrix interpretations for the rewriting system | a success would be a proof; odds very low | proposed 2026-10-08 |
 | 15 | Applegate–Lagarias extremal trees to depth 45–50 | direct test of Conjectures C / C′ | DONE 2026-10-10 (`extremal_trees.py`, `notes/extremal_trees.md`): exact N^−(k) to k = 59, N^+(k) to 55; Thm 1.1 → (1.317329)^k … (1.346858)^k; residue-class certificate gives UNIFORM 0.2822·(1.3333119)^k ≤ N*_k(a) ≤ 3.556·(1.3333567)^k (independently re-checked at r = 13) |
 | 16 | Spectrum, gap and traces of the K–L transfer matrix | mixing rate vs k; cycle footprints | first results 2026-10-08 (`spectrum.py`, k ≤ 15): gap does NOT close, see §16 |
@@ -670,7 +670,7 @@ Correction to `notes/mcycles_2_71.md` §6: log δ = 0.4605607, so SdW's constant
   The data module took 842 s with a 27.7 GB peak; the kernel needed `maxHeartbeats 0`, a resource limit only.
   `Collatz.no_104_cycle_2_71` and the restatement `AuditExt104` state **≥ 105 local minima**, with standard axioms
   and per-module leanchecker.
-  - nanoda for m ≤ 104 is still to do (it needs about 45 GB).
+  - nanoda for m ≤ 104: passed 2026-10-10 12:09 (30 580 declarations, no errors, peak 49.8 GB).
   - m = 105 would need grid points near N ≈ 139 000/144 000 and a data check of about 40–45 GB.
 - A useful finding for the original author: their checker's pattern width E1 = 16 makes some grid points about
   100× slower; E1 = 32 fixes it.

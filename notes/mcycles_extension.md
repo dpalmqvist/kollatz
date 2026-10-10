@@ -303,9 +303,9 @@ is short-periodic. A cost model that predicts which N are slow is still missing;
   resource limits only (their `Terras.lean` uses the same `maxRecDepth`), and the second attempt passed.
 - The `leanchecker` replay is independent of these options: `Lean.Replay` calls `addDeclCore … 0 0`, i.e. no limit.
 
-**nanoda for m ≤ 104: skipped.** Only 38.8 GB was free at 06:20, against the 45 GB rule, and the m ≤ 103 closure
-already needed 31.2 GB in `nanoda`. The m ≤ 104 data are therefore re-checked by Lean's kernel twice (build and
-`leanchecker`), not by an independent kernel.
+**nanoda for m ≤ 104: done later (main session, 2026-10-10 12:09; see the addendum at the end).** At 06:20 only
+38.8 GB was free, against the 45 GB rule, so it was skipped at first. The full closure then passed the independent
+kernel: "Checked 30580 declarations with no errors".
 
 **m = 105 outlook.** Grid points near N ≈ 138 955 and 144 021 are needed (shifts are allowed). The data module has
 238 shapes and walk depth 24 570. The m = 102/103/104 peaks of 12.2, 18.2 and 27.7 GB and times of 169, 267 and
@@ -322,3 +322,22 @@ for m in MCycleTwoRiseX87660 MCycleTwoRiseX90960 MCycleGridX3 MCycleX104 MCycleE
   lake env leanchecker -v Collatz.$m; done                                         # one module per process
 ```
 
+## Addendum (main session, 2026-10-10 12:09): nanoda on the m ≤ 104 closure
+
+`nanoda_bin` 0.4.17 (Lean v4.35.0-rc3 toolchain), replaying the lean4export closure `export/ext104.ndjson`
+(171.9 MB) of `AuditExt104.no_small_m_cycle_C` and `Collatz.no_104_cycle_2_71`. Settings: permitted axioms propext,
+Classical.choice and Quot.sound, with unpermitted axioms a hard error; Nat and String extensions on; 2 threads.
+- Result: **"Checked 30580 declarations with no errors"**, 3540 s wall (6954 s CPU), peak RSS 49.8 GB.
+- The pretty-printer shows both statements as in §8: 105 ≤ local minima for every nontrivial cycle, given
+  verification to 2^71 and Rhin's bound.
+- Log: `~/devel/mazur_dl/m102/extend/export/nanoda_ext104_t2.log`; memory trace in `watchdog_ext104_t2.txt`.
+
+Two earlier attempts were killed by our own watchdog, not by nanoda:
+- 2 threads, killed at 1625 s and 35.9 GB;
+- 1 thread, killed at 6782 s and 37.8 GB.
+
+Both times the trigger was "Pages free < 3 GB", which ignores reclaimable inactive memory. The successful run used a
+watchdog on free + inactive + speculative + purgeable memory (< 2 GB) and swap (> 12 GB). Neither condition was
+reached; at least 32 GB stayed available, and no swap was used.
+
+So m ≤ 104 is now checked by Lean's kernel twice (build and `leanchecker`) and by an independent kernel.
