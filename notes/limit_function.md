@@ -238,3 +238,26 @@ A fibre-averaged majorant is natural here: Σ_ξ B_n(ξ)² ≤ Σ_c P(c) max_η 
 single 2-power chain (one lift of 2^L/3^{n−3} is again near the identity). Next step: a weighted L² norm that
 discounts near-identity characters, plus an explicit treatment of the 2-power chain. This looks more tractable
 than the sup-norm certificate (i).
+
+**7. L² route, first numbers.**
+- T_n = Σ_ξ B_n(ξ)², the sum of squares of the triple majorant over level-n characters, decays at about 0.94 per
+  level for n ≤ 15. That is summable, so numerically even the crude majorant gives Σ S_n < ∞, i.e. an L² density.
+  The margin is thin: the majorant's typical rate is about 0.56 per level against the 0.577 needed. The true
+  typical rate is 0.38.
+- The one-step ℓ² operator norm of the positive majorant operator (level n−3 → level n) is above 1 and rising:
+  0.976 (n = 9), 0.979, 1.010, 1.032, 1.073 (n = 13). The max row sum tends to 1 near the identity; the max column
+  sum is about 5.2.
+- So, as with K in step 3, the decay of T_n belongs to the actual vector, not to the operator in the worst case.
+
+A certificate needs a weighted norm: a Schur test with weights depending on the solenoid position, especially the
+distance to the identity and the remaining 2-adic budget. Or it needs multi-step norms.
+
+**Status at the end of 2026-10-10.** Numerically, the decay we need is well established, in sup (0.74 per level,
+majorant over all characters) and in L² (0.94 per level for the majorant, 3/7 for the truth). Every naive
+worst-case contraction certificate fails, for the same reason: near the identity, along the pure 2-power chain, the
+weights tend to 1. A proof needs one of:
+- the digit-budget/Baker argument (sup route, items 1–5);
+- a weighted Schur-type certificate on the solenoid (L² route).
+
+Either would give absolute continuity of the Applegate–Lagarias limit measure. Continuity, which is what C′ needs,
+is a further step beyond that.
