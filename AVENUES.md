@@ -1491,10 +1491,11 @@ Questions:
    - **No operator-norm certificate.** On *arbitrary* martingale differences ‖K‖ = 1.0356 > 1. The m-step norms are
      below 1 at finite L but keep rising with L (m = 2: 0.919 at L = 13). The 0.65 decay is arithmetic
      (Tao-type decorrelation), not a property of K.
-   - **Next step.** Tao's §6–7 look p-independent: uniform splits for any geometric law, NB(2, p) pair sums, slope
-     2/p > log 9/log 2. This would give L¹ fine-scale mixing for p = 1/4, hence absolute continuity of ν (A–L's W_∞
-     is a true density, closing a gap in their (6.15)). Continuity, or at least boundedness plus control of the
-     selection chains, then remains.
+   - **Tao's method, checked against the text.** His §7 (n^{−A} Fourier decay) is p-independent. His §6 (Fourier
+     decay ⇒ fine-scale mixing) uses the entropy identity h(1/2) = 1 bit per unit of 2-adic size. For p = 1/4 this
+     leaves a collision-entropy deficit of 2^{0.30n}, so absolute continuity of ν would need *exponential* decay of
+     ν̂ at rate < 2^{−1/4} ≈ 0.84 per level (numerically 0.64). That is the precise next lemma. Continuity, or at
+     least boundedness plus control of the selection chains, then remains.
 
 Payoff: a publishable improvement now (A–L Theorem 1.1 from 1.302/1.358 to within 3·10^{−5} of 4/3), and a cleaner
 testbed for the λ_k → 2 problem.

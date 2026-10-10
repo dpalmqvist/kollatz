@@ -86,17 +86,48 @@ too). We measured the Haar-normalised L² norm of K^m on all martingale differen
 
 ## Where the proof stands, and the next steps
 
-1. **Absolute continuity, likely within reach.** Tao's §7 (Prop. 1.17) appears to be p-independent in every
-   structural step:
-   - the conditioning trick: given a + a′ = b, the split is uniform for every geometric law;
-   - the pair sums b_j ~ NB(2, p), with P(b = 3) = 2p²q > 0;
-   - Lemma 7.4 (black set = separated triangles) depends only on χ;
-   - the renewal process needs mean slope 2/p > log 9/log 2 (8 > 3.17 for p = 1/4).
+1. **Absolute continuity: Tao's method does NOT transfer directly** (checked against the text, 2026-10-10).
+   - *§7 (Prop. 1.17, polynomial Fourier decay) looks p-independent.* Given a + a′ = b the split is uniform for
+     every geometric law. The pair sums are b_j ~ NB(2, p) with P(b = 3) = 2p²q > 0. Lemma 7.4 (black set =
+     separated triangles) depends only on χ. The renewal part needs mean slope 2/p > log 9/log 2 (8 > 3.17).
+   - *§6 (Prop. 1.17 ⇒ Prop. 1.14) is p = 1/2-specific.* It splits X_n = F_{k+1}(a_1…a_{k+1}) + 3^{k+1}2^{−l}(rest),
+     with the stopping rule a[1,k+1] = l ≈ n log₂ 3 so that the offsets are injective mod 3^n (Cor. 6.3). It then
+     bounds the collision entropy by max P(tuple) = 2^{−l} ≈ 3^{−n}. This step is exact only because Geom(2) has
+     entropy equal to its mean, h(1/2) = 1 bit per unit of 2-adic size.
+   - For p = 1/4, P(tuple) = (p/q)^{k+1} q^l with k + 1 ≈ l/4. Then 3^n Σ P² ≲ ((2q)^4 p/q)^{k+1} = 1.6875^{0.4n}
+     = 2^{0.30n}, an entropy deficit of h(1/4) = 0.811 bits per unit.
+   - To compensate, the second factor needs **exponential** Fourier decay: sup over ξ of level m of |ν̂_{1/4}(ξ)| ≤
+     Cθ^m with θ < 2^{−1/4} ≈ 0.84 at level m ≈ 0.6n. Tao's §7 gives only m^{−A}.
 
-   His §6 reduction from Prop. 1.17 to Prop. 1.14 uses only the series structure. If this transfers, then
-   Osc_{m,n}(ν_{1/4}) ≪_A m^{−A}, so ν_{1/4} is absolutely continuous, A–L's martingale is uniformly integrable, and
-   E W_∞ = 1, which closes the gap in [AL2, (6.15)]. To do: check §6–7 line by line for p = 1/4. Numerically the
-   decay is geometric, ratio 0.652.
+   Numerically max |ν̂| decays like 0.64^m (`syracuse_measure.py`), so there is room, but exponential decay of the
+   characteristic function is a new estimate. If it holds: Osc_{m,n}(ν_{1/4}) → 0, ν_{1/4} is absolutely
+   continuous, A–L's martingale is uniformly integrable, and E W_∞ = 1 (closing the gap in [AL2, (6.15)]). The
+   recursion ν̂(ξ) = Σ_j p q^j e(ξ/2^{j+1}) ν̂(3ξ/2^{j+1}) gains nothing from the triangle inequality, because the
+   weights sum to 1. A proof must show that the phases e(ξ2^{−j−1}) of the dominant terms are spread: a Dolgopyat-type
+   cancellation statement.
+
+   **Tao's pairing as a positive majorant** (`fourier_majorant.py`). Conditioning on b = a + a′ gives
+   |ν̂(ξ)| ≤ Σ_s p²q^s |Φ_s(ξ)| |ν̂(9ξ/2^{s+2})| with Φ_s(ξ) = Σ_{i ≤ s} e(ξ/2^{i+1}). Iterating from |ν̂| ≤ 1:
+
+   | n | 10 | 11 | 12 | 13 | 14 | 15 |
+   |---|---|---|---|---|---|---|
+   | majorant | 4.05e-2 | 6.50e-2 | 2.59e-2 | 4.74e-2 | 1.59e-2 | 3.42e-2 |
+   | ratio per 2 levels | 0.642 | 0.619 | 0.639 | 0.730 | 0.615 | 0.721 |
+   | true max \|ν̂\| | 1.6e-4 | 9.8e-5 | 6.1e-5 | 3.8e-5 | 2.5e-5 | 1.6e-5 |
+
+   - Even levels: 0.78 per level, below the 0.84 needed.
+   - Odd levels: 0.85 per level, just above it.
+   - The positive cosine majorant alone is therefore borderline. Characters like ξ = 2^l/3^n have large black
+     triangles (Tao's Lemma 7.4) that switch off the saving for a constant fraction of the renewal path.
+
+   **Next levers:**
+   - condition on triples (a, a′, a″) instead of pairs, for more phases per saving step;
+   - a sharper §6 split for p ≠ 1/2, using the actual L² mass of the first factor rather than its maximum
+     (Hölder or additive-energy bounds instead of sup |ν̂|);
+   - bound the total size of black triangles along a path; their corners are good rational approximations
+     ξ3^{2j}2^{−l} ≈ 0 mod 1, so Baker-type bounds may cap how many can be large.
+
+   Then make the result uniform in n. That is the step that turns per-level numerics into a proof.
 2. **Bounded density (W_∞^± finite), a possible shortcut.** A Donsker–Varadhan bound replaces the sup-norm
    Collatz–Wielandt step by an average. For a nonnegative irreducible B and v > 0,
    log r(B) ≥ Σ_c π_c log((Bv)_c/v_c), where π is stationary for the stochastic matrix P_cd = B_cd v_d/(Bv)_c. The

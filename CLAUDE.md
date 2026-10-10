@@ -199,7 +199,9 @@ K19CoefficientBridge (regex \b901\b träffar inte inuti identifierare) – rätt
 - `corr_recursion.py`, `md_operator_norms.py`, `notes/limit_function.md` (spår 28, steg 2–3, 2026-10-10): exakt
   rekursion för tvåpunktskorrelationer G_n(d, u) (S_n-identiteten exakt), korstermer små. ‖K‖ på godtyckliga
   martingaldifferenser är 1.0356 > 1, och m-stegsnormerna växer med nivån ⇒ inget operatornorm-certifikat;
-  avklingningen är aritmetisk (Tao-typ). Nästa: Taos §6–7 för p = 1/4 (ger absolutkontinuitet).
+  avklingningen är aritmetisk (Tao-typ). Taos §7 (Fourier, n^{−A}) är p-oberoende, men §6 (Fourier ⇒ blandning)
+  kräver h(1/2) = 1 bit per 2-adisk enhet; för p = 1/4 saknas 2^{0.30n} ⇒ absolutkontinuitet kräver EXPONENTIELL
+  Fourier-avklingning < 0.84/nivå (numeriskt 0.64). Det är nästa lemma.
 - `mcycles.py` (spår 13, 2026-10-10): Hercher/SdW m-cykelmetod, `validate` reproducerar båda; vid 2^71 fortfarande
   m ≤ 91 (m = 92 kräver 2^73.87). Se `notes/mcycles_2_71.md`; det orefereegranskade m ≥ 102 (Lean) granskat i
   `notes/mcycles_102_audit.md` (giltigt givet 2^71 + Rhin; leanchecker + nanoda). UTVIDGAT 2026-10-10 till m ≤ 104

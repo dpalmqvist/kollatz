@@ -340,10 +340,11 @@ resolved it.
    - On *arbitrary* martingale differences the map δ_{r−1} ↦ δ_r has L² norm 1.0356 > 1. Its m-step norms are below
      1 at each finite level but grow with the level. So the decay is arithmetic, not a contraction property, and no
      finite operator-norm certificate can prove it.
-   - Tao's proof of fine-scale mixing for p = 1/2 [T, §§6–7] appears to use p only through constants. Given
-     a + a′ = b, the split is uniform for every geometric law. If it transfers, ν is absolutely continuous, so that
-     W_∞ is a genuine density with mean 1 (in [AL2, (6.15)] this is asserted without the needed uniform
-     integrability).
+   - Tao's proof of fine-scale mixing for p = 1/2 [T, §§6–7] does not transfer directly. His Fourier-decay part (§7)
+     works for any geometric law, but his reduction to mixing (§6) uses that Geom(2) has exactly one bit of entropy
+     per unit of 2-adic size. For p = 1/4 that reduction would need exponential decay of ν̂, at rate below 2^{−1/4}
+     per level, against an observed 0.64. With it, ν is absolutely continuous, so W_∞ is a genuine density with
+     mean 1 (in [AL2, (6.15)] this is asserted without the needed uniform integrability).
 
    Continuity then needs a sup-norm, or L^q with q > 2.65, version of that mixing for pairs of Syracuse offsets.
 2. **Novelty.** We have not found improvements of [AL1, Thm 1.1] in the literature. The surveys [L, KL2] still
