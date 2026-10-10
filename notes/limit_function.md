@@ -128,6 +128,28 @@ too). We measured the Haar-normalised L² norm of K^m on all martingale differen
      ξ3^{2j}2^{−l} ≈ 0 mod 1, so Baker-type bounds may cap how many can be large.
 
    Then make the result uniform in n. That is the step that turns per-level numerics into a proof.
+
+   **Triples clear the threshold** (`fourier_majorant3.py`, output in `fourier_majorant3.txt`). Conditioning on
+   c = a₁ + a₂ + a₃ (compositions uniform for any geometric law) gives
+   |ν̂(ξ)| ≤ Σ_c P(c)|Ψ_c(ξ)||ν̂(27ξ/2^c)|, with P(c) = C(c−1,2)p³q^{c−3} and Ψ_c the average of e(ξ2^{−a₁}(1 + 3·2^{−a₂}))
+   over compositions. Taking the max over *all* characters of level n, including the bad ones:
+
+   | n | 9 | 10 | 11 | 12 | 13 | 14 | 15 | 16 | 17 |
+   |---|---|---|---|---|---|---|---|---|---|
+   | majorant | 1.63e-2 | 3.80e-2 | 4.84e-2 | 6.29e-3 | 1.40e-2 | 2.03e-2 | 2.44e-3 | 5.67e-3 | 8.16e-3 |
+   | rate per level (over 3 levels) | 0.702 | 0.718 | 0.730 | 0.728 | 0.717 | 0.748 | 0.730 | 0.740 | 0.739 |
+
+   The rate is stable at 0.72–0.75 on all three residue chains (n = 17: 475 s, 40 GB), clearly below the 0.84
+   that the §6 reduction needs for p = 1/4 with consecutive levels.
+
+   **Proof outline for absolute continuity of ν_{1/4}** (A–L's W_∞ is a density, E W_∞ = 1):
+   - (a) Exponential Fourier decay, sup_{level n} |ν̂| ≤ Cθⁿ with θ < 2^{−1/4}, for ALL n. The triple majorant gives
+     θ ≈ 0.74 for n ≤ 17. What is missing is a uniform argument, i.e. Tao's black-triangle/renewal analysis made
+     exponential with explicit constants, using triples.
+   - (b) Tao's §6 with consecutive levels: entropy deficit 2^{0.30n} times θ^{1.2n} → 0, so Σ_n Osc_{n−1,n} < ∞ and the
+     level densities converge in L¹.
+
+   Item (a) is the remaining analytic lemma for this step. Continuity (C′) needs more: sup-norm control (§ above).
 2. **Bounded density (W_∞^± finite), a possible shortcut.** A Donsker–Varadhan bound replaces the sup-norm
    Collatz–Wielandt step by an average. For a nonnegative irreducible B and v > 0,
    log r(B) ≥ Σ_c π_c log((Bv)_c/v_c), where π is stationary for the stochastic matrix P_cd = B_cd v_d/(Bv)_c. The

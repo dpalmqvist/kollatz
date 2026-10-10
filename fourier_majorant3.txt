@@ -1,0 +1,15 @@
+n= 3: triple majorant max = 1.3514e-01
+n= 4: triple majorant max = 2.5305e-01
+n= 5: triple majorant max = 3.5983e-01
+n= 6: triple majorant max = 4.6979e-02   per 3 levels 0.3476  (per level 0.7031)
+n= 7: triple majorant max = 1.0246e-01   per 3 levels 0.4049  (per level 0.7398)
+n= 8: triple majorant max = 1.2444e-01   per 3 levels 0.3458  (per level 0.7019)
+n= 9: triple majorant max = 1.6277e-02   per 3 levels 0.3465  (per level 0.7024)
+n=10: triple majorant max = 3.7952e-02   per 3 levels 0.3704  (per level 0.7182)
+n=11: triple majorant max = 4.8437e-02   per 3 levels 0.3893  (per level 0.7301)
+n=12: triple majorant max = 6.2896e-03   per 3 levels 0.3864  (per level 0.7284)
+n=13: triple majorant max = 1.3970e-02   per 3 levels 0.3681  (per level 0.7167)
+n=14: triple majorant max = 2.0254e-02   per 3 levels 0.4181  (per level 0.7478)
+n=15: triple majorant max = 2.4439e-03   per 3 levels 0.3886  (per level 0.7297)
+n=16: triple majorant max = 5.6713e-03   per 3 levels 0.4059  (per level 0.7404)
+n=17: triple majorant max = 8.1631e-03   per 3 levels 0.4030  (per level 0.7387)
